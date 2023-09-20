@@ -46,7 +46,6 @@ import { AllAuctionNftCard }  from '../components';
 import CountdownWhite from '../components/CountdownWhite';
 import Countdown from '../components/Countdown';
 import AllBidders from '../components/AllBidders';
-import welcome from '../images/welcome.gif'
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import NftCard from '@/components/NftCard';
