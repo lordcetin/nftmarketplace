@@ -59,7 +59,7 @@ async function connectUser() {
 }
 
 const handleAdmin = async () => {
-        await fetch("https://testmarket.cos-in.com/api/admin",{
+        await fetch("https://testnet.cos-in.com/api/admin",{
         method:'GET',
         headers: {
           "Content-Type":"application/json"

@@ -54,7 +54,7 @@ const PlaceBid = ({param}) => {
   },[])
 
   const getNFTs = async () => {
-    await fetch('https://testmarket.cos-in.com/api/setnft').then(res => {
+    await fetch('https://testnet.cos-in.com/api/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -141,7 +141,7 @@ const handleBidSubmit = async (e,tokenId,id) => {
     bidprice: formInput.bidprice,
     winner:user,
   }
-    const res = await fetch("https://testmarket.cos-in.com/api/setnft", {
+    const res = await fetch("https://testnet.cos-in.com/api/setnft", {
     method: "PUT", // or 'PUT'
     headers: {
       "Content-Type": "application/json",

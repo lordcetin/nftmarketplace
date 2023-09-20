@@ -221,7 +221,7 @@ const setDatabase = async () => {
   // console.log("datatype" , typeof data,data)
 
   let resclone;
-  const res = await fetch(`https://testmarket.cos-in.com/api/register`,{
+  const res = await fetch(`https://testnet.cos-in.com/api/register`,{
     method: 'POST',
     headers:{
         'Content-Type': 'aplication/json',
