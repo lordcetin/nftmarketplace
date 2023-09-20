@@ -1,6 +1,6 @@
 
 export const getData = async (url,token) => {
-    const res = await fetch(`http://localhost:3000/api/${url}`,{
+    const res = await fetch(`https://testmarket.cos-in.com/api/${url}`,{
     method: 'GET',
     headers:{
         'Content-Type': 'aplication/json',
@@ -12,7 +12,7 @@ export const getData = async (url,token) => {
 }
 
 export const postData = async (url,post,token) => {
-    const res = await fetch(`http://localhost:3000/api/${url}`,{
+    const res = await fetch(`https://testmarket.cos-in.com/api/${url}`,{
     method: 'POST',
     headers:{
         'Content-Type': 'aplication/json',
@@ -26,7 +26,7 @@ export const postData = async (url,post,token) => {
 }
 
 export const putData = async (url,post,token) => {
-    const res = await fetch(`http://localhost:3000/api/${url}`,{
+    const res = await fetch(`https://testmarket.cos-in.com/api/${url}`,{
     method: 'PUT',
     headers:{
         'Content-Type': 'aplication/json',
@@ -39,7 +39,7 @@ export const putData = async (url,post,token) => {
 }
 
 export const patchData = async (url,post,token) => {
-    const res = await fetch(`http://localhost:3000/api/${url}`,{
+    const res = await fetch(`https://testmarket.cos-in.com/api/${url}`,{
     method: 'PATCH',
     headers:{
         'Content-Type': 'aplication/json',
@@ -52,7 +52,7 @@ export const patchData = async (url,post,token) => {
 }
 
 export const deleteData = async (url,token) => {
-    const res = await fetch(`http://localhost:3000/api/${url}`,{
+    const res = await fetch(`https://testmarket.cos-in.com/api/${url}`,{
     method: 'DELETE',
     headers:{
         'Content-Type': 'aplication/json',

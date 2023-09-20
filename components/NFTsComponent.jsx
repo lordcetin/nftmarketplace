@@ -32,7 +32,7 @@ const {nftcustom,user} = useStateContext();
   },[])
   // useEffect(() => {
 
-  //   fetch('http://localhost:3000/api/socketio')
+  //   fetch('https://testmarket.cos-in.com/api/socketio')
   //   socket.on("connect", () => {
   //     console.log("Socket connected");
   //   });
@@ -52,7 +52,7 @@ const {nftcustom,user} = useStateContext();
   // }, [socket]);
  
   const getUsers = async () => {
-    await fetch('http://localhost:3000/api/users').then(res => {
+    await fetch('https://testmarket.cos-in.com/api/users').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -62,7 +62,7 @@ const {nftcustom,user} = useStateContext();
     })
   }
   const getNFTs = async () => {
-    await fetch('http://localhost:3000/api/setnft').then(res => {
+    await fetch('https://testmarket.cos-in.com/api/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -96,7 +96,7 @@ const {nftcustom,user} = useStateContext();
 
     if(!exectlike.includes(userid)){
               
-        const res = await fetch("http://localhost:3000/api/likes", {
+        const res = await fetch("https://testmarket.cos-in.com/api/likes", {
           method: "POST", // or 'PUT'
           headers: {
             "Content-Type": "application/json",
@@ -119,7 +119,7 @@ const {nftcustom,user} = useStateContext();
       liker:auth?.user?.id,
       nftId:nft
     }
-    const res = await fetch("http://localhost:3000/api/likes", {
+    const res = await fetch("https://testmarket.cos-in.com/api/likes", {
     method: "DELETE", // or 'PUT'
     headers: {
       "Content-Type": "application/json",

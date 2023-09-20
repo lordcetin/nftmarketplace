@@ -61,7 +61,7 @@ const PersonalLiveAuction = ({param}) => {
   const [days,setDay] = useState(0);
 
   const getNFTs = async () => {
-    await fetch('http://localhost:3000/api/setnft').then(res => {
+    await fetch('https://testmarket.cos-in.com/api/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
