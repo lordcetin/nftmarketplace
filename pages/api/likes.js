@@ -11,7 +11,7 @@ import Notification from "@/models/notiSchema";
  * @param {import('next').NextApiResponse} res
 */
 
-export default async (req, res) => {
+module.exports = async (req, res) => {
 
     switch(req.method){
         case "GET":

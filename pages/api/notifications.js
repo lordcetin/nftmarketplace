@@ -8,7 +8,7 @@ import connectMongo from "@/connectMongo/connectMongo";
 */
     
 //connectMongo().catch(() => res.status(405).json({error: "Error in the Connection"}))
-export default async (req, res) => {
+module.exports = async  (req, res) => {
     switch(req.method){
         case "GET":
             await getNotifications(req,res)

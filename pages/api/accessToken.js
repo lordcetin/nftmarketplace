@@ -12,7 +12,7 @@ import Users from '../../models/userModel';
 
 //connectMongo().catch(() => res.status(405).json({error: "Error in the Connection"}))
 
-export default async (req, res) => {
+module.exports = async (req, res) => {
   try{
       await connectMongo()
       // const client = await MongoClient.connect(process.env.MONGO_URI);

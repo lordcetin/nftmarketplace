@@ -1,6 +1,6 @@
 import { MongoClient,ObjectId } from "mongodb";
 
-export default async (req, res) => {
+module.exports = async (req, res) => {
 
   const client = await MongoClient.connect(process.env.MONGO_URI);
   const db = client.db();

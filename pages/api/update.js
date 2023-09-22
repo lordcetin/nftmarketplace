@@ -9,7 +9,7 @@ import Users from "../../models/userModel";
  * @param {import('next').NextApiResponse} res
  */
 
-export default async (req,res) => {
+module.exports = async  (req,res) => {
 
     switch(req.method){
         case "PUT":

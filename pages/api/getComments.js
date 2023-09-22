@@ -9,7 +9,7 @@ import connectMongo from "@/connectMongo/connectMongo";
  * @param {import('next').NextApiResponse} res
 */
 
-export default async (req, res) => {
+module.exports = async (req, res) => {
     switch(req.method){
         case "GET":
             await getComments(req,res)
