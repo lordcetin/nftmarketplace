@@ -93,7 +93,7 @@ const BuyedNftCard = ({param,datas,addrs}) => {
         owner:user,
       }
 
-      const res = await fetch("http://localhost:3000/api/setnft", {
+      const res = await fetch("https://testnet.cos-in.com/api/setnft", {
         method: "PUT", // or 'PUT'
         headers: {
           "Content-Type": "application/json",

@@ -55,7 +55,7 @@ const Login = () => {
   },[])
 
   const getUsers = async () => {
-    await fetch('http://localhost:3000/api/users').then(res => {
+    await fetch('https://testnet.cos-in.com/api/users').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -108,7 +108,7 @@ const Login = () => {
     // console.log("res",res)
 
     let resclone;
-    const res = await fetch(`http://localhost:3000/api/login`,{
+    const res = await fetch(`https://testnet.cos-in.com/api/login`,{
       method: 'POST',
       headers:{
           'Content-Type': 'aplication/json',
