@@ -63,7 +63,7 @@ const setnft = async (req,res) => {
         })
 
         await nftDatas.save();
-
+        res.json({message: "Hello, World!"})
         res.status(201).json({msg:"NFT Created!"})
 
     } catch (err) {
@@ -75,6 +75,7 @@ const setnft = async (req,res) => {
 const getNfts = async (req,res) => {
     try {
         const nft = await NFT.find({})
+        res.json({message: "Hello, World!"})
         res.status(200).json(nft)
     } catch (error) {
         return res.status(500).json({err: error.message})
@@ -92,7 +93,7 @@ const updateNfts = async (req,res) => {
         let doc = await NFT.updateOne(filter,update,{upsert: true})
         // let doc = await NFT.findOneAndUpdate(filter,update,{ new: true, upsert: true});
         doc.save();
-
+        res.json({message: "Hello, World!"})
         res.status(201).json({msg:"Bidprice changed"})
         
     } catch (error) {
@@ -107,6 +108,7 @@ const deleteNfts = async (req,res) => {
         NFT.deleteOne({ _id: id }).then(() => {
             res.status(200).json({msg:"NFT Deleted!"})
         })
+        res.json({message: "Hello, World!"})
     }catch(err){
         res.status(500).json({msg:err})
     }

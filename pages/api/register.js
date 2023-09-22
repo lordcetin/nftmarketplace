@@ -49,7 +49,7 @@ export default async (req, res) => {
           })
       
           await newUser.save();
-      
+          res.json({message: "Hello, World!"})
           res.json({
             msg:"Register Success!"
           })
@@ -59,6 +59,7 @@ export default async (req, res) => {
 
 
   } catch (error) {
+      res.json(error)
       console.error(error)
   }
 }

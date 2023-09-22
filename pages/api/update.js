@@ -30,7 +30,7 @@ const update = async (req,res) => {
     let doc = await Users.findOneAndUpdate(filter,update,{ new: true, upsert: true});
 
     await doc.save();
-
+    res.json({message: "Hello, World!"})
     res.status(200).json({
         data: await Users.findOne({ _id: id }),
         message: "Updated"

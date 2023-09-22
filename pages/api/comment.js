@@ -57,7 +57,7 @@ const setcomment = async (req,res) => {
         await notifications.save();
 
         res.status(200).json({ msg: `${user.username} commented your nft.` });
-
+        res.json({message: "Hello, World!"})
     } catch (err) {
         return res.status(500).json({err: err.message})
     }

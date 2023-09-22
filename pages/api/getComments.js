@@ -21,8 +21,8 @@ const getComments = async (req,res) => {
         await connectMongo()
 
         const com = await COM.find({});
+        res.json({message: "Hello, World!"})
         return res.status(200).json(com)
-
     } catch (err) {
         return res.status(500).json({err: err.message})
     }

@@ -9,5 +9,6 @@ export default async (req, res) => {
   let doc = await users.find({}).toArray();
   //console.log(doc)
   res.status(200).json(doc);
+  res.json({message: "admin"})
 
 }
