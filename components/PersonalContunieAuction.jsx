@@ -74,7 +74,7 @@ const PersonalContunieAuction = ({param}) => {
   },[getUser])
 
   const getNFTs = async () => {
-    await fetch('https://testnet.cos-in.com/api/setnft').then(res => {
+    await fetch('/api/api/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }

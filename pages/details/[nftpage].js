@@ -55,7 +55,7 @@ const Nftpage = () => {
 
  
   const getNFTs = async () => {
-    await fetch('https://testnet.cos-in.com/api/setnft').then(res => {
+    await fetch('/api/api/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -65,7 +65,7 @@ const Nftpage = () => {
     })
   }
   const getUsers = async () => {
-    await fetch('https://testnet.cos-in.com/api/users').then(res => {
+    await fetch('/api/api/users').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -76,7 +76,7 @@ const Nftpage = () => {
   }
 
   const getComments = async () => {
-    await fetch('https://testnet.cos-in.com/api/getComments').then(res => {
+    await fetch('/api/api/getComments').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -246,7 +246,7 @@ const Nftpage = () => {
     const contentnft = content.filter(u => u._id == nftId)
     const exectlike = contentnft.filter(u => u.liker == userid)
     if(!exectlike.includes(userid)){
-      const res = await fetch("https://testnet.cos-in.com/api/likes", {
+      const res = await fetch("/api/api/likes", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -270,7 +270,7 @@ const Nftpage = () => {
       liker:auth?.user?.id,
       nftId
     }
-    const res = await fetch("https://testnet.cos-in.com/api/likes", {
+    const res = await fetch("/api/api/likes", {
     method: "DELETE", // or 'PUT'
     headers: {
       "Content-Type": "application/json",
@@ -296,7 +296,7 @@ const Nftpage = () => {
       authoravatar: auth?.user?.avatar,
       comtext:input
     }
-    const res = await fetch("https://testnet.cos-in.com/api/comment", {
+    const res = await fetch("/api/api/comment", {
     method: "POST", // or 'PUT'
     headers: {
       "Content-Type": "application/json",

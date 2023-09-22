@@ -24,7 +24,7 @@ const Notifications = () => {
   },[])
 
   const getNotifications = async () => {
-    await fetch('https://testnet.cos-in.com/api/notifications').then(res => {
+    await fetch('/api/api/notifications').then(res => {
     if(!res.ok){
       throw new Error("HTTP ERROR",res.status)
     }
@@ -36,7 +36,7 @@ const Notifications = () => {
 
 
   const getUsers = async () => {
-    await fetch('https://testnet.cos-in.com/api/users').then(res => {
+    await fetch('/api/api/users').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -52,7 +52,7 @@ const Notifications = () => {
       id:id,
       read:true
     }
-    await fetch("https://testnet.cos-in.com/api/notifications", {
+    await fetch("/api/api/notifications", {
       method: "PUT", // or 'PUT'
       headers: {
         "Content-Type": "application/json",

@@ -184,7 +184,7 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
         const bannerurl = `${subdomain}/ipfs/${added.path}`;
        setBannerFile(bannerurl)
        const contentData = {bannerurl,username}
-       await fetch('https://testnet.cos-in.com/api/update',{
+       await fetch('/api/api/update',{
        method:'POST',
        body:JSON.stringify(contentData),
        headers:{ "Content-Type":"aplication/json" }
@@ -205,7 +205,7 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
     e.preventDefault();
     let desc = e.target.value
     const contentData = {desc,username}
-    await fetch('https://testnet.cos-in.com/api/update',{
+    await fetch('/api/api/update',{
     method:'POST',
     body:JSON.stringify(contentData),
     headers:{ "Content-Type":"aplication/json" }
@@ -234,7 +234,7 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
         const avatarurl = `${subdomain}/ipfs/${added.path}`;
        setProfileFile(avatarurl)
        const contentData = {avatarurl,username}
-       await fetch('https://testnet.cos-in.com/api/update',{
+       await fetch('/api/api/update',{
        method:'POST',
        body:JSON.stringify(contentData),
        headers:{ "Content-Type":"aplication/json" }
@@ -352,7 +352,7 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
 
 export default Settings;
 export const getServerSideProps = async (context) => {
-  const res = await fetch(`https://testnet.cos-in.com/api/users`)
+  const res = await fetch(`/api/api/users`)
   const userData = await res.json();
 
   return{

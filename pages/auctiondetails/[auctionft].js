@@ -70,7 +70,7 @@ const AuctionNFTPage = ({param}) => {
   }, [auth.user, router]);
 
   const getNFTs = async () => {
-    await fetch('https://testnet.cos-in.com/api/setnft').then(res => {
+    await fetch('/api/api/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -176,7 +176,7 @@ const AuctionNFTPage = ({param}) => {
       duration:timestamp,
     }
 
-    const res = await fetch("https://testnet.cos-in.com/api/setnft", {
+    const res = await fetch("/api/api/setnft", {
       method: "PUT", // or 'PUT'
       headers: {
         "Content-Type": "application/json",
