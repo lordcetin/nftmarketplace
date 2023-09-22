@@ -27,7 +27,7 @@ const CreateNFT = () => {
     await toast.promise(
       new Promise(async (resolve, reject) => {
         await axios
-          .post('http://localhost:3000/process', formData)
+          .post('http://localhost:3000/api/process', formData)
           .then(async (res) => {
             await createNftItem(res.data)
               .then(async () => {

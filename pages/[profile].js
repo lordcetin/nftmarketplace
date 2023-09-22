@@ -429,7 +429,7 @@ import { toast } from 'react-toastify';
           const bannerurl = `${subdomain}/ipfs/${added.path}`;
          setBannerFile(bannerurl)
          const contentData = {bannerurl,username}
-         await fetch('http://localhost:3000http://localhost:3000/update',{
+         await fetch('http://localhost:3000/api/update',{
          method:'PUT',
          body:JSON.stringify(contentData),
          headers:{ "Content-Type":"aplication/json" }
@@ -450,7 +450,7 @@ import { toast } from 'react-toastify';
       e.preventDefault();
       let desc = e.target.value
       const contentData = {desc,username}
-      await fetch('http://localhost:3000http://localhost:3000/update',{
+      await fetch('http://localhost:3000/api/update',{
       method:'PUT',
       body:JSON.stringify(contentData),
       headers:{ "Content-Type":"aplication/json" }
@@ -476,7 +476,7 @@ import { toast } from 'react-toastify';
           const avatarurl = `${subdomain}/ipfs/${added.path}`;
          setProfileFile(avatarurl)
          const contentData = {avatarurl,username}
-         await fetch('http://localhost:3000http://localhost:3000/update',{
+         await fetch('http://localhost:3000/api/update',{
          method:'PUT',
          body:JSON.stringify(contentData),
          headers:{ "Content-Type":"aplication/json" }
@@ -538,7 +538,7 @@ import { toast } from 'react-toastify';
   };
 
   const getNFTs = async () => {
-    await fetch('http://localhost:3000http://localhost:3000/setnft').then(res => {
+    await fetch('http://localhost:3000/api/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -548,7 +548,7 @@ import { toast } from 'react-toastify';
     })
   }
   const getUsers = async () => {
-    await fetch('http://localhost:3000http://localhost:3000/users').then(res => {
+    await fetch('http://localhost:3000/api/users').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -1549,8 +1549,8 @@ return account && (
 }
 export default Sell
 export const getServerSideProps = async (context) => {
-  const res = await fetch(`http://localhost:3000http://localhost:3000/users`)
-  const resnft = await fetch(`http://localhost:3000http://localhost:3000/setnft`)
+  const res = await fetch(`http://localhost:3000/api/users`)
+  const resnft = await fetch(`http://localhost:3000/api/setnft`)
   const userData = await res.json();
   let nftData = await resnft.json();
   nftData = nftData.reverse()

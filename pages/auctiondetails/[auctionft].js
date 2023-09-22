@@ -70,7 +70,7 @@ const AuctionNFTPage = ({param}) => {
   }, [auth.user, router]);
 
   const getNFTs = async () => {
-    await fetch('http://localhost:3000http://localhost:3000/setnft').then(res => {
+    await fetch('http://localhost:3000/api/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -176,7 +176,7 @@ const AuctionNFTPage = ({param}) => {
       duration:timestamp,
     }
 
-    const res = await fetch("http://localhost:3000http://localhost:3000/setnft", {
+    const res = await fetch("http://localhost:3000/api/setnft", {
       method: "PUT", // or 'PUT'
       headers: {
         "Content-Type": "application/json",
