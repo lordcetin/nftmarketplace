@@ -160,7 +160,7 @@ const Home = () => {
   // },[])
 
   // const socketbaslatici = async () => {
-  //   await fetch('/api/api/socketio')
+  //   await fetch('http://localhost:3000http://localhost:3000/socketio')
   //   socket = io()
 
   //   socket.on('connect', () => {
@@ -373,7 +373,7 @@ const Home = () => {
 
       console.log("nftdata",nftdata)
   
-      const res = await fetch("/api/api/setnft", {
+      const res = await fetch("http://localhost:3000http://localhost:3000/setnft", {
         method: "PUT", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -397,7 +397,7 @@ const Home = () => {
 
 
   const getNFTs = async () => {
-    await fetch('/api/api/setnft').then(res => {
+    await fetch('http://localhost:3000http://localhost:3000/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }

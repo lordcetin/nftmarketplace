@@ -117,7 +117,7 @@ const Navbar = () => {
   }, []);
 
   const allread = async () => {
-    await fetch('/api/api/notifications').then(res => {
+    await fetch('http://localhost:3000http://localhost:3000/notifications').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -143,7 +143,7 @@ const Navbar = () => {
   }
 
   useEffect(() => {
-    // fetch('/api/session').then(res => {
+    // fetch('http://localhost:3000/session').then(res => {
     //   if(!res.ok){
     //     throw new Error("HTTP ERROR")
     //   }
@@ -175,7 +175,7 @@ const Navbar = () => {
   }
 
   const getSearchNFT = async () => {
-    await fetch('/api/api/setnft').then(res => {
+    await fetch('http://localhost:3000http://localhost:3000/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }

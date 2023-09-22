@@ -221,7 +221,7 @@ const setDatabase = async () => {
   // console.log("datatype" , typeof data,data)
 
   let resclone;
-  const res = await fetch(`/api/api/register`,{
+  const res = await fetch(`http://localhost:3000http://localhost:3000/register`,{
     method: 'POST',
     headers:{
         'Content-Type': 'aplication/json',

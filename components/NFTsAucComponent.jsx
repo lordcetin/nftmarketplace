@@ -26,7 +26,7 @@ const NFTsAucComponent = ({auth,nft,buyNewMum,duration}) => {
   const [addr,setAddr] = useState("")
 
   // const handleLikesSSE = () => {
-  //   const likesSSE = new EventSource("/api/sse");
+  //   const likesSSE = new EventSource("http://localhost:3000/sse");
   //   likesSSE.onmessage = (event) => {
   //     const data = JSON.parse(event.data);
   //     // SSE'den gelen verileri kullanarak sayfadaki like sayısını güncelleyebilirsiniz.
@@ -42,7 +42,7 @@ const NFTsAucComponent = ({auth,nft,buyNewMum,duration}) => {
   },[])
 
   const getUsers = async () => {
-    await fetch('/api/api/users').then(res => {
+    await fetch('http://localhost:3000http://localhost:3000/users').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -52,7 +52,7 @@ const NFTsAucComponent = ({auth,nft,buyNewMum,duration}) => {
     })
   }
   const getNFTs = async () => {
-    await fetch('/api/api/setnft').then(res => {
+    await fetch('http://localhost:3000http://localhost:3000/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -86,7 +86,7 @@ const NFTsAucComponent = ({auth,nft,buyNewMum,duration}) => {
     const exectlike = contentnft.filter(u => u.liker == userid)
     // console.log("nftId",nftId)
     if(!exectlike.includes(userid)){
-      const res = await fetch("/api/api/likes", {
+      const res = await fetch("http://localhost:3000http://localhost:3000/likes", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -113,7 +113,7 @@ const NFTsAucComponent = ({auth,nft,buyNewMum,duration}) => {
       liker:auth?.user?.id,
       nftId:nftid
     }
-    const res = await fetch("/api/api/likes", {
+    const res = await fetch("http://localhost:3000http://localhost:3000/likes", {
     method: "DELETE", // or 'PUT'
     headers: {
       "Content-Type": "application/json",

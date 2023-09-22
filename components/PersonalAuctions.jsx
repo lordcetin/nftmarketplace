@@ -83,7 +83,7 @@ const PersonalAuctions = ({param,myauctionarr}) => {
   },[])
 
   const getNFTs = async () => {
-    await fetch('/api/api/setnft').then(res => {
+    await fetch('http://localhost:3000http://localhost:3000/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }

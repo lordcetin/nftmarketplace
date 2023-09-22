@@ -59,7 +59,7 @@ async function connectUser() {
 }
 
 const handleAdmin = async () => {
-        await fetch("/api/api/admin",{
+        await fetch("http://localhost:3000http://localhost:3000/admin",{
         method:'GET',
         headers: {
           "Content-Type":"application/json"

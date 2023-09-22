@@ -55,7 +55,7 @@ const Nftpage = () => {
 
  
   const getNFTs = async () => {
-    await fetch('/api/api/setnft').then(res => {
+    await fetch('http://localhost:3000http://localhost:3000/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -65,7 +65,7 @@ const Nftpage = () => {
     })
   }
   const getUsers = async () => {
-    await fetch('/api/api/users').then(res => {
+    await fetch('http://localhost:3000http://localhost:3000/users').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -76,7 +76,7 @@ const Nftpage = () => {
   }
 
   const getComments = async () => {
-    await fetch('/api/api/getComments').then(res => {
+    await fetch('http://localhost:3000http://localhost:3000/getComments').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -246,7 +246,7 @@ const Nftpage = () => {
     const contentnft = content.filter(u => u._id == nftId)
     const exectlike = contentnft.filter(u => u.liker == userid)
     if(!exectlike.includes(userid)){
-      const res = await fetch("/api/api/likes", {
+      const res = await fetch("http://localhost:3000http://localhost:3000/likes", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -270,7 +270,7 @@ const Nftpage = () => {
       liker:auth?.user?.id,
       nftId
     }
-    const res = await fetch("/api/api/likes", {
+    const res = await fetch("http://localhost:3000http://localhost:3000/likes", {
     method: "DELETE", // or 'PUT'
     headers: {
       "Content-Type": "application/json",
@@ -296,7 +296,7 @@ const Nftpage = () => {
       authoravatar: auth?.user?.avatar,
       comtext:input
     }
-    const res = await fetch("/api/api/comment", {
+    const res = await fetch("http://localhost:3000http://localhost:3000/comment", {
     method: "POST", // or 'PUT'
     headers: {
       "Content-Type": "application/json",
