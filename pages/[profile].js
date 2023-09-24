@@ -58,6 +58,7 @@ import { firebaseConfig } from '@/utils/firebase';
 import { RiSettings5Fill } from 'react-icons/ri'
 import Settings from './settings';
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 
  const Sell = ({userData,param,nftData}) => {
 
@@ -134,6 +135,7 @@ import { toast } from 'react-toastify';
   const [ppdata,setPPData] = useState(false);
   const [buyednft,getBuyed] = useState([]);
   const [userdatas,setUsersDatas] = useState([]);
+  const [msgdata,setMsg] = useState(false);
   const [addrs, setAddrs] = useState(null);
   const [isclick,isButtonClickable] = useState(true)
 
@@ -428,7 +430,7 @@ import { toast } from 'react-toastify';
           const bannerurl = `${subdomain}/ipfs/${added.path}`;
          setBannerFile(bannerurl)
          const contentData = {bannerurl,username}
-         await fetch('https://testnet.cos-in.com/api/update',{
+         await fetch('http://localhost:3000/api/update',{
          method:'PUT',
          body:JSON.stringify(contentData),
          headers:{ "Content-Type":"aplication/json" }
@@ -449,7 +451,7 @@ import { toast } from 'react-toastify';
       e.preventDefault();
       let desc = e.target.value
       const contentData = {desc,username}
-      await fetch('https://testnet.cos-in.com/api/update',{
+      await fetch('http://localhost:3000/api/update',{
       method:'PUT',
       body:JSON.stringify(contentData),
       headers:{ "Content-Type":"aplication/json" }
@@ -475,7 +477,7 @@ import { toast } from 'react-toastify';
           const avatarurl = `${subdomain}/ipfs/${added.path}`;
          setProfileFile(avatarurl)
          const contentData = {avatarurl,username}
-         await fetch('https://testnet.cos-in.com/api/update',{
+         await fetch('http://localhost:3000/api/update',{
          method:'PUT',
          body:JSON.stringify(contentData),
          headers:{ "Content-Type":"aplication/json" }
@@ -537,7 +539,7 @@ import { toast } from 'react-toastify';
   };
 
   const getNFTs = async () => {
-    await fetch('https://testnet.cos-in.com/api/setnft').then(res => {
+    await fetch('http://localhost:3000/api/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -547,7 +549,7 @@ import { toast } from 'react-toastify';
     })
   }
   const getUsers = async () => {
-    await fetch('https://testnet.cos-in.com/api/users').then(res => {
+    await fetch('http://localhost:3000/api/users').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -556,6 +558,24 @@ import { toast } from 'react-toastify';
       setUsersDatas(data)
     })
   }
+
+  useEffect(() => {
+    const token = Cookies.get('refreshtoken');
+    const decodedToken = jwt.decode(token);
+    const msgref = collection(db,"chats");
+    const mesg = onSnapshot(msgref, (snapshot) => {
+      const chatfetch = snapshot?.docs.map(doc => ({
+          id:doc.id,
+          ...doc.data()
+      }));
+      const setsa = chatfetch.filter(u => u.users.includes(decodedToken.email))
+      setMsg(setsa)
+  },(error) => {
+    console.log(error);
+})
+  }, []);
+
+  console.log("msgdata",msgdata)
 
   const handleMessage = async (e) => {
     e.preventDefault()
@@ -572,23 +592,32 @@ import { toast } from 'react-toastify';
     const currentUserRef = doc(db, 'users', accounts.email); //profile giren kullanıcı
     const messagedUserRef = doc(db, 'users', users.email);//mesaj atılacak kullanıcı
 
-    await addDoc(collection(db,"chats"), { users: [accounts.email, users.email] })
+    const token = Cookies.get('refreshtoken');
+    const decodedToken = jwt.decode(token);
 
-    const ref = collection(db,"chats");
+    const execttoemail = msgdata.filter(u => u.users.includes(users.email)).map(i => i.users)
+    const msgid = msgdata.filter(u => u.users.includes(users.email)).map(i => i.id)
+    console.log("msgid",msgid)
 
-    const unsubscribe = onSnapshot(ref,(snapshot) => {
-      const chatls = snapshot?.docs.map(doc => ({
-          id:doc.id,
-          ...doc.data()
-      }));
-      const chatid = chatls.filter(u => u.users.includes(accounts.email)).map(i => i.id)
-      // console.log(chatid[0])
-      //setChats(chatls)
-      router.push(`/inbox/chat/${chatid[0]}`)
-  },(error) => {
-      console.error(error);
+    if(execttoemail == false){
+      await msgadd()
+    }else{
+      router.push(`/inbox/chat/${msgid[0]}`)
+    }
+}
+
+const msgadd = async () => {
+  const token = Cookies.get('refreshtoken');
+  const decodedToken = jwt.decode(token);
+  const msgref = collection(db,"chats");
+  let addmsg = addDoc(msgref, { read:false, users: [decodedToken.email, users.email] }).then((data) => {
+
+      router.push(`/inbox/chat/${data.id}`)
+
   })
-  }
+
+}
+
 
   const usData = userdatas.filter(u => u.username == param )
 
@@ -1548,8 +1577,8 @@ return account && (
 }
 export default Sell
 export const getServerSideProps = async (context) => {
-  const res = await fetch(`https://testnet.cos-in.com/api/users`)
-  const resnft = await fetch(`https://testnet.cos-in.com/api/setnft`)
+  const res = await fetch(`http://localhost:3000/api/users`)
+  const resnft = await fetch(`http://localhost:3000/api/setnft`)
   const userData = await res.json();
   let nftData = await resnft.json();
   nftData = nftData.reverse()

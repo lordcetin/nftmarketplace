@@ -121,7 +121,7 @@ const Sidebar = () => {
         {openModal && (
           <div className="flex gap-x-2 my-2">
           <input type="email" onChange={e => setInput(e.target.value)} placeholder="Enter email of chat" className="py-1 px-3 w-52 rounded-md outline-none bg-slate-800" required/>
-          <button type="submit" onClick={newChat} className="bg-slate-800 border border-slate-700 px-5 py-1 rounded-md text-slate-400">Add</button>
+          <button type="submit" onClick={newChat} className="bg-slate-800 border border-slate-700 px-5 py-1 rounded-md text-slate-400" title="Add Chat">Add</button>
           </div>
           )}
         </div>

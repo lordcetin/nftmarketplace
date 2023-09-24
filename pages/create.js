@@ -336,7 +336,7 @@ import Head from 'next/head';
           traits:[...properties]
         }
 
-        const res = await fetch("https://testnet.cos-in.com/api/setnft", {
+        const res = await fetch("http://localhost:3000/api/setnft", {
           method: "POST", // or 'PUT'
           headers: {
             "Content-Type": "application/json",
@@ -446,7 +446,7 @@ import Head from 'next/head';
         }
         // console.log("nftdata",nftdata)
 
-        const res = await fetch("https://testnet.cos-in.com/api/setnft", {
+        const res = await fetch("http://localhost:3000/api/setnft", {
           method: "POST", // or 'PUT'
           headers: {
             "Content-Type": "application/json",

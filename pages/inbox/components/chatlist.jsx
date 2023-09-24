@@ -77,9 +77,15 @@ const Chatlist = (param) => {
         .map(chat => 
         <div className="flex w-full group/item" key={Math.random()}>
             <Link href={`/inbox/chat/${chat.id}`} className="justify-between items-center transition-all my-2 bg-slate-900 mx-3 cursor-pointer rounded-lg hover:bg-slate-800 py-5 px-3 gap-x-2 flex w-full">
+                <div className="flex justify-start items-center w-full">
                 {getOtherEmail(chat.users , user)}
-                {chat.read == false ? <span className="inline-flex items-center w-3 h-3 bg-blue-500 rounded-full animate-pulse">&nbsp;</span> : null }
-                <AiFillCloseCircle size={22} title="Remove" className="group/edit invisible text-slate-400 hover:text-white group-hover/item:visible" onClick={(e) => handleDelete(e,chat.id)}/>
+                </div>
+                <div className="flex justify-end items-center">
+                {chat.read == false ? <span className="flex items-center w-3 h-3 bg-blue-500 rounded-full animate-pulse">&nbsp;</span> : null }
+                </div>
+                <div className="flex justify-end items-center">
+                <AiFillCloseCircle size={22} title="Remove" className="group/edit hidden text-slate-400 hover:text-white group-hover/item:block" onClick={(e) => handleDelete(e,chat.id)}/>
+                </div>
             </Link>
         </div>
     )}

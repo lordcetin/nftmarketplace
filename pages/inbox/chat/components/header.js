@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import { Fragment } from "react";
 import Media from "react-media";
@@ -17,8 +18,8 @@ const Header = ({email,user}) => {
       <Fragment>
       <header className="h-[60px] border-b border-slate-800 py-4 px-5 flex items-center w-[297px]">
       <button className="flex items-center gap-x-4">
-          <img src={user?.avatar} alt={email} className="w-6 h-6 rounded-full" />
-          <h6 className="text-base font-semibold">{email}</h6>
+      <Link href={`/${user?.username}`}><img src={user?.avatar} alt={email} className="w-6 h-6 rounded-full" /></Link>
+      <Link href={`/${user?.username}`}><h6 className="text-base font-semibold">{email}</h6></Link>
       </button>
       </header>
       </Fragment>
@@ -27,8 +28,8 @@ const Header = ({email,user}) => {
       <Fragment>
       <header className="h-[60px] border-b border-slate-800 py-4 px-5 flex items-center w-[500px]">
       <button className="flex items-center gap-x-4">
-          <img src={user?.avatar} alt={email} className="w-6 h-6 rounded-full" />
-          <h6 className="text-base font-semibold">{email}</h6>
+      <Link href={`/${user?.username}`}><img src={user?.avatar} alt={email} className="w-6 h-6 rounded-full" /></Link>
+      <Link href={`/${user?.username}`}><h6 className="text-base font-semibold">{email}</h6></Link>
       </button>
       </header>
       </Fragment>
@@ -37,8 +38,8 @@ const Header = ({email,user}) => {
       <Fragment>
       <header className="h-[60px] border-b border-slate-800 py-4 px-5 flex items-center w-[700px]">
       <button className="flex items-center gap-x-4">
-          <img src={user?.avatar} alt={email} className="w-6 h-6 rounded-full" />
-          <h6 className="text-base font-semibold">{email}</h6>
+          <Link href={`/${user?.username}`}><img src={user?.avatar} alt={email} className="w-6 h-6 rounded-full" /></Link>
+          <Link href={`/${user?.username}`}><h6 className="text-base font-semibold">{email}</h6></Link>
       </button>
       </header>
       </Fragment>
