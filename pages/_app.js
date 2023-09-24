@@ -46,6 +46,7 @@ Router.events.on('routeChangeComplete',() => {
   setLoading(false)
 })
 Router.events.on('routeChangeError',() => {
+  setLoading(false)
   console.log("Router error")
 })
 
