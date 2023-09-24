@@ -11,6 +11,8 @@ import Notification from "@/models/notiSchema";
     
 //connectMongo().catch(() => res.status(405).json({error: "Error in the Connection"}))
 module.exports = async (req, res) => {
+    try {
+        await connectMongo();
     switch(req.method){
         case "POST":
             await setnft(req,res)
@@ -25,11 +27,13 @@ module.exports = async (req, res) => {
             await deleteNfts(req,res)
             break;
     }
+    } catch (error) {
+        res.status(500).json({ err: "Error in the Connection" });
+    }
 }
 const setnft = async (req,res) => {
     try {
         const { id,name,description,price,bidprice,images,createdWallet,itemId,transactionHash,tokenId,fileType,traits,tokenURI,website,username,avatar,wichNet,role,seller,owner,winner,sold,live,biddable,bids,duration } = req.body;
-        await connectMongo()
         const nftDatas = new NFT({
             id,
             itemId,

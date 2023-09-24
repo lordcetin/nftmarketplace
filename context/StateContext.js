@@ -24,7 +24,6 @@ export const StateContext = ({children}) => {
     const [fileUrl, setFileUrl] = useState(null)
     const [formInput, updateFormInput] = useState({ price: '', name: '', description: '' })
     const [contAdr,setContAddr] = useState(null);
-    const [nfts, setNfts] = useState([]);
     const [chain, getChainName] = useState([])
     const [cipher, getCipher] = useState([])
     const [rpc, getRpc] = useState([])
@@ -36,12 +35,9 @@ export const StateContext = ({children}) => {
     const [owners,setOwners] = useState([]);
     const [marketcol, getMarket] = useState([])
     const [Token, getTokenAbi] = useState([])
-    const [readData,setReadData] = useState([])
+
     const [conWallet,setConWallet] = useState(false);
 
-    useEffect(() => {
-      handleAdmin()
-    }, []);
 
 async function connectUser() {
       const web3Modal = new Web3Modal()
@@ -58,62 +54,7 @@ async function connectUser() {
       }
 }
 
-const handleAdmin = async () => {
-        await fetch("https://testnet.cos-in.com/api/admin",{
-        method:'GET',
-        headers: {
-          "Content-Type":"application/json"
-        }
-      }).then(res => {
-        if(!res.ok){
-          throw new Error("HTTP ERROR", res.status)
-        }
-        return res;
-      }).then(res => res.json()).then((data) => {
-        setReadData(data)
-      }).catch(error => console.log(error))
-      }
 
-async function getNfts(){ 
-      const options = {
-        method: 'GET',
-        url: 'https://polygon-mumbai.g.alchemy.com/nft/v2/M78G2nrd0Xjjj1KUyNfB82BZZYf_F9AT/getNFTs',
-        params: {owner: user, pageSize: '5', withMetadata: 'true'},
-        headers: {accept: 'application/json'}
-      };
-      
-      axios
-        .request(options)
-        .then(res => {
-          //console.log(res.data.ownedNfts)
-          const cdata = res.data.ownedNfts.map((n) => {
-              //console.log(n)
-              setContAddr(n.contract.address);
-            return{
-                  contractAddres:n.contract.address,
-                  tokenid:n.id.tokenId/*n.metadata.edition*/,
-                  date:n.metadata.date,
-                  description:n.metadata.description,
-                  img:n.media[0].gateway,
-                  name:n.metadata.name,
-                  totalSupply:n.contractMetadata.totalSupply,
-                  tokenUri:n.tokenUri.gateway
-                  }
-          })
-          setNfts(cdata);
-          //console.log("NFTS : ",nfts)
-        }
-        )
-        .catch(function (error) {
-          if (error.response){
-              //console.log(error.response)
-            }else if(error.request){
-              //console.log(error.request)
-            }else if(error.message){
-              //console.log(error.message)
-            }
-        }); 
-      }
 async function getOwners(){
     const options = {
         method: 'GET',
@@ -520,11 +461,8 @@ async function getChain(){
             bscTest,
             ethTest,
             polyTest,
-            nfts,
-            setNfts,
             setContAddr,
             contAdr,
-            getNfts,
             getChain,
             getOwners,
             setNftCustom,
@@ -547,7 +485,6 @@ async function getChain(){
             nftcustom, getNftCustom,
             nftresell, getNftResell,
             owners,setOwners,
-            readData
         }}>
         {children}
         </Context.Provider>

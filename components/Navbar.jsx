@@ -63,7 +63,6 @@ const Navbar = () => {
     setNfts,
     setContAddr,
     contAdr,
-    getNfts,
     getChain,
     getOwners,
     setNftResell,

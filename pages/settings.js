@@ -66,7 +66,6 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
     bscTest,
     ethTest,
     polyTest,
-    getNfts,
     getChain,
     getOwners,
     setNftResell,

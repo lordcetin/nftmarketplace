@@ -30,7 +30,6 @@ const CreatedNftCard = ({datas,param}) => {
     bscTest,
     ethTest,
     polyTest,
-    getNfts,
     getChain,
     getOwners,
     setNftResell,

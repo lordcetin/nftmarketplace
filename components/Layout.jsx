@@ -107,13 +107,10 @@ const Layout = ({children}) => {
     }
     <Notify/>
     <main className={router.pathname == '/register' ? 'flex justify-center items-center w-full'
-    : router.pathname == '/admin/edit' ? 'w-full'
     : router.pathname == '/inbox' ? 'w-full px-3'
     : router.pathname == '/create' ? 'w-full px-3 my-28'
     : router.pathname == '/inbox/chat' ? 'w-full'
     : router.pathname == '/inbox/chat/[conversationId]' ? 'w-full px-3'
-    : router.pathname == '/admin/users' ? 'w-full'
-    : router.pathname == '/admin/posts' ? 'w-full'
     : router.pathname == '/[profile]' ? 'w-full'
     : router.pathname == '/notification' ? 'w-full px-3'
     : router.pathname == '/' ? 'w-full'
@@ -172,13 +169,10 @@ const Layout = ({children}) => {
     }
     <Notify/>
     <main className={router.pathname == '/register' ? 'flex justify-center items-center w-full'
-    : router.pathname == '/admin/edit' ? 'w-full'
     : router.pathname == '/inbox' ? 'w-full px-3'
     : router.pathname == '/create' ? 'w-full px-3 my-28'
     : router.pathname == '/inbox/chat' ? 'w-full'
     : router.pathname == '/inbox/chat/[conversationId]' ? 'w-full px-3'
-    : router.pathname == '/admin/users' ? 'w-full'
-    : router.pathname == '/admin/posts' ? 'w-full'
     : router.pathname == '/[profile]' ? 'w-full'
     : router.pathname == '/notification' ? 'w-full px-3'
     : router.pathname == '/' ? 'w-full'
@@ -242,7 +236,6 @@ const Layout = ({children}) => {
     : router.pathname == '/inbox/chat' ? 'w-full'
     : router.pathname == '/inbox/chat/[conversationId]' ? 'w-full px-7'
     : router.pathname == '/[profile]' ? 'w-full'
-    : router.pathname == '/admin/posts' ? 'w-full'
     : router.pathname == '/register' ? 'w-full'
     : router.pathname == '/login' ? 'w-full'
     : router.pathname == '/academy' ? 'flex justify-center items-center w-full'

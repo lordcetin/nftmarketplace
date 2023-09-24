@@ -73,7 +73,6 @@ import { toast } from 'react-toastify';
     bscTest,
     ethTest,
     polyTest,
-    getNfts,
     getChain,
     getOwners,
     setNftResell,

@@ -54,7 +54,6 @@ import Head from 'next/head';
       setNfts,
       setContAddr,
       contAdr,
-      getNfts,
       getChain,
       getOwners,
       setNftCustom,
