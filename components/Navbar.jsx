@@ -116,7 +116,7 @@ const Navbar = () => {
   }, []);
 
   const allread = async () => {
-    await fetch('http://localhost:3000/api/notifications').then(res => {
+    await fetch('https://testnet.cos-in.com/api/notifications').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
@@ -142,7 +142,7 @@ const Navbar = () => {
   }
 
   useEffect(() => {
-    // fetch('http://localhost:3000/api//session').then(res => {
+    // fetch('https://testnet.cos-in.com/api//session').then(res => {
     //   if(!res.ok){
     //     throw new Error("HTTP ERROR")
     //   }
@@ -174,7 +174,7 @@ const Navbar = () => {
   }
 
   const getSearchNFT = async () => {
-    await fetch('http://localhost:3000/api/setnft').then(res => {
+    await fetch('https://testnet.cos-in.com/api/setnft').then(res => {
       if(!res.ok){
         throw new Error("HTTP ERROR",res.status)
       }
