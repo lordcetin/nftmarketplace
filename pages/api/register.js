@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
           })
       
           await newUser.save();
-          res.json({message: "Hello, World!"})
+
           res.json({
             msg:"Register Success!"
           })

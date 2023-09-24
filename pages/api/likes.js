@@ -41,7 +41,7 @@ const getLike = async (req,res) => {
     //       console.log('a user connected');
     // });
         res.status(200).json(like)
-        res.json({message: "Hello, World!"})
+
     } catch (error) {
         res.status(500).json({msg:error})
     }
@@ -93,10 +93,10 @@ const setlike = async (req,res) => {
                 // io.sockets.emit('likeUpdated', nftId);
     
                 res.status(200).json({ msg: `${user.username} liked your nft.` });
-                res.json({message: "Hello, World!"})
+
             }
         }
-        res.json({message: "Hello, World!"})
+
     } catch (err) {
         return res.status(500).json({err: err.message})
     }

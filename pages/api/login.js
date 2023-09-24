@@ -40,7 +40,7 @@ const login = async (req,res) => {
       
         const accessToken = createAccessToken({id: user._id, username:user.username , email:user.email, phone:user.phone})
         const refreshtoken = createRefreshToken({id: user._id , username:user.username , email:user.email, phone:user.phone})
-        res.json({message: "Hello, World!"})
+
         res.status(201).json({ 
             msg: "Login Success",
             refreshtoken,

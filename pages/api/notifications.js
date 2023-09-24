@@ -41,7 +41,7 @@ const updateNotify = async (req,res) => {
         doc.save();
 
         res.status(201).json({msg:"Read status changed"})
-        res.json({message: "Hello, World!"})
+
         
     } catch (error) {
         res.status(500).json(error)
