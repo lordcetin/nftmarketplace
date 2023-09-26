@@ -120,7 +120,7 @@ const BuyedNftCard = ({param,datas,addrs}) => {
 
   return (
     <div>
-    <div className='grid grid-cols-1 sm:grid-cols-5 md:grid-cols-3 gap-5'>
+    <div className='grid grid-cols-1 sm:grid-cols-4 md:grid-cols-3 gap-5'>
     {datas.filter(u => u.sold == true && u.resell == false && u.username == param && u.owner == user.toLowerCase()).map((i,k) =>
       <div key={k} className="w-[300px] text-slate-400  border-slate-800 border-r-slate-700 rounded-xl bg-gradient-to-tr to-slate-600 from-slate-900 overflow-hidden border-2 ">
       <div>

@@ -250,7 +250,7 @@ const CreatedNftCard = ({datas,param}) => {
           }
           {matches.large &&
             <Fragment>
-            <div className='grid grid-cols-5 gap-4'>
+            <div className='grid grid-cols-4 gap-4'>
               {datas.filter(u => u.username == param && !u.duration /*&& u.seller == user*/).map((nft,k) => (
                 <div key={k} className="w-[300px] border-slate-800 relative hover:bottom-2 border-2 bg-gradient-to-tr to-slate-600 from-slate-900 border-r-slate-700 rounded-xl overflow-hidden ">
                 <div className='flex items-center w-full absolute top-0'>
