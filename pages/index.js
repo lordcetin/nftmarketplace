@@ -910,7 +910,7 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
 
   {/************* FILTER & CHAINS **********************/}
   {openFilter &&
-    <div className='bg-slate-900 fixed w-full h-full top-0 left-0 z-[60] overflow-scroll'>
+    <div className='bg-slate-900 fixed w-full h-full top-0 left-0 z-[999] overflow-scroll'>
     <div className='flex-col w-full h-full text-slate-400'>
   
      <div className='flex justify-between items-center my-3 w-full'>
@@ -1015,6 +1015,7 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
     <div className='flex-col'>
   
       <div className='flex py-3 px-10 bg-gradient-to-t to-slate-900 from-transparent rounded-xl justify-center items-center mt-7 mb-10 gap-x-1'>
+      <FaFilter size={18} className="cursor-pointer z-30 hover:opacity-50" onClick={() => setOpenFilter(!openFilter)}/>
         <div className='flex justify-center items-center gap-x-5 z-[998]'>
           <h3 className={lanft ? 'text-blue-500 border-b-2 border-blue-500 text-xl p-1 cursor-pointer':'p-1 text-slate-400 text-xl cursor-pointer hover:border-b-2 hover:border-slate-400'} onClick={() => {setLaNft(true),setLaAuc(false)}}>Latest NFT's</h3><span className='text-3xl font-thin text-slate-400'>|</span><h3 className={laauc ? 'text-blue-500 text-xl border-b-2 border-blue-500 p-1 cursor-pointer':'p-1 text-slate-400 text-xl cursor-pointer hover:border-b-2 hover:border-slate-400'} onClick={() => {setLaAuc(true),setLaNft(false)}}>Latest Auctions</h3>
         </div>
@@ -1234,98 +1235,104 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
   <div className='flex justify-between w-full'>
 
   {/************* FILTER & CHAINS **********************/}
-  <div className='flex-col mx-3 mt-16 mb-60 w-[350px] h-screen text-slate-400 bg-slate-900 rounded-xl border-2 border-slate-800'>
-
-   <div className='flex justify-center items-center my-3 relative left-10'>
-      {/*<ConnectChain/>*/}
+  {openFilter &&
+    <div className='bg-slate-900 fixed w-full h-full top-0 left-0 z-[999] overflow-scroll'>
+    <div className='flex-col w-full h-full text-slate-400'>
+  
+     <div className='flex justify-between items-center my-3 w-full'>
+        <div className='px-1'><MdClose size={30} className="cursor-pointer hover:opacity-50" onClick={() => setOpenFilter(false)}/></div>
+        {/*<div className='w-full justify-center items-center text-center'><center><ConnectChain/></center></div>*/}
+      </div>
+  
+     <div className='border-[1px] border-slate-800'></div>
+    <div className='flex justify-center'>
+      <h1 className='text-lg font-bold my-3'>Filter</h1>
     </div>
-
-   <div className='border-[1px] border-slate-800'></div>
-  <div className='flex justify-center'>
-    <h1 className='text-lg font-bold my-3'>Filter</h1>
-  </div>
-<div className='grid gap-y-3'>
-  {/* RESET */}
-  <div className='flex-col mx-4'>
-  <div className='bg-slate-800 rounded-lg w-full py-3 px-3 cursor-pointer' onClick={() => {setCheckImage(true),setCheckVideo(true),setCheckMusic(true),setLowCheckPrice(false),setHighCheckPrice(false),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false)}}>
-  <span className='text-center font-bold antialiased flex justify-center items-center cursor-pointer' onClick={() => {setCheckImage(true),setCheckVideo(true),setCheckMusic(true),setLowCheckPrice(false),setHighCheckPrice(false),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false)}} >All</span>
-  </div>
-  </div>
-
-  {/* PRICE */}
-  <div className='flex-col mx-4'>
-    <div className='bg-slate-800 rounded-lg w-full px-3 py-3 cursor-pointer' onClick={() => setOpenPrice(!openPrice)}>
-    <h5 className='text-center font-bold antialiased flex justify-center items-center'>Price {!openPrice ?<MdKeyboardArrowDown size={28} className="relative left-[85px]"/>:<MdKeyboardArrowUp size={28} className="relative left-[85px]"/>}</h5>
+  <div className='grid gap-y-3'>
+    {/* RESET */}
+    <div className='flex-col mx-4'>
+    <div className='bg-slate-800 rounded-lg w-full py-3 px-3 cursor-pointer' onClick={() => {setCheckImage(true),setCheckVideo(true),setCheckMusic(true),setLowCheckPrice(false),setHighCheckPrice(false),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false)}}>
+    <span className='text-center font-bold antialiased flex justify-center items-center cursor-pointer' onClick={() => {setCheckImage(true),setCheckVideo(true),setCheckMusic(true),setLowCheckPrice(false),setHighCheckPrice(false),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false)}} >All</span>
     </div>
-    {openPrice &&
-      <div className='bg-slate-800 flex-col relative bottom-4 py-3 px-3 rounded-lg'>
-      <div className='grid flex-col items-center my-3 gap-y-2'>
-      <button type='button' className='rounded bg-slate-700 px-3 py-2 w-full flex items-center justify-center gap-x-3' onClick={() => {setLowCheckPrice(!lowprice),setHighCheckPrice(false),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}} >{lowprice ? <AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}Low to High</button>
-      <button type='button' className='rounded bg-slate-700 px-3 py-2 w-full flex items-center justify-center gap-x-3' onClick={() => {setHighCheckPrice(!highprice),setLowCheckPrice(false),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}} >{highprice ? <AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}High to Low</button>
+    </div>
+  
+    {/* PRICE */}
+    <div className='flex-col mx-4'>
+      <div className='bg-slate-800 rounded-lg w-full px-3 py-3 cursor-pointer' onClick={() => setOpenPrice(!openPrice)}>
+      <div className='flex justify-between items-center w-full'><div className='w-full'><h5 className='justify-center text-center font-bold antialiased items-center'>Price</h5></div><div>{!openPrice ?<MdKeyboardArrowDown size={28}/>:<MdKeyboardArrowUp size={28}/>}</div></div>
+      </div>
+      {openPrice &&
+        <div className='bg-slate-800 flex-col relative bottom-4 py-3 px-3 rounded-lg'>
+        <div className='grid flex-col items-center my-3 gap-y-2'>
+        <button type='button' className='rounded bg-slate-700 px-3 py-2 w-full flex items-center justify-center gap-x-3' onClick={() => {setLowCheckPrice(!lowprice),setHighCheckPrice(false),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}} >{lowprice ? <AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}Low to High</button>
+        <button type='button' className='rounded bg-slate-700 px-3 py-2 w-full flex items-center justify-center gap-x-3' onClick={() => {setHighCheckPrice(!highprice),setLowCheckPrice(false),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}} >{highprice ? <AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}High to Low</button>
+        </div>
+        </div>
+    }
+    </div>
+  
+    {/* VERIFY */}
+    <div className='flex-col mx-4'>
+    <div className='bg-slate-800 rounded-lg w-full py-3 px-3 cursor-pointer' onClick={() => setOpenVerify(!openVerify)}>
+      <div className='justify-between items-center w-full flex'><div className='w-full'><h5 className='text-center font-bold antialiased justify-center items-center'>Verify </h5></div><div>{!openVerify ? <MdKeyboardArrowDown size={28}/>:<MdKeyboardArrowUp size={28}/>}</div></div>
+    </div>
+    {openVerify &&
+      <div className='bg-slate-800 rounded-lg relative bottom-4 py-3 px-3'>
+      <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setVerifiedArtist(!verifiedartist),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false),setLowCheckPrice(false),setHighCheckPrice(false)}}>
+      <div className='flex items-center justify-center gap-x-2'>{verifiedartist ? <AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Verified Artists</h5>
+      </div>
+      <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setVerifiedSeller(!verifiedseller),setVerifiedArtist(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false),setLowCheckPrice(false),setHighCheckPrice(false)}}>
+      <div className='flex items-center justify-center gap-x-2'>{verifiedseller ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Verified Sellers</h5>
       </div>
       </div>
+    }
+    </div>
+  
+    {/*NETWORK*/}
+    <div className='flex-col mx-4'>
+    <div className='bg-slate-800 rounded-lg w-full py-3 px-3 cursor-pointer' onClick={() => setOpenNetwork(!openNetwork)} >
+      <div className='flex justify-between items-center w-full'><div className='w-full'><h5 className='text-center font-bold antialiased flex justify-center items-center'>Networks</h5></div><div>{!openNetwork ?<MdKeyboardArrowDown size={28} />:<MdKeyboardArrowUp size={28}/>}</div></div>
+    </div>
+    {openNetwork &&
+      <div className='bg-slate-800 relative bottom-4 rounded-lg py-3 px-3'>  
+      <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setEthereum(!eth),setVerifiedArtist(false),setVerifiedSeller(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}}>
+      <div className='flex items-center justify-center gap-x-2'>{eth ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Ethereum</h5>
+      </div>
+      <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setPolygon(!poly),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}}>
+      <div className='flex items-center justify-center gap-x-2'>{poly ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Polygon</h5>
+      </div>
+      <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setBinance(!bsc),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}}>
+      <div className='flex items-center justify-center gap-x-2'>{bsc ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Binance</h5>
+      </div>
+      </div>
+    }
+    </div>
+  
+    {/*IMAGE,VIDEO,MUSIC*/}
+    <div className='flex-col mx-4'>
+    <div className='bg-slate-800 rounded-lg w-full py-3 px-3 cursor-pointer' onClick={() => setOpenNft(!openNft)}>
+      <div className='flex justify-between items-center w-full'><div className='w-full'><h5 className='text-center font-bold antialiased justify-center items-center'>NFT's</h5></div><div>{!openNft ?<MdKeyboardArrowDown size={28}/>:<MdKeyboardArrowUp size={28}/>}</div></div>
+    </div>
+    {openNft &&
+      <div className='bg-slate-800 relative bottom-3 py-3 px-3 rounded-lg'>
+      <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setCheckImage(!checkImage),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false)}}>
+      <div className='flex items-center justify-center gap-x-2'>{checkImage ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Image</h5>
+      </div>
+      <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setCheckVideo(!checkVideo),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckImage(false),setCheckMusic(false)}}>
+      <div className='flex items-center justify-center gap-x-2'>{checkVideo ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Video</h5>
+      </div>
+      <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setCheckMusic(!checkMusic),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckImage(false)}}>
+      <div className='flex items-center justify-center gap-x-2'>{checkMusic ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Music</h5>
+      </div>
+      </div>
+    }
+    </div>
+  
+  </div>
+  
+  </div>
+  </div>
   }
-  </div>
-
-  {/* VERIFY */}
-  <div className='flex-col mx-4'>
-  <div className='bg-slate-800 rounded-lg w-full py-3 px-3 cursor-pointer' onClick={() => setOpenVerify(!openVerify)}>
-  <h5 className='text-center font-bold antialiased flex justify-center items-center'>Verify {!openVerify ?<MdKeyboardArrowDown size={28} className="relative left-20"/>:<MdKeyboardArrowUp size={28} className="relative left-20"/>}</h5>
-  </div>
-  {openVerify &&
-    <div className='bg-slate-800 rounded-lg relative bottom-4 py-3 px-3'>
-    <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setVerifiedArtist(!verifiedartist),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false),setLowCheckPrice(false),setHighCheckPrice(false)}}>
-    <div className='flex items-center justify-center gap-x-2'>{verifiedartist ? <AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Verified Artists</h5>
-    </div>
-    <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setVerifiedSeller(!verifiedseller),setVerifiedArtist(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false),setLowCheckPrice(false),setHighCheckPrice(false)}}>
-    <div className='flex items-center justify-center gap-x-2'>{verifiedseller ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Verified Sellers</h5>
-    </div>
-    </div>
-  }
-  </div>
-
-  {/*NETWORK*/}
-  <div className='flex-col mx-4'>
-  <div className='bg-slate-800 rounded-lg w-full py-3 px-3 cursor-pointer' onClick={() => setOpenNetwork(!openNetwork)} >
-  <h5 className='text-center font-bold antialiased flex justify-center items-center'>Networks {!openNetwork ?<MdKeyboardArrowDown size={28} className="relative left-[65px]"/>:<MdKeyboardArrowUp size={28} className="relative left-[65px]"/>}</h5>
-  </div>
-  {openNetwork &&
-    <div className='bg-slate-800 relative bottom-4 rounded-lg py-3 px-3'>  
-    <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setEthereum(!eth),setVerifiedArtist(false),setVerifiedSeller(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}}>
-    <div className='flex items-center justify-center gap-x-2'>{eth ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Ethereum</h5>
-    </div>
-    <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setPolygon(!poly),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setBinance(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}}>
-    <div className='flex items-center justify-center gap-x-2'>{poly ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Polygon</h5>
-    </div>
-    <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setBinance(!bsc),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}}>
-    <div className='flex items-center justify-center gap-x-2'>{bsc ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Binance</h5>
-    </div>
-    </div>
-  }
-  </div>
-
-  {/*IMAGE,VIDEO,MUSIC*/}
-  <div className='flex-col mx-4'>
-  <div className='bg-slate-800 rounded-lg w-full py-3 px-3 cursor-pointer' onClick={() => setOpenNft(!openNft)}>
-  <h5 className='text-center font-bold antialiased flex justify-center items-center'>NFT's {!openNft ?<MdKeyboardArrowDown size={28} className="relative left-20"/>:<MdKeyboardArrowUp size={28} className="relative left-20"/>}</h5>
-  </div>
-  {openNft &&
-    <div className='bg-slate-800 relative bottom-3 py-3 px-3 rounded-lg'>
-    <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setCheckImage(!checkImage),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckMusic(false)}}>
-    <div className='flex items-center justify-center gap-x-2'>{checkImage ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Image</h5>
-    </div>
-    <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setCheckVideo(!checkVideo),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckImage(false),setCheckMusic(false)}}>
-    <div className='flex items-center justify-center gap-x-2'>{checkVideo ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Video</h5>
-    </div>
-    <div className='flex items-center gap-x-2 my-2 mx-2 cursor-pointer' onClick={() => {setCheckMusic(!checkMusic),setVerifiedArtist(false),setVerifiedSeller(false),setEthereum(false),setPolygon(false),setBinance(false),setCheckVideo(false),setCheckImage(false)}}>
-    <div className='flex items-center justify-center gap-x-2'>{checkMusic ?<AiFillCheckCircle size={18} className="text-blue-500"/>:<MdRadioButtonUnchecked size={18}/>}</div><h5>Music</h5>
-    </div>
-    </div>
-  }
-  </div>
-
-</div>
-  </div>
   
   {/***************** NFTs ****************************/}
 <div className='flex-col justify-end items-center w-full'>
@@ -1334,6 +1341,7 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
     <div className='flex-col'>
   
       <div className='flex py-3 px-10 bg-gradient-to-t to-slate-900 from-transparent rounded-xl justify-center items-center mt-7 mb-10 gap-x-1'>
+      <FaFilter size={18} className="cursor-pointer z-30 hover:opacity-50" onClick={() => setOpenFilter(!openFilter)}/>
         <div className='flex justify-center items-center gap-x-5 z-[998]'>
           <h3 className={lanft ? 'text-blue-500 border-b-2 border-blue-500 text-xl p-1 cursor-pointer':'p-1 text-slate-400 text-xl cursor-pointer hover:border-b-2 hover:border-slate-400'} onClick={() => {setLaNft(true),setLaAuc(false)}}>Latest NFT's</h3><span className='text-3xl font-thin text-slate-400'>|</span><h3 className={laauc ? 'text-blue-500 text-xl border-b-2 border-blue-500 p-1 cursor-pointer':'p-1 text-slate-400 text-xl cursor-pointer hover:border-b-2 hover:border-slate-400'} onClick={() => {setLaAuc(true),setLaNft(false)}}>Latest Auctions</h3>
         </div>
@@ -1342,7 +1350,7 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
 <div className='pb-60'>
   
 {/*LIVE*/}
-<div className='grid grid-cols-5 gap-5'>
+<div className='grid grid-cols-4 gap-4'>
 {datas.filter(u => u.live == true && u.duration + "000" > Date.now()).reverse().map((nft) => (
   <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
 ))}
