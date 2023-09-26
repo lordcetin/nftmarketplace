@@ -1053,7 +1053,7 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
     </p>
   }
   >
-<div className='grid grid-cols-2 gap-3'>
+<div className='grid grid-cols-3 gap-3'>
 {datas.filter(u => !u.duration).reverse().map((nft) => (
   <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
 ))}
