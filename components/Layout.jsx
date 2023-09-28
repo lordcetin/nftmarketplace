@@ -129,7 +129,7 @@ const Layout = ({children}) => {
     }
     {mathes.medium &&
       <Fragment>
-      {nowallet ?
+      {/*nowallet ?
         <div className="flex fixed justify-center items-center w-screen h-screen z-[9999] backdrop-blur-lg">
         {!user.length ? null : <AiOutlineClose onClick={() => setNoWallet(false)} size={22} className="z-[999] text-white font-bold border border-white rounded-full absolute top-5 right-5 w-12 h-12 p-1 hover:animate-spin hover:cursor-pointer"/>}
         <div className="flex-col transition-all duration-300 ease-out grid gap-y-5 justify-center items-center w-[530px] rounded-xl bg-white text-slate-950 p-10 z-50 shadow-xl shadow-slate-950 text-justify">
@@ -160,7 +160,7 @@ const Layout = ({children}) => {
         </div>
         </div>
         </div>
-        : null }
+    : null */}
     <div className=" scrollbar-thumb-slate-900 scrollbar-thin scrollbar-thumb-rounded-full scroll-smooth">
     {router.pathname == '/login' ? null
     : router.pathname == '/register' ? null
@@ -190,7 +190,7 @@ const Layout = ({children}) => {
     }
     {mathes.large &&
       <Fragment>
-      {nowallet ?
+      {/*nowallet ?
         <div className="flex-col grid fixed justify-center items-center w-screen h-screen z-[9999] backdrop-blur-lg">
 
         {!user.length ? null : <AiOutlineClose onClick={() => setNoWallet(false)} size={22} className="z-[999] text-white font-bold border border-white rounded-full absolute top-5 right-5 w-12 h-12 p-1 hover:animate-spin hover:cursor-pointer"/>}
@@ -223,7 +223,7 @@ const Layout = ({children}) => {
         </div>
         </div>
         </div>
-        : null }
+    : null */}
     <div className=" scrollbar-thumb-slate-900 scrollbar-thin scrollbar-thumb-rounded-full scroll-smooth">
     {router.pathname == '/login' ? null
     : router.pathname == '/register' ? null
