@@ -12,6 +12,7 @@ import connectMongo from '../../connectMongo/connectMongo'
  */
 
 module.exports = async (req, res) => {
+  await connectMongo()
   switch(req.method){
     case "POST":
       await register(req,res)
@@ -25,10 +26,10 @@ module.exports = async (req, res) => {
     // const db = client.db();
     // const usersCollection = db.collection("users");
   
-    const { username, email,phone,sms,password, confPass,walletAddress,description } = JSON.parse(req.body);
+    const { username, email,phone,sms,password,confPass,walletAddress,description } = JSON.parse(req.body);
     // console.log("register type",typeof req.body)
     // console.log("req",req.body)
-    await connectMongo()
+    
     // const errMsg = valid(username, email, password, confPass)
     // if(errMsg) return res.status(400).json({err: errMsg})
 
@@ -45,7 +46,7 @@ module.exports = async (req, res) => {
           // console.log("bcrypt hash",hash)
 
           const newUser = new Users({
-            username,email,phone:'+'+phone,sms,password:hash,description,instagram:'https://instagram.com',twitter,walletAddress,liked:[],commended:[],nfts:[],createdAt:Date.now()
+            username,email,phone:'+'+phone,sms,password:hash,description,walletAddress,liked:[],commended:[],nfts:[],createdAt:Date.now()
           })
       
           await newUser.save();
@@ -60,6 +61,6 @@ module.exports = async (req, res) => {
 
   } catch (error) {
       res.json(error)
-      console.error(error)
+      return res.status(400).json({err:err.message})
   }
 }
