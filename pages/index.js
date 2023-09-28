@@ -68,6 +68,11 @@ import { IoIosArrowDroprightCircle } from 'react-icons/io'
 // let socket
 // import EventSource from 'eventsource';
 import TypewriterComponent from "typewriter-effect";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/effect-cards';
+import { EffectCards } from 'swiper/modules';
+// const swiper = new Swiper(...);
 
 const Home = () => {
   const [hhnfts, hhsetNfts] = useState([])
@@ -85,9 +90,10 @@ const Home = () => {
   const [usertok,setToken] = useState(null);
   const [lowprice,setLowCheckPrice] = useState(false);
   const [highprice,setHighCheckPrice] = useState(false);
-  const [checkImage,setCheckImage] = useState(true);
-  const [checkVideo,setCheckVideo] = useState(true);
-  const [checkMusic,setCheckMusic] = useState(true);
+  const [checkImage,setCheckImage] = useState(false);
+  const [checkVideo,setCheckVideo] = useState(false);
+  const [checkMusic,setCheckMusic] = useState(false);
+  const [all,setCheckAll] = useState(true);
   const [eth,setEthereum] = useState(false);
   const [poly,setPolygon] = useState(false);
   const [bsc,setBinance] = useState(false);
@@ -116,8 +122,6 @@ const Home = () => {
   const [messages,setMessages] = useState([]);
   const [messageInput,setMessageInput] = useState('');
   const [input,setInput] = useState('');
-
-
 
   const router = useRouter();
   const usersa = useSelector(state => state.auth.user)
@@ -395,7 +399,6 @@ const Home = () => {
     }
   }
 
-
   const getNFTs = async () => {
     await fetch('https://testnet.cos-in.com/api/setnft').then(res => {
       if(!res.ok){
@@ -453,7 +456,7 @@ const Home = () => {
 
   <div className='z-10 w-full h-full overflow-hidden object-cover'>
       {/*<Image src={welcome} alt="Welcome" className='w-screen h-screen absolute object-cover mix-blend-overlay'/>*/}
-      <div className='white-glassmorphism w-11/12 h-[712px] absolute object-cover top-20 z-0'>&nbsp;</div>
+
   </div>
 
   <div className='flex-col'>
@@ -540,7 +543,6 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
 </div>
 </div>
         </div>
-
       </div>
       
       <div className='flex justify-center items-center'>
@@ -581,7 +583,7 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
               {nft.fileType == 'video/mp4'
               ? <video src={nft.images} className="w-full h-[250px] bg-transparent" autoPlay muted loop/>
               : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp' ? <img src={nft.images} className="w-full h-[296px] rounded-lg object-cover bg-transparent" />
-              : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nftname={nft.name} nftid={nft.id} nft={nft.images}/> : null
+              : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nftname={nft.name} nftcover={nft.cover} nftid={nft.id} nft={nft.images}/> : null
               }
               <div className='relative top-5 bg-slate-50 px-3 rounded-lg opacity-90 w-full'>
                 <div className='flex-col items-center'>
@@ -756,9 +758,9 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
 <div className="w-full welcomebg antialiased">
 <div className='z-10 w-full h-full overflow-hidden object-cover flex justify-center items-center'>
   {/*<Image src={welcome} alt="Welcome" className='w-screen h-screen absolute object-cover mix-blend-overlay'/>*/}
-  <div className='white-glassmorphism w-11/12 h-[712px] absolute object-cover top-20 z-0'>&nbsp;</div>
+  <div className='white-glassmorphism w-11/12 h-[500px] absolute object-cover top-20 z-0'>&nbsp;</div>
 </div>
-  <div className='py-28 my-20 '>
+  <div className='py-10 my-20 '>
       <div className='flex justify-between items-center'>
       <div className='flex-col grid justify-start items-center ml-10 w-[400px]'>
       <span className='hidden'>tesdat</span>
@@ -827,8 +829,9 @@ onInit={(typewriter) => {
 />
 </div>
 <div className='text-xs text-justify mt-2 text-slate-400 w-72*'>
-Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or buyers. Ask your friends for likes and comments on your NFTs. Moreover, 10% artist royalty is waiting for you. More features like this are waiting for you in the world of Cosmeta NFT Marketplace.
-
+Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or buyers.
+Ask your friends for likes and comments on your NFTs. Moreover, 10% artist royalty is waiting for you.
+More features like this are waiting for you in the world of Cosmeta NFT Marketplace.
 </div>
 </div>
 <div className='flex justify-end items-center w-full'>
@@ -838,70 +841,44 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
       </div>
       
         <div className='flex justify-end items-center w-[550px]'>
-        <span className='hidden'>test</span>
-          <Container xs>
-          <span className='hidden'>test</span>
-          <Carousel
-            additionalTransfrom={0}
-            autoPlaySpeed={3000}
-            autoPlay={true}
-            centerMode={false}
-            className="overflow-hidden"
-            containerClass="container-padding-bottom"
-
-            dotListClass=""
-            draggable={true}
-            focusOnSelect={false}
-            itemClass=""
-            minimumTouchDrag={80}
-            pauseOnHover
-            renderArrowsWhenDisabled={false}
-            renderButtonGroupOutside
-            renderDotsOutside={false}
-            rewind={false}
-            rewindWithAnimation={false}
-            rtl={false}
-            shouldResetAutoplay
-            showDots={false}
-            sliderClass=""
-            slidesToSlide={1}
-            swipeable
-            responsive={responsive}
-            ssr={true}
-            infinite={true}
-            keyBoardControl={true}
-            transitionDuration={800}
-            removeArrowOnDeviceType={["tablet", "mobile"]}>
-            <span className='hidden'>test</span>
-            {datas.filter(i => i.live == true && i.duration + "000" > Date.now()).reverse().map((nft) => {
+              <Swiper
+                effect={'cards'}
+                grabCursor={true}
+                modules={[EffectCards]}
+                className="mySwiper w-[300px] h-[293px]"
+              >
+              <>
+              {datas.filter(i => i.live == true && i.duration + "000" > Date.now()).reverse().map((nft) => {
               
-              return (
-              <div key={nft.id}>
-              {nft.fileType == 'video/mp4'
-              ? <video src={nft.images} className="w-[400px] h-[393px] mt-12 ml-12 bg-transparent object-cover rounded-xl" autoPlay muted loop/>
-              : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp' ? <img src={nft.images} className="w-[450px] h-[393px] object-cover ml-12 bg-transparent rounded-xl" />
-              : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftname={nft.name}/> : null
-              }
-              <div className='relative bottom-24 left-14 bg-slate-50 px-3 pb-3 rounded-xl opacity-90 w-96'>
-                <div className='flex justify-between items-center'>
-                    <div className='flex-col justify-start items-center p-2'>
-                        <h1 className='text-lg font-bold text-slate-800' key={uid}>{nft.name}</h1>
-                        <h1 className='text-lg font-bold text-purple-500 flex items-center gap-x-1'>{nft.avatar ? <img src={nft.avatar} className="rounded-full w-3 mr-1"/>:null}{!nft.username == "" ? nft.username : user.slice(0,11) + '...'} {nft.verified == 'verified' ? <MdVerified size={18}/>: null}</h1>
+                return (
+                  <SwiperSlide>
+                    <div key={Math.random()}>
+                    {nft.fileType == 'video/mp4'
+                    ? <video src={nft.images} className="w-[300px] h-[293px] bg-transparent rounded-xl object-cover" autoPlay muted loop/>
+                    : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img src={nft.images} className="w-[300px] h-[293px] object-cover bg-transparent rounded-xl" />
+                    : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftid={nft._id} nftname={nft.name} slidermode={true}/> : null
+                    }
+                    <div className='relative bottom-[92px] bg-slate-50 px-3 pb-3 rounded-xl opacity-90 w-full'>
+                      <div className='flex justify-between items-center'>
+                          <div className='flex-col justify-start items-center p-2'>
+                              <h1 className='text-sm font-bold text-slate-800'>{nft.name}</h1>
+                              <h1 className='text-sm font-bold text-purple-500 flex items-center gap-x-1'>{nft.avatar ? <img src={nft.avatar} className="rounded-full w-3 mr-1"/>:null}{!nft.username == "" ? nft.username : user.slice(0,11) + '...'} {nft.verified == 'verified' ? <MdVerified size={18}/>: null}</h1>
+                          </div>
+                        <div onMouseOver={() => setHoverBid(true)} onMouseOut={() => setHoverBid(false)} className={hoverBid ? 'flex cursor-pointer bg-gradient-to-tr to-yellow-500 from-orange-600 text-center justify-center items-center px-7 rounded-md font-bold text-slate-600 w-28' : 'flex justify-end items-center px-3 rounded-md font-bold text-slate-600 bg-slate-300 w-38'}>
+                          <Link href={`/placebid/${nft.id}`}><h1 className={hoverBid ? 'font-bold text-xs flex text-center justify-center items-center my-2 px-7' : 'font-bold text-xs flex items-center gap-x-2 my-2 text-slate-500'}>{hoverBid ? "Bid" : nft.price} {hoverBid ? null : "CRI"}{hoverBid ? null : <img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-6' />}</h1></Link>
+                        </div>
+                        </div>
+                        <div className='flex flex-col text-xs justify-between items-center w-full gap-x-2'>
+                          <CountdownWhite timestamp={nft.duration + '000'}/>
+                        </div>
+                      </div>
                     </div>
-                  <div onMouseOver={() => setHoverBid(true)} onMouseOut={() => setHoverBid(false)} className={hoverBid ? 'flex cursor-pointer bg-gradient-to-tr to-yellow-500 from-orange-600 text-center justify-center items-center px-7 rounded-md font-bold text-slate-600 w-28' : 'flex justify-end items-center px-3 rounded-md font-bold text-slate-600 bg-slate-300 w-38'}>
-                    <Link href={`/placebid/${nft.id}`}><h1 className={hoverBid ? 'font-bold text-lg flex text-center justify-center items-center my-2 px-12' : 'font-bold text-lg flex items-center gap-x-2 my-2 text-slate-500'}>{hoverBid ? "Bid" : nft.price} {hoverBid ? null : "CRI"}{hoverBid ? null : <img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-6' />}</h1></Link>
-                  </div>
-                  </div>
-                  <div className='flex justify-between items-center w-full gap-x-2'>
-                    <CountdownWhite timestamp={nft.duration + '000'}/><span className='bg-red-600 font-bold px-5 py-1 flex justify-center items-center rounded-md animate-pulse'>LIVE</span>
-                  </div>
-                </div>
-              </div>
+                  </SwiperSlide>
+                  )}
                 )}
-              )}
-            
-            </Carousel>
-            </Container>
+              
+              </>
+              </Swiper>
             </div>
             </div>
   </div>
@@ -1009,57 +986,195 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
   }
   
   {/***************** NFTs ****************************/}
-<div className='flex-col justify-end items-center w-full'>
+<div className='flex-col justify-end items-center w-full px-3'>
 
-<div className='flex justify-center items-center my-10'>
+<div className='flex justify-center items-center'>
     <div className='flex-col'>
   
-      <div className='flex py-3 px-10 bg-gradient-to-t to-slate-900 from-transparent rounded-xl justify-center items-center mt-7 mb-10 gap-x-1'>
-      <FaFilter size={18} className="cursor-pointer z-30 hover:opacity-50" onClick={() => setOpenFilter(!openFilter)}/>
+      <div className='flex py-3 px-10 bg-gradient-to-t to-slate-900 from-transparent rounded-xl justify-between items-center mt-7 mb-10 gap-x-1'>
+      <div className='flex justify-start items-center gap-x-2'>
+        <div onClick={() => {setCheckAll(true),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}} className={all ? 'px-4 py-2 white-glassmorphism rounded-lg text-blue-400 border border-blue-500' : 'px-4 py-2 white-glassmorphism rounded-lg text-slate-400'}>All</div>
+        <div onClick={() => {setCheckAll(false),setCheckVideo(true),setCheckMusic(false),setCheckImage(false)}} className={checkVideo ? 'px-4 py-2 white-glassmorphism rounded-lg text-blue-400 border border-blue-500' : 'px-4 py-2 white-glassmorphism rounded-lg text-slate-400'}>Videos</div>
+        <div onClick={() => {setCheckAll(false),setCheckVideo(false),setCheckMusic(true),setCheckImage(false)}} className={checkMusic ? 'px-4 py-2 white-glassmorphism rounded-lg text-blue-400 border border-blue-500' : 'px-4 py-2 white-glassmorphism rounded-lg text-slate-400'}>Musics</div>
+        <div onClick={() => {setCheckAll(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(true)}} className={checkImage ? 'px-4 py-2 white-glassmorphism rounded-lg text-blue-400 border border-blue-500' : 'px-4 py-2 white-glassmorphism rounded-lg text-slate-400'}>Images</div>
+      </div>
+      <div className='w-full flex items-center justify-center'>
         <div className='flex justify-center items-center gap-x-5 z-[998]'>
           <h3 className={lanft ? 'text-blue-500 border-b-2 border-blue-500 text-xl p-1 cursor-pointer':'p-1 text-slate-400 text-xl cursor-pointer hover:border-b-2 hover:border-slate-400'} onClick={() => {setLaNft(true),setLaAuc(false)}}>Latest NFT's</h3><span className='text-3xl font-thin text-slate-400'>|</span><h3 className={laauc ? 'text-blue-500 text-xl border-b-2 border-blue-500 p-1 cursor-pointer':'p-1 text-slate-400 text-xl cursor-pointer hover:border-b-2 hover:border-slate-400'} onClick={() => {setLaAuc(true),setLaNft(false)}}>Latest Auctions</h3>
         </div>
       </div>
+      <div className='flex justify-center items-center invisible'>
+        <FaFilter size={18} className="cursor-pointer text-slate-400 z-30 hover:opacity-50" onClick={() => setOpenFilter(!openFilter)}/>
+      </div>
+      </div>
 {laauc ? (
 <div className='pb-60'>
-<div className='grid grid-cols-3 gap-3'>
-{datas.filter(u => u.live == true).reverse().map((nft) => (
-  <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
-))}
-</div>
-  
-{/*LIVE*/}
-
-{/*<LiveAuctionNftCard />*/}
-
-{/*ALL AUCTION*/}
-
-{/*<AllAuctionNftCard />*/}
+{all ?
+  <InfiniteScroll
+    className=''
+    dataLength={datas.length} //This is important field to render the next data
+    next={() => setCount(count + 5)}
+    hasMore={true}
+    loader={<Loading/>}
+    endMessage={
+      <p className='my-5 text-xl font-thin text-center'>
+      <b>You have seen it all</b>
+      </p>
+    }
+    >
+    <div className='grid grid-cols-3 gap-3 overflow-hidden'>
+    {datas.reverse().filter(u => u.live == true && u.duration + "000" > Date.now()).map((nft) => (
+      <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
+    ))}
+    </div>
+  </InfiniteScroll>
+  : null}
+  {checkVideo ?
+  <InfiniteScroll
+    className=''
+    dataLength={datas.length} //This is important field to render the next data
+    next={() => setCount(count + 5)}
+    hasMore={true}
+    loader={<Loading/>}
+    endMessage={
+      <p className='my-5 text-xl font-thin text-center'>
+      <b>You have seen it all</b>
+      </p>
+    }
+    >
+    <div className='grid grid-cols-3 gap-3 overflow-hidden'>
+    {datas.reverse().filter(u => u.live == true && u.duration + "000" > Date.now() && u.fileType == 'video/mp4' || u.fileType == 'video/mov').map((nft) => (
+      <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
+    ))}
+    </div>
+  </InfiniteScroll>
+  : null}
+  {checkMusic ?
+  <InfiniteScroll
+    className=''
+    dataLength={datas.length} //This is important field to render the next data
+    next={() => setCount(count + 5)}
+    hasMore={true}
+    loader={<Loading/>}
+    endMessage={
+      <p className='my-5 text-xl font-thin text-center'>
+      <b>You have seen it all</b>
+      </p>
+    }
+    >
+    <div className='grid grid-cols-3 gap-3 overflow-hidden'>
+    {datas.reverse().filter(u => u.live == true && u.duration + "000" > Date.now() && u.fileType == 'audio/mp3' || u.fileType == 'audio/mpeg' || u.fileType == 'audio/wav').map((nft) => (
+      <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
+    ))}
+    </div>
+  </InfiniteScroll>
+  : null}
+  {checkImage ?
+  <InfiniteScroll
+    className=''
+    dataLength={datas.length} //This is important field to render the next data
+    next={() => setCount(count + 5)}
+    hasMore={true}
+    loader={<Loading/>}
+    endMessage={
+      <p className='my-5 text-xl font-thin text-center'>
+      <b>You have seen it all</b>
+      </p>
+    }
+    >
+    <div className='grid grid-cols-3 gap-3 overflow-hidden'>
+    {datas.reverse().filter(u => u.live == true && u.duration + "000" > Date.now() && u.fileType == 'image/png' || u.fileType == 'image/jpg' || u.fileType == 'image/jpeg' || u.fileType == 'image/webp' || u.fileType == 'image/aif').map((nft) => (
+      <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
+    ))}
+    </div>
+  </InfiniteScroll>
+  : null}
 
 </div>
 ) : null}
 
 {lanft ? (
 <div className='pb-60'>
-
-<InfiniteScroll
-  className=''
-  dataLength={datas.length} //This is important field to render the next data
-  next={() => setCount(count + 5)}
-  hasMore={true}
-  loader={<Loading/>}
-  endMessage={
-    <p className='my-5 text-xl font-thin text-center'>
-    <b>You have seen it all</b>
-    </p>
-  }
-  >
-<div className='grid grid-cols-3 gap-3'>
-{datas.filter(u => !u.duration).reverse().map((nft) => (
-  <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
-))}
-</div>
-</InfiniteScroll>
+{all ?
+  <InfiniteScroll
+    className=''
+    dataLength={datas.length} //This is important field to render the next data
+    next={() => setCount(count + 5)}
+    hasMore={true}
+    loader={<Loading/>}
+    endMessage={
+      <p className='my-5 text-xl font-thin text-center'>
+      <b>You have seen it all</b>
+      </p>
+    }
+    >
+  <div className='grid grid-cols-4 gap-4 overflow-hidden'>
+  {datas.reverse().filter(u => !u.duration && u.sold == false).map((nft) => (
+    <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
+  ))}
+  </div>
+  </InfiniteScroll>
+  : null}
+  {checkVideo ?
+  <InfiniteScroll
+    className=''
+    dataLength={datas.length} //This is important field to render the next data
+    next={() => setCount(count + 5)}
+    hasMore={true}
+    loader={<Loading/>}
+    endMessage={
+      <p className='my-5 text-xl font-thin text-center'>
+      <b>You have seen it all</b>
+      </p>
+    }
+    >
+  <div className='grid grid-cols-4 gap-4 overflow-hidden'>
+  {datas.reverse().filter(u => u.fileType == 'video/mp4' || u.fileType == 'video/mov' && !u.duration && u.sold == false ).map((nft) => (
+    <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
+  ))}
+  </div>
+  </InfiniteScroll>
+  : null}
+  {checkMusic ?
+  <InfiniteScroll
+    className=''
+    dataLength={datas.length} //This is important field to render the next data
+    next={() => setCount(count + 5)}
+    hasMore={true}
+    loader={<Loading/>}
+    endMessage={
+      <p className='my-5 text-xl font-thin text-center'>
+      <b>You have seen it all</b>
+      </p>
+    }
+    >
+  <div className='grid grid-cols-4 gap-4 overflow-hidden'>
+  {datas.reverse().filter(u => u.fileType == 'audio/mp3' || u.fileType == 'audio/mpeg' || u.fileType == 'audio/ogg' || u.fileType == 'audio/wav' && !u.duration && u.sold == false).map((nft) => (
+    <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
+  ))}
+  </div>
+  </InfiniteScroll>
+  : null}
+  {checkImage ?
+  <InfiniteScroll
+    className=''
+    dataLength={datas.length} //This is important field to render the next data
+    next={() => setCount(count + 5)}
+    hasMore={true}
+    loader={<Loading/>}
+    endMessage={
+      <p className='my-5 text-xl font-thin text-center'>
+      <b>You have seen it all</b>
+      </p>
+    }
+    >
+  <div className='grid grid-cols-4 gap-4 overflow-hidden'>
+  {datas.reverse().filter(u => u.fileType == 'image/png' || u.fileType == 'image/jpg' || u.fileType == 'image/jpeg' || u.fileType == 'image/webp' || u.fileType == 'image/avif' && !u.duration && u.sold == false ).map((nft) => (
+    <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
+  ))}
+  </div>
+  </InfiniteScroll>
+  : null}
 </div>
 ) : null}
     </div>
@@ -1089,12 +1204,12 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
       <div className="w-full welcomebg antialiased">
       <div className='z-0 w-full h-full overflow-hidden object-cover flex justify-center items-center'>
     {/*<Image src={welcome} alt="Welcome" className='w-screen h-screen absolute object-cover mix-blend-overlay'/>*/}
-    <div className='white-glassmorphism w-11/12 h-[812px] absolute object-cover top-20 z-0'>&nbsp;</div>
+    <div className='white-glassmorphism w-11/12 h-[650px] absolute object-cover top-20 z-0'>&nbsp;</div>
       </div>
 
-      <div className='p-40'>
+      <div className='p-20'>
       <div className='flex justify-between items-center w-full z-10'>
-      <div className='flex-col grid justify-start items-center w-full'>
+      <div className='flex flex-col justify-start items-center w-full'>
       <Container xs css={{marginBottom:'$3'}}>
           <Carousel
             additionalTransfrom={0}
@@ -1126,18 +1241,18 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
             keyBoardControl={true}
             transitionDuration={4000}
             removeArrowOnDeviceType={["tablet", "mobile","desktop"]}>
-        <div className="flex-col justify-start items-center w-full px-28">
+        <div className="flex-col justify-start items-center w-full h-72">
           <Text  h1 weight="bold" size={100} css={{textGradient: "45deg, $yellow600 -20%, $purple600 50%"}} className="w-[750px] relative">Discover</Text>
           <Text  h1 weight="bold" size={45} css={{textGradient: "45deg, $purple600 20%, $yellow500 50%",}} className="w-[750px] relative bottom-7 left-2">The latest lived Legend</Text>
           <Text  h1 weight="bold" size={165} css={{textGradient: "45deg, $yellow500 20%, $red600 50%"}} className="w-[750px] relative bottom-24">NFTs</Text>
         </div>
-        <div className='flex-col justify-start items-center w-full mt-20'>
+        <div className='flex-col justify-start items-center w-full mt-32'>
             <h3 className='text-slate-50 text-5xl font-bold inset-3 -skew-y-3 py-4 my-3 px-4 bg-gradient-to-tl to-pink-500 from-purple-500 w-[535px]'>Create and Sell your NFT</h3>
             <p className='text-slate-50 text-6xl font-light'>in the Marketplace</p>
         </div>
         </Carousel>
         </Container>
-        <div className='flex justify-between z-10 items-center w-full p-5 rounded-xl white-glassmorphism '>
+        <div className='flex justify-between z-10 items-center w-[600px] p-5 rounded-xl white-glassmorphism mt-10'>
 
           <div className='flex-col justify-start items-center '>
           <div className='text-4xl font-bold py-2 text-green-500'>
@@ -1166,72 +1281,49 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
         
       </div>
         <div className='flex justify-end items-center w-full'>
-          <Container xs css={{marginBottom:'$3'}}>
-          <Carousel
-            additionalTransfrom={0}
-            autoPlaySpeed={3000}
-            autoPlay={true}
-            centerMode={false}
-            className="overflow-hidden"
-            containerClass="container-padding-bottom"
-            customRightArrow={<CustomRightArrow />}
-            customLeftArrow={<CustomLeftArrow />}
-            dotListClass=""
-            draggable={true}
-            focusOnSelect={false}
-            itemClass=""
-            minimumTouchDrag={80}
-            pauseOnHover
-            renderArrowsWhenDisabled={false}
-            renderButtonGroupOutside
-            renderDotsOutside={false}
-            rewind={false}
-            rewindWithAnimation={false}
-            rtl={false}
-            shouldResetAutoplay
-            showDots={false}
-            sliderClass=""
-            slidesToSlide={1}
-            swipeable
-            responsive={responsive}
-            ssr={true}
-            infinite={true}
-            keyBoardControl={true}
-            transitionDuration={800}
-            removeArrowOnDeviceType={["tablet", "mobile"]}>
-            {datas.filter(i => i.live == true && i.duration + "000" > Date.now()).reverse().map((nft) => {
+              <Swiper
+              effect={'cards'}
+              grabCursor={true}
+              modules={[EffectCards]}
+              className="mySwiper w-[450px] h-[393px]"
+              >
+              <>
+              {datas.filter(i => i.live == true && i.duration + "000" > Date.now()).reverse().map((nft) => {
               
-              return (
-              <div key={Math.random()}>
-              {nft.fileType == 'video/mp4'
-              ? <video src={nft.images} className="w-[450px] h-[393px] mt-12 ml-12 bg-transparent rounded-xl object-cover" autoPlay muted loop/>
-              : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img src={nft.images} className="w-[450px] h-[393px] object-cover ml-12 bg-transparent rounded-xl" />
-              : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftname={nft.name}/> : null
-              }
-              <div className='relative bottom-24 left-20 bg-slate-50 px-3 pb-3 rounded-xl opacity-90 w-96'>
-                <div className='flex justify-between items-center'>
-                    <div className='flex-col justify-start items-center p-2'>
-                        <h1 className='text-lg font-bold text-slate-800'>{nft.name}</h1>
-                        <h1 className='text-lg font-bold text-purple-500 flex items-center gap-x-1'>{nft.avatar ? <img src={nft.avatar} className="rounded-full w-3 mr-1"/>:null}{!nft.username == "" ? nft.username : user.slice(0,11) + '...'} {nft.verified == 'verified' ? <MdVerified size={18}/>: null}</h1>
+                return (
+                  <SwiperSlide>
+                <div key={Math.random()}>
+                {nft.fileType == 'video/mp4'
+                ? <video src={nft.images} className="w-[450px] h-[393px] bg-transparent rounded-xl object-cover" autoPlay muted loop/>
+                : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img src={nft.images} className="w-[450px] h-[393px] object-cover bg-transparent rounded-xl" />
+                : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftid={nft._id} nftname={nft.name} slidermode={true}/> : null
+                }
+                <div className='relative bottom-32 bg-slate-50 px-3 pb-3 rounded-xl opacity-90 w-full'>
+                  <div className='flex justify-between items-center'>
+                      <div className='flex-col justify-start items-center p-2'>
+                          <h1 className='text-lg font-bold text-slate-800'>{nft.name}</h1>
+                          <h1 className='text-lg font-bold text-purple-500 flex items-center gap-x-1'>{nft.avatar ? <img src={nft.avatar} className="rounded-full w-3 mr-1"/>:null}{!nft.username == "" ? nft.username : user.slice(0,11) + '...'} {nft.verified == 'verified' ? <MdVerified size={18}/>: null}</h1>
+                      </div>
+                    <div onMouseOver={() => setHoverBid(true)} onMouseOut={() => setHoverBid(false)} className={hoverBid ? 'flex cursor-pointer bg-gradient-to-tr to-yellow-500 from-orange-600 text-center justify-center items-center px-7 rounded-md font-bold text-slate-600 w-28' : 'flex justify-end items-center px-3 rounded-md font-bold text-slate-600 bg-slate-300 w-38'}>
+                      <Link href={`/placebid/${nft.id}`}><h1 className={hoverBid ? 'font-bold text-lg flex text-center justify-center items-center my-2 px-12' : 'font-bold text-lg flex items-center gap-x-2 my-2 text-slate-500'}>{hoverBid ? "Bid" : nft.price} {hoverBid ? null : "CRI"}{hoverBid ? null : <img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-6' />}</h1></Link>
                     </div>
-                  <div onMouseOver={() => setHoverBid(true)} onMouseOut={() => setHoverBid(false)} className={hoverBid ? 'flex cursor-pointer bg-gradient-to-tr to-yellow-500 from-orange-600 text-center justify-center items-center px-7 rounded-md font-bold text-slate-600 w-28' : 'flex justify-end items-center px-3 rounded-md font-bold text-slate-600 bg-slate-300 w-38'}>
-                    <Link href={`/placebid/${nft.id}`}><h1 className={hoverBid ? 'font-bold text-lg flex text-center justify-center items-center my-2 px-12' : 'font-bold text-lg flex items-center gap-x-2 my-2 text-slate-500'}>{hoverBid ? "Bid" : nft.price} {hoverBid ? null : "CRI"}{hoverBid ? null : <img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-6' />}</h1></Link>
-                  </div>
-                  </div>
-                  <div className='flex justify-between items-center w-full gap-x-2'>
-                    <CountdownWhite timestamp={nft.duration + '000'}/><span className='bg-red-600 font-bold px-5 py-1 flex justify-center items-center rounded-md animate-pulse'>LIVE</span>
+                    </div>
+                    <div className='flex justify-between items-center w-full gap-x-2'>
+                      <CountdownWhite timestamp={nft.duration + '000'}/><span className='bg-red-600 font-bold px-5 py-1 flex justify-center items-center rounded-md animate-pulse'>LIVE</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+                </SwiperSlide>
+                  )}
                 )}
-              )}
-            <CustomLeftArrow/><CustomRightArrow />
-            </Carousel>
-            </Container>
+              
+              </>
+              </Swiper>
             </div>
             </div>
       </div>
-<div className='flex justify-center items-center py-32'>
+<div className='flex justify-center items-center '>
+
   <div className='flex justify-between w-full'>
 
   {/************* FILTER & CHAINS **********************/}
@@ -1335,44 +1427,30 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
   }
   
   {/***************** NFTs ****************************/}
-<div className='flex-col justify-end items-center w-full'>
+<div className='flex-col justify-end items-center w-full px-3'>
 
-<div className='flex justify-center items-center my-10'>
+<div className='flex justify-center items-center'>
     <div className='flex-col'>
   
-      <div className='flex py-3 px-10 bg-gradient-to-t to-slate-900 from-transparent rounded-xl justify-center items-center mt-7 mb-10 gap-x-1'>
-      <FaFilter size={18} className="cursor-pointer z-30 hover:opacity-50" onClick={() => setOpenFilter(!openFilter)}/>
+      <div className='flex py-3 px-10 bg-gradient-to-t to-slate-900 from-transparent rounded-xl justify-between items-center mt-7 mb-10 gap-x-1'>
+      <div className='flex justify-start items-center gap-x-2'>
+        <div onClick={() => {setCheckAll(true),setCheckVideo(false),setCheckMusic(false),setCheckImage(false)}} className={all ? 'px-4 py-2 white-glassmorphism rounded-lg text-blue-400 border border-blue-500' : 'px-4 py-2 white-glassmorphism rounded-lg text-slate-400'}>All</div>
+        <div onClick={() => {setCheckAll(false),setCheckVideo(true),setCheckMusic(false),setCheckImage(false)}} className={checkVideo ? 'px-4 py-2 white-glassmorphism rounded-lg text-blue-400 border border-blue-500' : 'px-4 py-2 white-glassmorphism rounded-lg text-slate-400'}>Videos</div>
+        <div onClick={() => {setCheckAll(false),setCheckVideo(false),setCheckMusic(true),setCheckImage(false)}} className={checkMusic ? 'px-4 py-2 white-glassmorphism rounded-lg text-blue-400 border border-blue-500' : 'px-4 py-2 white-glassmorphism rounded-lg text-slate-400'}>Musics</div>
+        <div onClick={() => {setCheckAll(false),setCheckVideo(false),setCheckMusic(false),setCheckImage(true)}} className={checkImage ? 'px-4 py-2 white-glassmorphism rounded-lg text-blue-400 border border-blue-500' : 'px-4 py-2 white-glassmorphism rounded-lg text-slate-400'}>Images</div>
+      </div>
+      <div className='w-full flex items-center justify-center'>
         <div className='flex justify-center items-center gap-x-5 z-[998]'>
           <h3 className={lanft ? 'text-blue-500 border-b-2 border-blue-500 text-xl p-1 cursor-pointer':'p-1 text-slate-400 text-xl cursor-pointer hover:border-b-2 hover:border-slate-400'} onClick={() => {setLaNft(true),setLaAuc(false)}}>Latest NFT's</h3><span className='text-3xl font-thin text-slate-400'>|</span><h3 className={laauc ? 'text-blue-500 text-xl border-b-2 border-blue-500 p-1 cursor-pointer':'p-1 text-slate-400 text-xl cursor-pointer hover:border-b-2 hover:border-slate-400'} onClick={() => {setLaAuc(true),setLaNft(false)}}>Latest Auctions</h3>
         </div>
       </div>
+      <div className='flex justify-center items-center invisible'>
+        <FaFilter size={18} className="cursor-pointer text-slate-400 z-30 hover:opacity-50" onClick={() => setOpenFilter(!openFilter)}/>
+      </div>
+      </div>
 {laauc ? (
 <div className='pb-60'>
-  
-{/*LIVE*/}
-<div className='grid grid-cols-4 gap-4'>
-{datas.filter(u => u.live == true && u.duration + "000" > Date.now()).reverse().map((nft) => (
-  <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
-))}
-</div>
-{/*<LiveAuctionNftCard />*/}
-
-{/*ALL AUCTION*/}
-
-{/*<AllAuctionNftCard />*/}
-
-
-</div>
-) : null}
-
-{lanft ? (
-<div className='pb-60'>
-
-<div className='grid grid-cols-4 gap-4'>
-{datas.filter(u => !u.duration && u.sold == false).reverse().map((nft) => (
-  <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
-))}
-</div>
+{all ?
 <InfiniteScroll
   className=''
   dataLength={datas.length} //This is important field to render the next data
@@ -1385,16 +1463,159 @@ Buy / Sell wonderful NFTs. Chat live with hundreds of thousands of artists or bu
     </p>
   }
   >
-  <div className='container wrapper my-2 ease-linear transition-all grid grid-cols-5 gap-4'>
-  {!datas.length ? (
-    <PreLoader/> ) : 
-      null
-
-  } 
-    {/***************************************** ETHEREUM NFTS ***********************************************************/}
-    </div>
-  
+  <div className='grid grid-cols-5 gap-3 overflow-hidden'>
+  {datas.reverse().filter(u => u.live == true && u.duration + "000" > Date.now()).map((nft) => (
+    <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
+  ))}
+  </div>
 </InfiniteScroll>
+: null}
+{checkVideo ?
+<InfiniteScroll
+  className=''
+  dataLength={datas.length} //This is important field to render the next data
+  next={() => setCount(count + 5)}
+  hasMore={true}
+  loader={<Loading/>}
+  endMessage={
+    <p className='my-5 text-xl font-thin text-center'>
+    <b>You have seen it all</b>
+    </p>
+  }
+  >
+  <div className='grid grid-cols-5 gap-3 overflow-hidden'>
+  {datas.reverse().filter(u => u.live == true && u.duration + "000" > Date.now() && u.fileType == 'video/mp4' || u.fileType == 'video/mov').map((nft) => (
+    <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
+  ))}
+  </div>
+</InfiniteScroll>
+: null}
+{checkMusic ?
+<InfiniteScroll
+  className=''
+  dataLength={datas.length} //This is important field to render the next data
+  next={() => setCount(count + 5)}
+  hasMore={true}
+  loader={<Loading/>}
+  endMessage={
+    <p className='my-5 text-xl font-thin text-center'>
+    <b>You have seen it all</b>
+    </p>
+  }
+  >
+  <div className='grid grid-cols-5 gap-3 overflow-hidden'>
+  {datas.reverse().filter(u => u.live == true && u.duration + "000" > Date.now() && u.fileType == 'audio/mp3' || u.fileType == 'audio/mpeg' || u.fileType == 'audio/wav').map((nft) => (
+    <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
+  ))}
+  </div>
+</InfiniteScroll>
+: null}
+{checkImage ?
+<InfiniteScroll
+  className=''
+  dataLength={datas.length} //This is important field to render the next data
+  next={() => setCount(count + 5)}
+  hasMore={true}
+  loader={<Loading/>}
+  endMessage={
+    <p className='my-5 text-xl font-thin text-center'>
+    <b>You have seen it all</b>
+    </p>
+  }
+  >
+  <div className='grid grid-cols-5 gap-3 overflow-hidden'>
+  {datas.reverse().filter(u => u.live == true && u.duration + "000" > Date.now() && u.fileType == 'image/png' || u.fileType == 'image/jpg' || u.fileType == 'image/jpeg' || u.fileType == 'image/webp' || u.fileType == 'image/aif').map((nft) => (
+    <NFTsAucComponent auth={auth} nft={nft} duration={nft.duration} buyNewMum={buyNewMum}/>
+  ))}
+  </div>
+</InfiniteScroll>
+: null}
+
+</div>
+) : null}
+
+{lanft ? (
+<div className='pb-60'>
+{all ?
+<InfiniteScroll
+  className=''
+  dataLength={datas.length} //This is important field to render the next data
+  next={() => setCount(count + 5)}
+  hasMore={true}
+  loader={<Loading/>}
+  endMessage={
+    <p className='my-5 text-xl font-thin text-center'>
+    <b>You have seen it all</b>
+    </p>
+  }
+  >
+<div className='grid grid-cols-6 gap-3 overflow-hidden'>
+{datas.reverse().filter(u => !u.duration && u.sold == false).map((nft) => (
+  <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
+))}
+</div>
+</InfiniteScroll>
+: null}
+{checkVideo ?
+<InfiniteScroll
+  className=''
+  dataLength={datas.length} //This is important field to render the next data
+  next={() => setCount(count + 5)}
+  hasMore={true}
+  loader={<Loading/>}
+  endMessage={
+    <p className='my-5 text-xl font-thin text-center'>
+    <b>You have seen it all</b>
+    </p>
+  }
+  >
+<div className='grid grid-cols-6 gap-3 overflow-hidden'>
+{datas.reverse().filter(u => u.fileType == 'video/mp4' || u.fileType == 'video/mov' && !u.duration && u.sold == false ).map((nft) => (
+  <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
+))}
+</div>
+</InfiniteScroll>
+: null}
+{checkMusic ?
+<InfiniteScroll
+  className=''
+  dataLength={datas.length} //This is important field to render the next data
+  next={() => setCount(count + 5)}
+  hasMore={true}
+  loader={<Loading/>}
+  endMessage={
+    <p className='my-5 text-xl font-thin text-center'>
+    <b>You have seen it all</b>
+    </p>
+  }
+  >
+<div className='grid grid-cols-6 gap-3 overflow-hidden'>
+{datas.reverse().filter(u => u.fileType == 'audio/mp3' || u.fileType == 'audio/mpeg' || u.fileType == 'audio/ogg' || u.fileType == 'audio/wav' && !u.duration && u.sold == false).map((nft) => (
+  <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
+))}
+</div>
+</InfiniteScroll>
+: null}
+{checkImage ?
+<InfiniteScroll
+  className=''
+  dataLength={datas.length} //This is important field to render the next data
+  next={() => setCount(count + 5)}
+  hasMore={true}
+  loader={<Loading/>}
+  endMessage={
+    <p className='my-5 text-xl font-thin text-center'>
+    <b>You have seen it all</b>
+    </p>
+  }
+  >
+<div className='grid grid-cols-6 gap-3 overflow-hidden'>
+{datas.reverse().filter(u => u.fileType == 'image/png' || u.fileType == 'image/jpg' || u.fileType == 'image/jpeg' || u.fileType == 'image/webp' || u.fileType == 'image/avif' && !u.duration && u.sold == false ).map((nft) => (
+  <NFTsComponent nft={nft} auth={auth} buyNewMum={buyNewMum} />
+))}
+</div>
+</InfiniteScroll>
+: null}
 </div>
 ) : null}
     </div>

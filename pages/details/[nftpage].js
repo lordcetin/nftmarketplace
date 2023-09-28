@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import AudioPlayer from '../../components/AudioPlayer';
 import { motion } from "framer-motion"
 import {MdVerified} from 'react-icons/md';
+import {CgDetailsMore} from 'react-icons/cg';
 import Link from 'next/link';
 import { cipherHH, cipherEth, simpleCrypto,client } from '../../engine/configuration';
 import NFT from '../../engine/NFT.json';
@@ -13,14 +14,19 @@ import axios from 'axios';
 import Web3Modal from "web3modal";
 import { useStateContext } from "../../context/StateContext";
 import { ethers } from 'ethers';
-import {BsEyeFill,BsFillHeartFill} from 'react-icons/bs';
+import {BsEyeFill,BsFillHeartFill, BsInstagram, BsTwitter} from 'react-icons/bs';
+import {LiaFileContractSolid} from 'react-icons/lia';
 import { DataContext } from "../../store/GlobalState";
 import Media from "react-media";
-import { BiCommentDetail } from 'react-icons/bi';
-import {AiOutlineHeart,AiFillHeart} from 'react-icons/ai'
+import { BiCommentDetail,BiDetail } from 'react-icons/bi';
+import {AiOutlineHeart,AiFillHeart,AiOutlineLineChart} from 'react-icons/ai'
 import TimeAgo from '@/components/TimeAgo';
 import { toast } from 'react-toastify';
 import Head from 'next/head';
+import {AreaChart,Area,XAxis,YAxis,CartesianGrid,Tooltip} from "recharts";
+import { LineChart, Line } from "recharts";
+import { PreLoader } from '@/components';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
 const Nftpage = () => {
 
@@ -30,6 +36,126 @@ const Nftpage = () => {
   const router = useRouter();
   const uniqid = router.query.nftpage;
 
+  const [coin, setCoin] = useState();
+  const [chartdata,setChartData] = useState();
+  const [about,setOpenAbout] = useState();
+  const [contract,setOpenContract] = useState();
+
+  const data = [
+    {
+      name: "Page A",
+      uv: 4000,
+      pv: 2400,
+      amt: 2400
+    },
+    {
+      name: "Page B",
+      uv: 3000,
+      pv: 1398,
+      amt: 2210
+    },
+    {
+      name: "Page C",
+      uv: 2000,
+      pv: 9800,
+      amt: 2290
+    },
+    {
+      name: "Page D",
+      uv: 2780,
+      pv: 3908,
+      amt: 2000
+    },
+    {
+      name: "Page E",
+      uv: 1890,
+      pv: 4800,
+      amt: 2181
+    },
+    {
+      name: "Page F",
+      uv: 2390,
+      pv: 3800,
+      amt: 2500
+    },
+    {
+      name: "Page G",
+      uv: 3490,
+      pv: 4300,
+      amt: 2100
+    }
+  ];
+
+  useEffect(() => {
+    fetchCRItoUSD()
+    dayone()
+  },[])
+  
+  const fetchCRItoUSD = async () => {
+    await fetch('https://api.coingecko.com/api/v3/coins/crypto-international/market_chart?vs_currency=usd&days=1').then(res => {
+      if(!res.ok){
+        throw new Error("HTTP ERROR",res.status)
+      }
+      return res
+    }).then(res => res.json()).then(data => {
+      setCoin(data.prices[0][1])
+    })
+}
+
+const dayone = async () => {
+  await axios.get(`https://api.coingecko.com/api/v3/coins/crypto-international/market_chart?vs_currency=usd&days=max`) //%2C14%2C30%2Cmax
+    .then(res => {
+      const cdata = res.data.prices.map((price) => {
+        const [timestamp,p] = price;
+        const date = new Date(timestamp).toLocaleDateString('en-us');
+        return {Date:date,Price:p.toFixed(4)}
+      })
+      setChartData(cdata);
+      // console.log("chartdata",chartdata);
+    })
+} 
+
+const toolstyle ={
+  backgroundColor: "#0f172a",
+  color: "#80D0C7",
+  borderRadius:10,
+  WebkitBorderRadius:10,
+  MozBorderRadius:10,
+  MsBorderRadius:10,
+  OBorderRadius:10,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  textAlign: "center",
+  gap:5,
+  fontWeight: "bold",
+}
+
+const labelstyle ={
+  display: "none",
+}
+
+const contstyle={
+  backgroundColor: "#0f172a",
+  border:"none",
+  outline:"none",
+  width:160,
+  margin:0,
+  paddingLeft:20,
+  paddingRight:20,
+  paddingTop:10,
+  paddingBottom:10,
+  borderRadius:10,
+  WebkitBorderRadius:10,
+  MozBorderRadius:10,
+  MsBorderRadius:10,
+  OBorderRadius:10,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  textAlign: "center",
+  boxShadow:'0px 5px 30px #0f0e13',
+}
 
   const [hhnfts, hhsetNfts] = useState([])
   const [sepnfts, MumsetNfts] = useState([])
@@ -74,7 +200,6 @@ const Nftpage = () => {
       setUsers(data)
     })
   }
-
   const getComments = async () => {
     await fetch('https://testnet.cos-in.com/api/getComments').then(res => {
       if(!res.ok){
@@ -327,85 +452,167 @@ const Nftpage = () => {
         <Head>
         <title>NFT Details • Cosmeta NFT Marketplace</title>
         </Head>
-        <div className="pt-20 flex-cols w-full h-full">
-        {content.filter(u => u._id == nftpage).map(nft => (
-        <div className="container mx-auto justify-center items-center w-full px-3">
-        <div className='flex-col px-3 justify-center items-center'>
-        <div className="p-3 bg-slate-900 w-[350px] rounded-xl">
-        {nft.fileType == 'video/mp4'
-        ? <video src={nft.images} className="w-[500px] rounded-lg" autoPlay muted loop/>
-        : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp' ? <img src={nft.images} className="w-[500px] rounded-lg" />
-        : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftname={nft.name} nftid={uniqid}/> : null
-        }
+        <div className="flex justify-center items-center w-full">
+        {!content.length ? <PreLoader/> : null}
+      {content.filter(u => u._id == nftpage).map(nft => (
+        
+      /***  DETAILS ***/
+      <div className="flex-col grid justify-center w-full">
+          {/*** MEDIA ***/}
+          <div className="flex-col justify-start w-[300px] rounded-xl flex self-start">
+          
+          {nft.fileType == 'video/mp4' || nft.fileType == 'video/mov'
+              ? <video src={nft.images} className="rounded-xl w-[300px]" autoPlay muted loop/>
+              : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img className='rounded-xl object-cover w-[300px]' src={nft.images} />
+              : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || nft.fileType == 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft.id} detailpage={true}/> : null
+          }        
+          </div>
+  
+        <div className="flex-col justify-end items-center self-start w-full mt-3">
+          <div className="px-3 flex w-full my-2 items-center">
+            <div>
+              <span className='w-72 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.name} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span>
+            </div>
+          </div>
+          <div className="px-3 flex w-60 items-center mt-4">
+            <div>
+              <strong className='w-96 flex truncate text-slate-400'>{nft.description}</strong>
+            </div>
+          </div>
+          <div className="rounded-md px-3 flex w-full items-center my-1">
+            <div className='flex items-center gap-x-1'>
+              <span className='text-sm font-thin'>Owned by</span><Link href={`/${nft.username}`} className='text-sm text-indigo-500'>{nft?.owner?.slice(0,5) + '...' + nft?.owner?.slice(38)} | {nft.username}</Link>
+            </div>
+          </div>
+          <div className="p-3 flex w-60 my-2 items-center">
+            <div className='flex items-center w-full gap-x-6'>
+              <div className='flex items-center gap-x-2'>
+                {auth?.user ? 
+                  auth?.user?.liked.find(u => u.includes(nft._id)) ? 
+                  <button onClick={() => setLiked(false)}><AiFillHeart size={20} className='cursor-pointer text-red-500 hover:text-white' onClick={() => deleteLiker(nft._id)} /></button> : 
+                  <button disabled={!isclick} onClick={() => setLiker(nft._id)}><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500' /></button> :
+                  <Link href="/login"><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500'/></Link>
+                }
+                <strong>{nft.likes.length}</strong>
+              </div>
+
+              <div className='flex items-center gap-x-2'>
+                <BiCommentDetail size={20} className='cursor-pointer'/>
+                <strong>{nft.comments.length}</strong>
+              </div>
+            </div>
+          </div>
+        
+          <div className='border border-indigo-500 rounded-md w-[300px] p-5'>
+            <p className='text-xl antialiased font-light'>Current Price</p>
+            <div className='flex items-center gap-x-2'>
+              <span className='text-4xl font-bold'>{nft.price} CRI</span>
+              <span className='self-end'>${(coin * nft.price).toFixed(2)}</span>
+            </div>
+            <div className='w-full flex items-center mt-3'>
+              {nft?.transactionHash ?
+                <Link href={`/placebid/${nft.id}`} className="bg-indigo-950 py-3 px-7 rounded-md hover:bg-indigo-600 w-full">Place Bid</Link>
+                :<button type="submit" onClick={() => buyNewMum(nft.price,nft.tokenId)} className="bg-indigo-950 py-3 px-7 rounded-md hover:bg-indigo-600 w-full">Buy Now</button>
+              }
+            </div>
+          </div>
+
+          {/*** CHART ***/}
+          <div className='border flex-col justify-center items-center border-indigo-500 rounded-md w-[300px] my-5'>
+          <div className='flex justify-between items-center bg-indigo-950 w-full border-b border-indigo-500 rounded-t-md'>
+              <div className='flex justify-start items-center w-full'>
+                <span className='rounded-md  px-4 py-2 text-sm font-bold antialiased leading-6 flex items-center gap-x-2'><AiOutlineLineChart size={18}/> Price History</span>
+              </div>
+              <div className='flex justify-end items-center w-full'>
+                <span className='rounded-md  px-4 py-2 text-sm font-bold antialiased leading-6'>{parseFloat(coin).toFixed(2)} USD</span>
+              </div>
+          </div>
+          <div className='flex justify-center items-center w-full p-5'>
+           <AreaChart width={300} height={200} data={chartdata}
+              margin={{ top: 10, right: 0, left: 0, bottom: 10 }}>
+                <defs>
+                  <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+              <Tooltip cursor={false} itemStyle={toolstyle} labelStyle={labelstyle} contentStyle={contstyle}/>
+
+              <Area type="monotone" dataKey="Price" stroke="#8884d8" fillOpacity={0.5} fill="url(#colorPv)" />
+
+              </AreaChart>
+          </div>
+          </div>
+
+          <div className='flex-col w-[300px] border border-indigo-500 rounded-md mt-5'>
+          <div className='w-full bg-indigo-950 rounded-t-md border-b border-indigo-500 py-2 px-3'>
+          <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased'><CgDetailsMore size={18}/>Details</h1>
+          </div>
+          <div className='flex items-center w-full mt-3 p-3'>
+            <div className='flex items-center gap-x-2'>
+              By <Link href={`/${nft.username}`}><span className='w-96 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.username} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span></Link>
+            </div>
+          </div>
+          <div className='flex items-center w-full mb-3'>
+            <div className='flex items-center px-3'>
+              <p className='text-slate-400 text-sm'>{nft.description}</p>
+            </div>
+          </div>
+          <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenAbout(!about)}>
+            <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><BiDetail size={18}/>About {nft.username} {about ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+          </div>
+          {about ? <div className='flex-col items-center w-full p-3'>
+            <div className='flex items-center w-full gap-x-4'>
+              <img src={users.filter(u => u.username == nft.username).map((user) => user.avatar)}
+              alt={users.filter(u => u.username == nft.username).map((user) => user.username)}
+              className='flex w-6 h-6 rounded-full' />
+              <p>{users.filter(u => u.username == nft.username).map((user) => user.description)}</p>
+            </div>
+            <div className='flex items-center w-full gap-x-3 mt-3 self-end justify-end'>
+              <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.instagram)}`}><BsInstagram size={18}/></Link>
+              <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.twitter)}`}><BsTwitter size={18}/></Link>
+            </div>
+          </div> : null}
+          <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenContract(!contract)}>
+            <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><LiaFileContractSolid size={18}/>Contract Details {contract ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+          </div>
+          {contract ? <div className='flex-col items-center w-full p-3'>
+          <div className='flex-col grid items-center w-full gap-y-3'>
+            <div className='flex items-center w-full'>
+              <span className='flex justify-start self-start items-center w-full'>Contract Address</span>
+              <Link href={`https://etherscan.io/address/${nftcustom}`}><span className='flex justify-end self-end items-center font-semibold text-indigo-400'>{nftcustom.slice(0,5) + '...' + nftcustom.slice(38)}</span></Link>
+            </div>
+            <div className='flex items-center w-full'>
+              <span className='flex justify-start self-start items-center w-full'>Token ID</span>
+              <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>{nft.tokenId}</span>
+            </div>
+            <div className='flex items-center w-full'>
+              <span className='flex justify-start self-start items-center w-full'>Token Standard</span>
+              <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>ERC-721</span>
+            </div>
+            <div className='flex items-center w-full'>
+              <span className='flex justify-start self-start items-center w-full'>Last Updated</span>
+              <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'><TimeAgo timestamp={nft.createdAt}/></div>
+            </div>
+            <div className='flex items-center w-full'>
+              <span className='flex justify-start self-start items-center w-full'>Creator Earnings</span>
+              <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>10%</div>
+            </div>
+          </div>
+        </div> : null}
         </div>
   
-        <div className="flex-col px-3 pb-20">
-        <div className="rounded-md bg-slate-900 p-3 flex w-32 my-2 items-center">
-        <div><strong>Token ID :</strong><span> {nft.tokenId}</span></div>
-        </div>
-        <div className="rounded-md bg-slate-900 p-3 flex w-60 items-center my-1">
-        <div><strong>NFT Name :</strong><span> {nft.name}</span></div>
-        </div>
-        <div className="rounded-md bg-slate-900 p-3 flex w-80 my-2 items-center">
-        <div><strong>Description :</strong><span> {nft.description}</span></div>
-        </div>
-        <div className="rounded-md bg-slate-900 p-3 flex w-60 my-2 items-center">
-        <div className="flex items-center gap-x-1"><strong>Owned by :</strong><span> <Link href={`/${nft.username}`} legacyBehavior><a className="hover:text-blue-500 flex items-center gap-x-1">{nft.username} {nft.verified == 'verified' ? <MdVerified size={15}/> : null}</a></Link></span></div>
-        </div>
-        <div className='flex justify-between items-center w-[220px] mb-3'>
-        <div className='flex items-center gap-x-2'>
-        <div>
-          <form onSubmit={e => likehandler(e)}>
-          {auth?.user ? 
-            auth?.user?.liked.find(u => u.includes(nft._id)) ? 
-            <button onClick={() => setLiked(false)}><AiFillHeart size={20} className='cursor-pointer text-red-500 hover:text-white' onClick={() => deleteLiker(nft._id)} /></button> : 
-            <button disabled={!isclick} onClick={() => setLiker(nft._id)}><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500' /></button> :
-            <Link href="/login"><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500'/></Link>
-          }
-          </form>
-        </div>
-          <div className='flex items-center mb-1.5 gap-x-2 text-sm'>
-          <strong>{nft.likes.length}</strong><span>Like</span>
-          </div>
-        </div>
-        <div className='flex items-center gap-x-2 text-sm'>
-          <div>
-          <BiCommentDetail size={20} className='cursor-pointer'/>
-          </div>
-          <div className='text-sm flex items-center gap-x-2'>
-          <strong>{nft.comments.length}</strong><span>Comments</span>
-          </div>
-        </div>
-      </div>
-  
-        <div className='flex items-center '>
+        <div className='flex items-center w-[300px] rounded-md mt-5'>
           <form onSubmit={handleSubmit} className='flex items-center gap-x-2' method='POST'>
-            <textarea value={input} onChange={e => setInput(e.target.value)} autoComplete={false} name="comment" id="comment" className='border border-slate-800 w-[230px] h-[50px] mx-auto rounded-md bg-transparent py-2 px-2 text-slate-400' placeholder='Comment...'></textarea>
+            <textarea value={input} onChange={e => setInput(e.target.value)} autoComplete={false} name="comment" id="comment" className='border border-indigo-500 w-[300px] h-[50px] rounded-md bg-transparent py-2 px-2 text-slate-400' placeholder='Comment...'></textarea>
             {input &&
               <button type='submit' className='bg-slate-900 py-3 px-7 rounded-md text-slate-400 border border-slate-800 hover:bg-slate-800 hover:border-slate-900' onClick={(e) => handleSubmit(nft._id,e)}>Send</button>
             }
           </form>
         </div>  
-        <div className="rounded-md bg-slate-900 p-3 flex w-52 my-2 items-center">
-        <div className="flex-col items-center">
-        <div className="flex items-center gap-x-2 text-xl"><strong>Price :</strong><span>{nft.price}</span><div className="flex items-center gap-x-2"><span className="text-sm ml-3">CRI</span><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-6' /></div></div>
-        </div>
-        </div>
-        <div className=" py-7 flex w-64 my-2 items-center">
-          <div className="flex gap-x-3">
-          {nft?.transactionHash ?
-            <Link href={`/placebid/${nft.id}`} className="bg-blue-500 py-3 px-7 rounded-md hover:bg-blue-600">Place Bid</Link>
-            :<button type="submit" onClick={() => buyNewMum(nft.price,nft.tokenId)} className="bg-blue-500 py-3 px-7 rounded-md hover:bg-blue-600">Buy Now</button>
-          }
-          </div>
-        </div>
-  
-        </div>
-        </div>
-        </div>
-        ))}
-        <div className='px-3 pb-20'>
-        <div className='container mx-auto border border-slate-900 rounded-md px-7 py-3 w-full'>
+
+      {/**** COMMENTS ****/}
+      <div className='border border-indigo-500 rounded-md px-7 py-3 w-[300px] mt-3'>
         <h1 className='text-xl font-bold antialiased text-slate-400'>Comments</h1>
       <div className='flex-col mt-5'>
       {commentdatas.length == 0 &&
@@ -415,7 +622,7 @@ const Nftpage = () => {
       }
       {commentdatas.filter(u => u.nftId == nftpage).map((comment,k) =>
         <div className='my-2'>
-        <div key={k} className='bg-slate-900 rounded-md py-3 px-3 w-full'>
+        <div key={k} className='bg-indigo-950 rounded-md py-3 px-3 w-full'>
         <div className='flex items-center gap-x-2 max-h-24'>
           <img src={comment.authoravatar} alt="" className='w-7 h-7 rounded-full' />
           <strong>{comment.username}</strong>
@@ -429,7 +636,14 @@ const Nftpage = () => {
       )}
       </div>
       </div>
+
+        </div>
+  
       </div>
+  
+      ))}
+
+
         </div>
   
         </Fragment>
@@ -440,111 +654,199 @@ const Nftpage = () => {
         <Head>
         <title>NFT Details • Cosmeta NFT Marketplace</title>
         </Head>
-        <div className="pb-40 px-7 flex-col grid justify-between">
+        <div className="flex justify-center items-center w-full">
+        {!content.length ? <PreLoader/> : null}
       {content.filter(u => u._id == nftpage).map(nft => (
-  
-      <div className="flex justify-between gap-2">
-      <div className="p-3 bg-slate-900 w-[500px] rounded-xl flex">
-          
-        {nft.fileType == 'video/mp4' || nft.fileType == 'video/mov'
-            ? <video src={nft.images} className="rounded-t-xl w-full h-[296px]" autoPlay muted loop/>
-            : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img className='rounded-t-xl object-cover w-full' src={nft.images} />
-            : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || nft.fileType == 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftname={nft.name} nftid={nft.id}/> : null
-        }
-        </div>
-  
-        <div className="flex-col">
-        <div className="rounded-md bg-slate-900 p-3 flex w-32 my-2 items-center">
-        <div><strong>Token ID :</strong><span> {nft.tokenId}</span></div>
-        </div>
-        <div className="rounded-md bg-slate-900 p-3 flex w-60 items-center my-1">
-        <div><strong>NFT Name :</strong><span> {nft.name}</span></div>
-        </div>
-        <div className="rounded-md bg-slate-900 p-3 flex w-96 my-2 items-center">
-        <div><strong>Description :</strong><span> {nft.description}</span></div>
-        </div>
-        <div className="rounded-md bg-slate-900 p-3 flex w-60 my-2 items-center">
-        <div className="flex items-center gap-x-1"><strong>Owned by :</strong><span> <Link href={`/${nft.username}`} legacyBehavior><a className="hover:text-blue-500 flex items-center gap-x-1">{nft.username} {nft.verified == 'verified' ? <MdVerified size={15}/> : null}</a></Link></span></div>
-        </div>
         
-        <div className='flex justify-between items-center w-[220px] mb-3'>
-        <div className='flex items-center gap-x-2'>
-        <div>
-          <form onSubmit={e => likehandler(e)}>
-          {auth?.user ? 
-            auth?.user?.liked.find(u => u.includes(nft._id)) ? 
-            <button onClick={() => setLiked(false)}><AiFillHeart size={20} className='cursor-pointer text-red-500 hover:text-white' onClick={() => deleteLiker(nft._id)} /></button> : 
-            <button disabled={!isclick} onClick={() => setLiker(nft._id)}><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500' /></button> :
-            <Link href="/login"><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500'/></Link>
+      /***  DETAILS ***/
+      <div className="flex justify-between gap-x-4">
+          {/*** MEDIA ***/}
+          <div className="flex-col justify-start w-[450px] rounded-xl flex self-start">
+          
+          {nft.fileType == 'video/mp4' || nft.fileType == 'video/mov'
+              ? <video src={nft.images} className="rounded-xl w-[450px]" autoPlay muted loop/>
+              : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img className='rounded-xl object-cover w-[450px]' src={nft.images} />
+              : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || nft.fileType == 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft.id} detailpage={true}/> : null
           }
-          </form>
-        </div>
-          <div className='flex items-center mb-1.5 gap-x-2 text-sm'>
-          <strong>{nft.likes.length}</strong><span>Like</span>
+
+          <div className='flex-col w-[450px] border border-indigo-500 rounded-md mt-5'>
+            <div className='w-full bg-indigo-950 rounded-t-md border-b border-indigo-500 py-2 px-3'>
+            <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased'><CgDetailsMore size={18}/>Details</h1>
+            </div>
+            <div className='flex items-center w-full mt-3 p-3'>
+              <div className='flex items-center gap-x-2'>
+                By <Link href={`/${nft.username}`}><span className='w-96 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.username} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span></Link>
+              </div>
+            </div>
+            <div className='flex items-center w-full mb-3'>
+              <div className='flex items-center px-3'>
+                <p className='text-slate-400 text-sm'>{nft.description}</p>
+              </div>
+            </div>
+            <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenAbout(!about)}>
+              <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><BiDetail size={18}/>About {nft.username} {about ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+            </div>
+            {about ? <div className='flex-col items-center w-full p-3'>
+              <div className='flex items-center w-full gap-x-4'>
+                <img src={users.filter(u => u.username == nft.username).map((user) => user.avatar)}
+                alt={users.filter(u => u.username == nft.username).map((user) => user.username)}
+                className='flex w-6 h-6 rounded-full' />
+                <p>{users.filter(u => u.username == nft.username).map((user) => user.description)}</p>
+              </div>
+              <div className='flex items-center w-full gap-x-3 mt-3 self-end justify-end'>
+                <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.instagram)}`}><BsInstagram size={18}/></Link>
+                <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.twitter)}`}><BsTwitter size={18}/></Link>
+              </div>
+            </div> : null}
+            <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenContract(!contract)}>
+              <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><LiaFileContractSolid size={18}/>Contract Details {contract ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+            </div>
+            {contract ? <div className='flex-col items-center w-full p-3'>
+            <div className='flex-col grid items-center w-full gap-y-3'>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Contract Address</span>
+                <Link href={`https://etherscan.io/address/${nftcustom}`}><span className='flex justify-end self-end items-center font-semibold text-indigo-400'>{nftcustom.slice(0,5) + '...' + nftcustom.slice(38)}</span></Link>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Token ID</span>
+                <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>{nft.tokenId}</span>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Token Standard</span>
+                <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>ERC-721</span>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Last Updated</span>
+                <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'><TimeAgo timestamp={nft.createdAt}/></div>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Creator Earnings</span>
+                <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>10%</div>
+              </div>
+            </div>
+          </div> : null}
           </div>
-        </div>
-        <div className='flex items-center gap-x-2 text-sm'>
-          <div>
-          <BiCommentDetail size={20} className='cursor-pointer'/>
+          
           </div>
-          <div className='text-sm flex items-center gap-x-2'>
-          <strong>{nft.comments.length}</strong><span>Comments</span>
-          </div>
-        </div>
-      </div>
   
-        <div className='flex items-center '>
+        <div className="flex-col justify-end items-center self-start w-full">
+          <div className="px-3 flex w-full my-2 items-center">
+            <div>
+              <span className='w-96 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.name} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span>
+            </div>
+          </div>
+          <div className="px-3 flex w-60 items-center mt-4">
+            <div>
+              <strong className='w-96 flex truncate text-slate-400'>{nft.description}</strong>
+            </div>
+          </div>
+          <div className="rounded-md px-3 flex w-full items-center my-1">
+            <div className='flex items-center gap-x-1'>
+              <span className='text-sm font-thin'>Owned by</span><Link href={`/${nft.username}`} className='text-sm text-indigo-500'>{nft.owner.slice(0,5) + '...' + nft.owner.slice(38)} | {nft.username}</Link>
+            </div>
+          </div>
+          <div className="p-3 flex w-60 my-2 items-center">
+            <div className='flex items-center w-full gap-x-6'>
+              <div className='flex items-center gap-x-2'>
+                {auth?.user ? 
+                  auth?.user?.liked.find(u => u.includes(nft._id)) ? 
+                  <button onClick={() => setLiked(false)}><AiFillHeart size={20} className='cursor-pointer text-red-500 hover:text-white' onClick={() => deleteLiker(nft._id)} /></button> : 
+                  <button disabled={!isclick} onClick={() => setLiker(nft._id)}><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500' /></button> :
+                  <Link href="/login"><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500'/></Link>
+                }
+                <strong>{nft.likes.length}</strong>
+              </div>
+
+              <div className='flex items-center gap-x-2'>
+                <BiCommentDetail size={20} className='cursor-pointer'/>
+                <strong>{nft.comments.length}</strong>
+              </div>
+            </div>
+          </div>
+        
+          <div className='border border-indigo-500 rounded-md w-[450px] p-5'>
+            <p className='text-xl antialiased font-light'>Current Price</p>
+            <div className='flex items-center gap-x-2'>
+              <span className='text-4xl font-bold'>{nft.price} CRI</span>
+              <span className='self-end'>${(coin * nft.price).toFixed(2)}</span>
+            </div>
+            <div className='w-full flex items-center mt-3'>
+              {nft?.transactionHash ?
+                <Link href={`/placebid/${nft.id}`} className="bg-indigo-950 py-3 px-7 rounded-md hover:bg-indigo-600 w-full">Place Bid</Link>
+                :<button type="submit" onClick={() => buyNewMum(nft.price,nft.tokenId)} className="bg-indigo-950 py-3 px-7 rounded-md hover:bg-indigo-600 w-full">Buy Now</button>
+              }
+            </div>
+          </div>
+
+          {/*** CHART ***/}
+          <div className='border flex-col justify-center items-center border-indigo-500 rounded-md w-[450px] my-5'>
+          <div className='flex justify-between items-center bg-indigo-950 w-full border-b border-indigo-500 rounded-t-md'>
+              <div className='flex justify-start items-center w-full'>
+                <span className='rounded-md  px-4 py-2 text-sm font-bold antialiased leading-6 flex items-center gap-x-2'><AiOutlineLineChart size={18}/> Price History</span>
+              </div>
+              <div className='flex justify-end items-center w-full'>
+                <span className='rounded-md  px-4 py-2 text-sm font-bold antialiased leading-6'>{parseFloat(coin).toFixed(2)} USD</span>
+              </div>
+          </div>
+          <div className='flex justify-center items-center w-full p-5'>
+           <AreaChart width={450} height={200} data={chartdata}
+              margin={{ top: 10, right: 0, left: 0, bottom: 10 }}>
+                <defs>
+                  <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+              <Tooltip cursor={false} itemStyle={toolstyle} labelStyle={labelstyle} contentStyle={contstyle}/>
+
+              <Area type="monotone" dataKey="Price" stroke="#8884d8" fillOpacity={0.5} fill="url(#colorPv)" />
+
+              </AreaChart>
+          </div>
+          </div>
+  
+        <div className='flex items-center w-[450px] rounded-md'>
           <form onSubmit={handleSubmit} className='flex items-center gap-x-2' method='POST'>
-            <textarea value={input} onChange={e => setInput(e.target.value)} autoComplete={false} name="comment" id="comment" className='border border-slate-800 w-[280px] h-[50px] rounded-md bg-transparent py-2 px-2 text-slate-400' placeholder='Comment...'></textarea>
+            <textarea value={input} onChange={e => setInput(e.target.value)} autoComplete={false} name="comment" id="comment" className='border border-indigo-500 w-[450px] h-[50px] rounded-md bg-transparent py-2 px-2 text-slate-400' placeholder='Comment...'></textarea>
             {input &&
               <button type='submit' className='bg-slate-900 py-3 px-7 rounded-md text-slate-400 border border-slate-800 hover:bg-slate-800 hover:border-slate-900' onClick={(e) => handleSubmit(nft._id,e)}>Send</button>
             }
           </form>
         </div>  
-  
-        <div className="rounded-md bg-slate-900 p-3 flex w-52 my-2 items-center">
-        <div className="flex-col items-center">
-        <div className="flex items-center gap-x-2 text-xl"><strong>Price :</strong><span>{nft.price}</span><div className="flex items-center gap-x-2"><span className="text-sm ml-3">CRI</span><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-6' /></div></div>
+
+      {/**** COMMENTS ****/}
+      <div className='border border-indigo-500 rounded-md px-7 py-3 w-[450px] mt-3'>
+        <h1 className='text-xl font-bold antialiased text-slate-400'>Comments</h1>
+      <div className='flex-col mt-5'>
+      {commentdatas.length == 0 &&
+        <div>
+          No comments yet
         </div>
-        </div>
-        <div className=" py-7 flex w-64 my-2 items-center">
-          <div className="flex gap-x-3">
-          {nft?.transactionHash ?
-            <Link href={`/placebid/${nft.id}`} className="bg-blue-500 py-3 px-7 rounded-md hover:bg-blue-600">Place Bid</Link>
-            :<button type="submit" onClick={() => buyNewMum(nft.price,nft.tokenId)} className="bg-blue-500 py-3 px-7 rounded-md hover:bg-blue-600">Buy Now</button>
-          }
+      }
+      {commentdatas.filter(u => u.nftId == nftpage).map((comment,k) =>
+        <div className='my-2'>
+        <div key={k} className='bg-indigo-950 rounded-md py-3 px-3 w-full'>
+        <div className='flex items-center gap-x-2 max-h-24'>
+          <img src={comment.authoravatar} alt="" className='w-7 h-7 rounded-full' />
+          <strong>{comment.username}</strong>
+          <div className='flex justify-between items-center w-full px-2'>
+            <p>{comment.comtext}</p>
+            <TimeAgo timestamp={comment.createdAt}/>
           </div>
         </div>
-  
+        </div>
+        </div>
+      )}
+      </div>
+      </div>
+
         </div>
   
       </div>
   
       ))}
-      <div className='border border-slate-900 rounded-md px-7 py-3 w-full mx-7 mt-10'>
-      <h1 className='text-xl font-bold antialiased text-slate-400'>Comments</h1>
-    <div className='flex-col mt-5'>
-    {commentdatas.length == 0 &&
-      <div>
-        No comments yet
-      </div>
-    }
-    {commentdatas.filter(u => u.nftId == nftpage).map((comment,k) =>
-      <div className='my-2'>
-      <div key={k} className='bg-slate-900 rounded-md py-3 px-3 w-full'>
-      <div className='flex items-center gap-x-2 max-h-24'>
-        <img src={comment.authoravatar} alt="" className='w-7 h-7 rounded-full' />
-        <strong>{comment.username}</strong>
-        <div className='flex justify-between items-center w-full px-2'>
-          <p>{comment.comtext}</p>
-          <TimeAgo timestamp={comment.createdAt}/>
-        </div>
-      </div>
-      </div>
-      </div>
-    )}
-    </div>
-    </div>
+
+
         </div>
   
         </Fragment>
@@ -555,111 +857,199 @@ const Nftpage = () => {
         <Head>
         <title>NFT Details • Cosmeta NFT Marketplace</title>
         </Head>
-        <div className="p-40 flex justify-between">
+        <div className="flex justify-center items-center w-full">
+        {!content.length ? <PreLoader/> : null}
       {content.filter(u => u._id == nftpage).map(nft => (
-  
-      <div className="flex justify-between gap-2">
-          <div className="p-3 bg-slate-900 w-[500px] rounded-xl flex">
+        
+      /***  DETAILS ***/
+      <div className="flex justify-between gap-x-4">
+          {/*** MEDIA ***/}
+          <div className="flex-col justify-start w-[600px] rounded-xl flex self-start">
           
           {nft.fileType == 'video/mp4' || nft.fileType == 'video/mov'
-              ? <video src={nft.images} className="rounded-t-xl w-full h-[296px]" autoPlay muted loop/>
-              : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img className='rounded-t-xl object-cover w-full' src={nft.images} />
-              : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || nft.fileType == 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftname={nft.name} nftid={nft.id}/> : null
+              ? <video src={nft.images} className="rounded-xl w-[600px]" autoPlay muted loop/>
+              : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img className='rounded-xl object-cover w-[600px]' src={nft.images} />
+              : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || nft.fileType == 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft.id} detailpage={true}/> : null
           }
+
+          <div className='flex-col w-[600px] border border-indigo-500 rounded-md mt-5'>
+            <div className='w-full bg-indigo-950 rounded-t-md border-b border-indigo-500 py-2 px-3'>
+            <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased'><CgDetailsMore size={18}/>Details</h1>
+            </div>
+            <div className='flex items-center w-full mt-3 p-3'>
+              <div className='flex items-center gap-x-2'>
+                By <Link href={`/${nft.username}`}><span className='w-96 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.username} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span></Link>
+              </div>
+            </div>
+            <div className='flex items-center w-full mb-3'>
+              <div className='flex items-center px-3'>
+                <p className='text-slate-400 text-sm'>{nft.description}</p>
+              </div>
+            </div>
+            <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenAbout(!about)}>
+              <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><BiDetail size={18}/>About {nft.username} {about ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+            </div>
+            {about ? <div className='flex-col items-center w-full p-3'>
+              <div className='flex items-center w-full gap-x-4'>
+                <img src={users.filter(u => u.username == nft.username).map((user) => user.avatar)}
+                alt={users.filter(u => u.username == nft.username).map((user) => user.username)}
+                className='flex w-6 h-6 rounded-full' />
+                <p>{users.filter(u => u.username == nft.username).map((user) => user.description)}</p>
+              </div>
+              <div className='flex items-center w-full gap-x-3 mt-3 self-end justify-end'>
+                <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.instagram)}`}><BsInstagram size={18}/></Link>
+                <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.twitter)}`}><BsTwitter size={18}/></Link>
+              </div>
+            </div> : null}
+            <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenContract(!contract)}>
+              <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><LiaFileContractSolid size={18}/>Contract Details {contract ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+            </div>
+            {contract ? <div className='flex-col items-center w-full p-3'>
+            <div className='flex-col grid items-center w-full gap-y-3'>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Contract Address</span>
+                <Link href={`https://etherscan.io/address/${nftcustom}`}><span className='flex justify-end self-end items-center font-semibold text-indigo-400'>{nftcustom.slice(0,5) + '...' + nftcustom.slice(38)}</span></Link>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Token ID</span>
+                <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>{nft.tokenId}</span>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Token Standard</span>
+                <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>ERC-721</span>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Last Updated</span>
+                <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'><TimeAgo timestamp={nft.createdAt}/></div>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Creator Earnings</span>
+                <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>10%</div>
+              </div>
+            </div>
+          </div> : null}
+          </div>
+          
           </div>
   
-        <div className="flex-col">
-        <div className="rounded-md bg-slate-900 p-3 flex w-32 my-2 items-center">
-        <div><strong>Token ID :</strong><span> {nft.tokenId}</span></div>
-        </div>
-        <div className="rounded-md bg-slate-900 p-3 flex w-60 items-center my-1">
-        <div><strong>NFT Name :</strong><span> {nft.name}</span></div>
-        </div>
-        <div className="rounded-md bg-slate-900 p-3 flex w-96 my-2 items-center">
-        <div><strong>Description :</strong><span> {nft.description}</span></div>
-        </div>
-        <div className="rounded-md bg-slate-900 p-3 flex w-60 my-2 items-center">
-        <div className="flex items-center gap-x-1"><strong>Owned by :</strong><span> <Link href={`/${nft.username}`} legacyBehavior><a className="hover:text-blue-500 flex items-center gap-x-1">{nft.username} {nft.verified == 'verified' ? <MdVerified size={15}/> : null}</a></Link></span></div>
-        </div>
+        <div className="flex-col justify-end items-center self-start w-full">
+          <div className="px-3 flex w-full my-2 items-center">
+            <div>
+              <span className='w-96 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.name} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span>
+            </div>
+          </div>
+          <div className="px-3 flex w-60 items-center mt-4">
+            <div>
+              <strong className='w-96 flex truncate text-slate-400'>{nft.description}</strong>
+            </div>
+          </div>
+          <div className="rounded-md px-3 flex w-full items-center my-1">
+            <div className='flex items-center gap-x-1'>
+              <span className='text-sm font-thin'>Owned by</span><Link href={`/${nft.username}`} className='text-sm text-indigo-500'>{nft.owner.slice(0,5) + '...' + nft.owner.slice(38)} | {nft.username}</Link>
+            </div>
+          </div>
+          <div className="p-3 flex w-60 my-2 items-center">
+            <div className='flex items-center w-full gap-x-6'>
+              <div className='flex items-center gap-x-2'>
+                {auth?.user ? 
+                  auth?.user?.liked.find(u => u.includes(nft._id)) ? 
+                  <button onClick={() => setLiked(false)}><AiFillHeart size={20} className='cursor-pointer text-red-500 hover:text-white' onClick={() => deleteLiker(nft._id)} /></button> : 
+                  <button disabled={!isclick} onClick={() => setLiker(nft._id)}><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500' /></button> :
+                  <Link href="/login"><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500'/></Link>
+                }
+                <strong>{nft.likes.length}</strong>
+              </div>
+
+              <div className='flex items-center gap-x-2'>
+                <BiCommentDetail size={20} className='cursor-pointer'/>
+                <strong>{nft.comments.length}</strong>
+              </div>
+            </div>
+          </div>
         
-        <div className='flex justify-between items-center w-[220px] mb-3'>
-        <div className='flex items-center gap-x-2'>
-        <div>
+          <div className='border border-indigo-500 rounded-md w-[600px] p-5'>
+            <p className='text-xl antialiased font-light'>Current Price</p>
+            <div className='flex items-center gap-x-2'>
+              <span className='text-4xl font-bold'>{nft.price} CRI</span>
+              <span className='self-end'>${(coin * nft.price).toFixed(2)}</span>
+            </div>
+            <div className='w-full flex items-center mt-3'>
+              {nft?.transactionHash ?
+                <Link href={`/placebid/${nft.id}`} className="bg-indigo-950 py-3 px-7 rounded-md hover:bg-indigo-600 w-full">Place Bid</Link>
+                :<button type="submit" onClick={() => buyNewMum(nft.price,nft.tokenId)} className="bg-indigo-950 py-3 px-7 rounded-md hover:bg-indigo-600 w-full">Buy Now</button>
+              }
+            </div>
+          </div>
 
-            {auth?.user ? 
-              auth?.user?.liked.find(u => u.includes(nft._id)) ? 
-              <button onClick={() => setLiked(false)}><AiFillHeart size={20} className='cursor-pointer text-red-500 hover:text-white' onClick={() => deleteLiker(nft._id)} /></button> : 
-              <button disabled={!isclick} onClick={() => setLiker(nft._id)}><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500' /></button> :
-              <Link href="/login"><AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500'/></Link>
-            }
+          {/*** CHART ***/}
+          <div className='border flex-col justify-center items-center border-indigo-500 rounded-md w-[600px] my-5'>
+          <div className='flex justify-between items-center bg-indigo-950 w-full border-b border-indigo-500 rounded-t-md'>
+              <div className='flex justify-start items-center w-full'>
+                <span className='rounded-md  px-4 py-2 text-sm font-bold antialiased leading-6 flex items-center gap-x-2'><AiOutlineLineChart size={18}/> Price History</span>
+              </div>
+              <div className='flex justify-end items-center w-full'>
+                <span className='rounded-md  px-4 py-2 text-sm font-bold antialiased leading-6'>{parseFloat(coin).toFixed(2)} USD</span>
+              </div>
+          </div>
+          <div className='flex justify-center items-center w-full p-5'>
+           <AreaChart width={600} height={200} data={chartdata}
+              margin={{ top: 10, right: 0, left: 0, bottom: 10 }}>
+                <defs>
+                  <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+              <Tooltip cursor={false} itemStyle={toolstyle} labelStyle={labelstyle} contentStyle={contstyle}/>
 
-        </div>
-          <div className='flex items-center mb-1.5 gap-x-2 text-sm'>
-          <strong>{nft.likes.length}</strong><span>Like</span>
+              <Area type="monotone" dataKey="Price" stroke="#8884d8" fillOpacity={0.5} fill="url(#colorPv)" />
+
+              </AreaChart>
           </div>
-        </div>
-        <div className='flex items-center gap-x-2 text-sm'>
-          <div>
-          <BiCommentDetail size={20} className='cursor-pointer'/>
           </div>
-          <div className='text-sm flex items-center gap-x-2'>
-          <strong>{nft.comments.length}</strong><span>Comments</span>
-          </div>
-        </div>
-      </div>
   
-        <div className='flex items-center '>
+        <div className='flex items-center w-[600px] rounded-md'>
           <form onSubmit={handleSubmit} className='flex items-center gap-x-2' method='POST'>
-            <textarea value={input} onChange={e => setInput(e.target.value)} autoComplete={false} name="comment" id="comment" className='border border-slate-800 w-[280px] h-[50px] rounded-md bg-transparent py-2 px-2 text-slate-400' placeholder='Comment...'></textarea>
+            <textarea value={input} onChange={e => setInput(e.target.value)} autoComplete={false} name="comment" id="comment" className='border border-indigo-500 w-[600px] h-[50px] rounded-md bg-transparent py-2 px-2 text-slate-400' placeholder='Comment...'></textarea>
             {input &&
               <button type='submit' className='bg-slate-900 py-3 px-7 rounded-md text-slate-400 border border-slate-800 hover:bg-slate-800 hover:border-slate-900' onClick={(e) => handleSubmit(nft._id,e)}>Send</button>
             }
           </form>
         </div>  
-  
-        <div className="rounded-md bg-slate-900 p-3 flex w-52 my-2 items-center">
-        <div className="flex-col items-center">
-        <div className="flex items-center gap-x-2 text-xl"><strong>Price :</strong><span>{nft.price}</span><div className="flex items-center gap-x-2"><span className="text-sm ml-3">CRI</span><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-6' /></div></div>
+
+      {/**** COMMENTS ****/}
+      <div className='border border-indigo-500 rounded-md px-7 py-3 w-[600px] mt-3'>
+        <h1 className='text-xl font-bold antialiased text-slate-400'>Comments</h1>
+      <div className='flex-col mt-5'>
+      {commentdatas.length == 0 &&
+        <div>
+          No comments yet
         </div>
-        </div>
-        <div className=" py-7 flex w-64 my-2 items-center">
-          <div className="flex gap-x-3">
-          {nft?.transactionHash ?
-            <Link href={`/placebid/${nft.id}`} className="bg-blue-500 py-3 px-7 rounded-md hover:bg-blue-600">Place Bid</Link>
-            :<button type="submit" onClick={() => buyNewMum(nft.price,nft.tokenId)} className="bg-blue-500 py-3 px-7 rounded-md hover:bg-blue-600">Buy Now</button>
-          }
+      }
+      {commentdatas.filter(u => u.nftId == nftpage).map((comment,k) =>
+        <div className='my-2'>
+        <div key={k} className='bg-indigo-950 rounded-md py-3 px-3 w-full'>
+        <div className='flex items-center gap-x-2 max-h-24'>
+          <img src={comment.authoravatar} alt="" className='w-7 h-7 rounded-full' />
+          <strong>{comment.username}</strong>
+          <div className='flex justify-between items-center w-full px-2'>
+            <p>{comment.comtext}</p>
+            <TimeAgo timestamp={comment.createdAt}/>
           </div>
         </div>
-  
+        </div>
+        </div>
+      )}
+      </div>
+      </div>
+
         </div>
   
       </div>
   
       ))}
-    <div className='border border-slate-900 rounded-md px-7 py-3 w-[50vh] mx-7'>
-      <h1 className='text-xl font-bold antialiased text-slate-400'>Comments</h1>
-    <div className='flex-col mt-5'>
-    {commentdatas.length == 0 &&
-      <div>
-        No comments yet
-      </div>
-    }
-    {commentdatas.filter(u => u.nftId == nftpage).map((comment,k) =>
-      <div className='my-2'>
-      <div key={k} className='bg-slate-900 rounded-md py-3 px-3 w-full'>
-      <div className='flex items-center gap-x-2 max-h-24'>
-        <img src={comment.authoravatar} alt="" className='w-7 h-7 rounded-full' />
-        <strong>{comment.username}</strong>
-        <div className='flex justify-between items-center w-full px-2'>
-          <p>{comment.comtext}</p>
-          <TimeAgo timestamp={comment.createdAt}/>
-        </div>
-      </div>
-      </div>
-      </div>
-    )}
-    </div>
-    </div>
+
+
         </div>
   
         </Fragment>

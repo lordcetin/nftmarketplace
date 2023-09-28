@@ -28,7 +28,7 @@ const TimeAgo = ({ timestamp }) => {
     return () => clearInterval(intervalId);
   }, [timestamp]);
 
-  return <div className='text-[14px]'>{timeAgo}</div>;
+  return <div className='text-xs'>{timeAgo}</div>;
 };
 
 export default TimeAgo;

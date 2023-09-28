@@ -19,6 +19,14 @@ import Countdown from '../../components/Countdown';
 import Cookies from 'js-cookie';
 import jwt from 'jsonwebtoken';
 import Head from 'next/head';
+import { PreLoader } from '@/components';
+import { CgDetailsMore } from 'react-icons/cg'
+import { MdVerified  } from 'react-icons/md'
+import { BiDetail  } from 'react-icons/bi'
+import { BsInstagram , BsTwitter } from 'react-icons/bs'
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import {LiaFileContractSolid} from 'react-icons/lia';
+import TimeAgo from '@/components/TimeAgo';
 
 const AuctionNFTPage = ({param}) => {
   
@@ -35,6 +43,9 @@ const AuctionNFTPage = ({param}) => {
   const [count,setCount] = useState(15);
   const [bidder,setBidder] = useState([]);
   const [dbauction,setDBAuction] = useState([]);
+  const [about,setOpenAbout] = useState();
+  const [contract,setOpenContract] = useState();
+  const [users,setUsers] = useState([])
 
   const [uid,setUid] = useState(null);
 
@@ -50,6 +61,7 @@ const AuctionNFTPage = ({param}) => {
 
   useEffect(() => {
     getNFTs()
+    getUsers()
   },[])
 
   useEffect(() => {
@@ -77,6 +89,17 @@ const AuctionNFTPage = ({param}) => {
       return res
     }).then(res => res.json()).then(data => {
       MumAllAuction(data.filter(u => u.id == param))
+    })
+  }
+
+  const getUsers = async () => {
+    await fetch('https://testnet.cos-in.com/api/users').then(res => {
+      if(!res.ok){
+        throw new Error("HTTP ERROR",res.status)
+      }
+      return res
+    }).then(res => res.json()).then(data => {
+      setUsers(data)
     })
   }
   const allAuction = async () => {
@@ -189,8 +212,6 @@ const AuctionNFTPage = ({param}) => {
     router.push('/')
 }
 
-
-
   return (
     <div>
     <Media queries={{
@@ -203,208 +224,442 @@ const AuctionNFTPage = ({param}) => {
         {matches.small &&
           <Fragment>
           <Head>
-          <title>NFT Details • Cosmeta NFT Marketplace</title>
+          <title>Auction Details • Cosmeta NFT Marketplace</title>
           </Head>
-            {allauction.map((i,k) => 
-              <div key={k} className="flex justify-center items-center w-full h-full px-7">
-              <div className="flex-col justify-between items-center w-full text-slate-900">
-              <div className="w-full justify-center items-center">
-              <a>{i.fileType == "video/mp4"
-              ? <video src={i.images} autoPlay loop muted className='rounded-xl object-cover w-[700px] h-[700px] border-[1px] border-slate-400'/>
-              : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
-              ? <img className='rounded-xl object-cover w-[700px] h-[700px] border-[1px] border-slate-400' src={i.images} alt={i.name}/>
-              : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-              ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
-              }</a>
+
+          <div className="flex justify-center items-center w-full">
+          {!allauction.length ? <PreLoader/> : null}
+        {allauction.map(nft => (
+          
+        /***  DETAILS ***/
+        <div className="flex flex-col justify-center gap-x-4">
+            {/*** MEDIA ***/}
+            <div className="flex-col justify-center w-[300px] rounded-xl flex">
+            
+            {nft.fileType == 'video/mp4' || nft.fileType == 'video/mov'
+                ? <video src={nft.images} className="rounded-xl w-[450px]" autoPlay muted loop/>
+                : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img className='rounded-xl object-cover w-[300px]' src={nft.images} />
+                : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || nft.fileType == 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft.id} detailpage={true}/> : null
+            }
+            <div className='w-[300px] flex items-center'></div>
+            </div>
+    
+          <div className="flex-col justify-center items-center w-full">
+            <div className="px-3 flex w-full my-2 items-center">
+              <div>
+                <span className='w-60 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.name} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span>
+              </div>
+            </div>
+            <div className="px-3 flex w-60 items-center mt-4">
+              <div>
+                <strong className='w-60 flex truncate text-slate-400'>{nft.description}</strong>
+              </div>
+            </div>
+            <div className="rounded-md px-3 flex w-full items-center my-1">
+              <div className='flex items-center gap-x-1'>
+                <span className='text-sm font-thin'>Owned by</span><Link href={`/${nft.username}`} className='text-sm text-indigo-500'>{nft.owner.slice(0,5) + '...' + nft.owner.slice(38)} | {nft.username}</Link>
+              </div>
+            </div>
+          
+            <div className='border border-indigo-500 rounded-md w-[300px] p-5 my-5'>
+              <p className='text-xl antialiased font-light'>Set the offer time</p>
+              <form onSubmit={(e) => handleSubmit(e,nft.tokenId)} className="grid gap-y-2 my-3">
+              <div>
+                <input
+                className="w-full bg-indigo-950 hover:bg-indigo-900 py-2 px-3 rounded-lg border-2 border-indigo-500 hover:border-indigo-400 text-slate-50 placeholder:text-indigo-500"
+                type="number"
+                name="period"
+                min={1}
+                placeholder="Days E.g 7"
+                onChange={(e) => setPeriod(e.target.value)}
+                value={period}
+                required
+                />
+              </div>
+              <div>
+                <select
+                className="w-full bg-indigo-950 hover:bg-indigo-900 py-2 px-3 rounded-lg border-2 border-indigo-500 hover:border-indigo-400 text-indigo-500"
+                name="duration"
+                onChange={(e) => setTimeline(e.target.value)}
+                value={timeline}
+                required
+                >
+                <option value="" hidden>
+                  Select Duration
+                </option>
+                <option value="sec">Seconds</option>
+                <option value="min">Minutes</option>
+                <option value="hour">Hours</option>
+                <option value="day">Days</option>
+                </select>
+              </div>
+
+              <div>
+                <button className='bg-indigo-950 py-3 px-7 rounded-md hover:bg-indigo-600 w-full border-2 border-indigo-500' type="submit">Offer Item</button> 
+              </div>
+              </form>
             </div>
 
-          <div className='w-full h-[700px] justify-center items-center mt-5'>
-					<div className='flex-col text-slate-400 grid gap-y-1 pb-10'>
-							<div className='flex items-center'><span>Name :&nbsp;</span><h1 className='font-sans font-extrabold text-3xl'>{i.name}</h1></div>
-							<div className='flex items-center'><span>Description :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.description}</p></div>
-							{i.website ? <div className='flex items-center'><span>Website :</span><p className='font-sans font-semibold text-lg'>{i.website}</p> </div>: null}
-							<div className='flex items-center'><span>Username :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.username}</p></div>
-							<div className='flex items-center'><span>Owner :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.owner.slice(0,5) + '...' + i.owner.slice(38)}</p></div>
-							<div className='flex items-center'><span>Network :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.wichNet}</p></div>
-							<div className='flex items-center'><span>Price :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.price}&nbsp;CRI</p></div>
-					</div>
-          <form onSubmit={(e) => handleSubmit(e,i.tokenId)} className="grid gap-y-2">
-          <div>
-            <input
-            className="w-96 bg-slate-800 hover:bg-slate-900 py-2 px-3 rounded-lg border-2 border-slate-700 hover:border-blue-500 text-slate-400"
-            type="number"
-            name="period"
-            min={1}
-            placeholder="Days E.g 7"
-            onChange={(e) => setPeriod(e.target.value)}
-            value={period}
-            required
-            />
-          </div>
-          <div>
-            <select
-            className="w-96 bg-slate-800 hover:bg-slate-900 py-2 px-3 rounded-lg border-2 border-slate-700 hover:border-blue-500 text-slate-400"
-            name="duration"
-            onChange={(e) => setTimeline(e.target.value)}
-            value={timeline}
-            required
-            >
-            <option value="" hidden>
-              Select Duration
-            </option>
-            <option value="sec">Seconds</option>
-            <option value="min">Minutes</option>
-            <option value="hour">Hours</option>
-            <option value="day">Days</option>
-            </select>
+            <div className='flex-col w-[300px] border border-indigo-500 rounded-md mt-5'>
+            <div className='w-full bg-indigo-950 rounded-t-md border-b border-indigo-500 py-2 px-3'>
+            <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased'><CgDetailsMore size={18}/>Details</h1>
+            </div>
+            <div className='flex items-center w-full mt-3 p-3'>
+              <div className='flex items-center gap-x-2'>
+                By <Link href={`/${nft.username}`}><span className='w-96 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.username} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span></Link>
+              </div>
+            </div>
+            <div className='flex items-center w-full mb-3'>
+              <div className='flex items-center px-3'>
+                <p className='text-slate-400 text-sm'>{nft.description}</p>
+              </div>
+            </div>
+            <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenAbout(!about)}>
+              <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><BiDetail size={18}/>About {nft.username} {about ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+            </div>
+            {about ? <div className='flex-col items-center w-full p-3'>
+              <div className='flex items-center w-full gap-x-4'>
+                <img src={users.filter(u => u.username == nft.username).map((user) => user.avatar)}
+                alt={users.filter(u => u.username == nft.username).map((user) => user.username)}
+                className='flex w-6 h-6 rounded-full self-start mt-3' />
+                <p>{users.filter(u => u.username == nft.username).map((user) => user.description)}</p>
+              </div>
+              <div className='flex items-center w-full gap-x-3 mt-3 self-end justify-end'>
+                <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.instagram)}`}><BsInstagram size={18}/></Link>
+                <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.twitter)}`}><BsTwitter size={18}/></Link>
+              </div>
+            </div> : null}
+            <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenContract(!contract)}>
+              <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><LiaFileContractSolid size={18}/>Contract Details {contract ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+            </div>
+            {contract ? <div className='flex-col items-center w-full p-3'>
+            <div className='flex-col grid items-center w-full gap-y-3'>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Contract Address</span>
+                <Link href={`https://etherscan.io/address/${nftcustom}`}><span className='flex justify-end self-end items-center font-semibold text-indigo-400'>{nftcustom.slice(0,5) + '...' + nftcustom.slice(38)}</span></Link>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Token ID</span>
+                <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>{nft.tokenId}</span>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Token Standard</span>
+                <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>ERC-721</span>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Last Updated</span>
+                <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'><TimeAgo timestamp={nft.createdAt}/></div>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Creator Earnings</span>
+                <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>10%</div>
+              </div>
+            </div>
+          </div> : null}
           </div>
 
-          <div>
-            <button className='bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 relative w-96 h-10 text-slate-400' type="submit">Offer Item</button> 
           </div>
-          </form>
+    
+        </div>
+    
+        ))}
+  
+  
           </div>
-            </div>
-            </div>
-            )}
           </Fragment>
         }
         {matches.medium &&
           <Fragment>
           <Head>
-          <title>NFT Details • Cosmeta NFT Marketplace</title>
+          <title>Auction Details • Cosmeta NFT Marketplace</title>
           </Head>
-            {allauction.map((i,k) => 
-              <div key={k} className="flex justify-center items-center w-full h-full py-40 px-7">
-              <div className="flex justify-between items-center w-full text-slate-900 gap-x-5">
-              <div className="w-full justify-center items-center">
-              <a>{i.fileType == "video/mp4"
-              ? <video src={i.images} autoPlay loop muted className='rounded-xl object-cover w-[700px] h-[700px] border-[1px] border-slate-400'/>
-              : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
-              ? <img className='rounded-xl object-cover w-[700px] h-[700px] border-[1px] border-slate-400' src={i.images} alt={i.name}/>
-              : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-              ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
-              }</a>
+
+          <div className="flex justify-center items-center w-full">
+          {!allauction.length ? <PreLoader/> : null}
+        {allauction.map(nft => (
+          
+        /***  DETAILS ***/
+        <div className="flex justify-between gap-x-4">
+            {/*** MEDIA ***/}
+            <div className="flex-col justify-start w-[450px] rounded-xl flex self-start">
+            
+            {nft.fileType == 'video/mp4' || nft.fileType == 'video/mov'
+                ? <video src={nft.images} className="rounded-xl w-[450px]" autoPlay muted loop/>
+                : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img className='rounded-xl object-cover w-[450px]' src={nft.images} />
+                : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || nft.fileType == 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft.id} detailpage={true}/> : null
+            }
+            <div className='w-[450px] flex items-center'></div>
+            </div>
+    
+          <div className="flex-col justify-center items-center w-full">
+            <div className="px-3 flex w-full my-2 items-center">
+              <div>
+                <span className='w-96 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.name} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span>
+              </div>
+            </div>
+            <div className="px-3 flex w-60 items-center mt-4">
+              <div>
+                <strong className='w-96 flex truncate text-slate-400'>{nft.description}</strong>
+              </div>
+            </div>
+            <div className="rounded-md px-3 flex w-full items-center my-1">
+              <div className='flex items-center gap-x-1'>
+                <span className='text-sm font-thin'>Owned by</span><Link href={`/${nft.username}`} className='text-sm text-indigo-500'>{nft.owner.slice(0,5) + '...' + nft.owner.slice(38)} | {nft.username}</Link>
+              </div>
+            </div>
+          
+            <div className='border border-indigo-500 rounded-md w-[450px] p-5 my-5'>
+              <p className='text-xl antialiased font-light'>Set the offer time</p>
+              <form onSubmit={(e) => handleSubmit(e,nft.tokenId)} className="grid gap-y-2 my-3">
+              <div>
+                <input
+                className="w-full bg-indigo-950 hover:bg-indigo-900 py-2 px-3 rounded-lg border-2 border-indigo-500 hover:border-indigo-400 text-slate-50 placeholder:text-indigo-500"
+                type="number"
+                name="period"
+                min={1}
+                placeholder="Days E.g 7"
+                onChange={(e) => setPeriod(e.target.value)}
+                value={period}
+                required
+                />
+              </div>
+              <div>
+                <select
+                className="w-full bg-indigo-950 hover:bg-indigo-900 py-2 px-3 rounded-lg border-2 border-indigo-500 hover:border-indigo-400 text-indigo-500"
+                name="duration"
+                onChange={(e) => setTimeline(e.target.value)}
+                value={timeline}
+                required
+                >
+                <option value="" hidden>
+                  Select Duration
+                </option>
+                <option value="sec">Seconds</option>
+                <option value="min">Minutes</option>
+                <option value="hour">Hours</option>
+                <option value="day">Days</option>
+                </select>
+              </div>
+
+              <div>
+                <button className='bg-indigo-950 py-3 px-7 rounded-md hover:bg-indigo-600 w-full border-2 border-indigo-500' type="submit">Offer Item</button> 
+              </div>
+              </form>
             </div>
 
-          <div className='w-full h-[700px] justify-center items-center'>
-					<div className='flex-col text-slate-400 grid gap-y-1 pb-10'>
-							<div className='flex items-center'><span>Name :&nbsp;</span><h1 className='font-sans font-extrabold text-3xl'>{i.name}</h1></div>
-							<div className='flex items-center'><span>Description :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.description}</p></div>
-							{i.website ? <div className='flex items-center'><span>Website :</span><p className='font-sans font-semibold text-lg'>{i.website}</p> </div>: null}
-							<div className='flex items-center'><span>Username :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.username}</p></div>
-							<div className='flex items-center'><span>Owner :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.owner.slice(0,5) + '...' + i.owner.slice(38)}</p></div>
-							<div className='flex items-center'><span>Network :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.wichNet}</p></div>
-							<div className='flex items-center'><span>Price :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.price}&nbsp;CRI</p></div>
-					</div>
-          <form onSubmit={(e) => handleSubmit(e,i.tokenId)} className="grid gap-y-2">
-          <div>
-            <input
-            className="w-96 bg-slate-800 hover:bg-slate-900 py-2 px-3 rounded-lg border-2 border-slate-700 hover:border-blue-500 text-slate-400"
-            type="number"
-            name="period"
-            min={1}
-            placeholder="Days E.g 7"
-            onChange={(e) => setPeriod(e.target.value)}
-            value={period}
-            required
-            />
-          </div>
-          <div>
-            <select
-            className="w-96 bg-slate-800 hover:bg-slate-900 py-2 px-3 rounded-lg border-2 border-slate-700 hover:border-blue-500 text-slate-400"
-            name="duration"
-            onChange={(e) => setTimeline(e.target.value)}
-            value={timeline}
-            required
-            >
-            <option value="" hidden>
-              Select Duration
-            </option>
-            <option value="sec">Seconds</option>
-            <option value="min">Minutes</option>
-            <option value="hour">Hours</option>
-            <option value="day">Days</option>
-            </select>
-          </div>
-          <div>
-            <button className='bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 relative w-96 h-10 text-slate-400' type="submit">Offer Item</button> 
-          </div>
-          </form>
-          </div>
+            <div className='flex-col w-[450px] border border-indigo-500 rounded-md mt-5'>
+            <div className='w-full bg-indigo-950 rounded-t-md border-b border-indigo-500 py-2 px-3'>
+            <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased'><CgDetailsMore size={18}/>Details</h1>
             </div>
+            <div className='flex items-center w-full mt-3 p-3'>
+              <div className='flex items-center gap-x-2'>
+                By <Link href={`/${nft.username}`}><span className='w-96 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.username} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span></Link>
+              </div>
             </div>
-            )}
+            <div className='flex items-center w-full mb-3'>
+              <div className='flex items-center px-3'>
+                <p className='text-slate-400 text-sm'>{nft.description}</p>
+              </div>
+            </div>
+            <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenAbout(!about)}>
+              <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><BiDetail size={18}/>About {nft.username} {about ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+            </div>
+            {about ? <div className='flex-col items-center w-full p-3'>
+              <div className='flex items-center w-full gap-x-4'>
+                <img src={users.filter(u => u.username == nft.username).map((user) => user.avatar)}
+                alt={users.filter(u => u.username == nft.username).map((user) => user.username)}
+                className='flex w-6 h-6 rounded-full self-start mt-3' />
+                <p>{users.filter(u => u.username == nft.username).map((user) => user.description)}</p>
+              </div>
+              <div className='flex items-center w-full gap-x-3 mt-3 self-end justify-end'>
+                <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.instagram)}`}><BsInstagram size={18}/></Link>
+                <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.twitter)}`}><BsTwitter size={18}/></Link>
+              </div>
+            </div> : null}
+            <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenContract(!contract)}>
+              <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><LiaFileContractSolid size={18}/>Contract Details {contract ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+            </div>
+            {contract ? <div className='flex-col items-center w-full p-3'>
+            <div className='flex-col grid items-center w-full gap-y-3'>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Contract Address</span>
+                <Link href={`https://etherscan.io/address/${nftcustom}`}><span className='flex justify-end self-end items-center font-semibold text-indigo-400'>{nftcustom.slice(0,5) + '...' + nftcustom.slice(38)}</span></Link>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Token ID</span>
+                <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>{nft.tokenId}</span>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Token Standard</span>
+                <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>ERC-721</span>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Last Updated</span>
+                <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'><TimeAgo timestamp={nft.createdAt}/></div>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Creator Earnings</span>
+                <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>10%</div>
+              </div>
+            </div>
+          </div> : null}
+          </div>
+
+          </div>
+    
+        </div>
+    
+        ))}
+  
+  
+          </div>
           </Fragment>
         }          
         {matches.large &&
           <Fragment>
           <Head>
-          <title>NFT Details • Cosmeta NFT Marketplace</title>
+          <title>Auction Details • Cosmeta NFT Marketplace</title>
           </Head>
-            {allauction.map((i,k) => 
-              <div key={k} className="flex justify-center items-center w-full h-full pt-10 pb-40 px-7">
-              <div className="flex justify-between items-center w-full text-slate-900 gap-x-5">
-              <div className="w-full justify-center items-center">
-              <a>{i.fileType == "video/mp4"
-              ? <video src={i.images} autoPlay loop muted className='rounded-xl object-cover w-[700px] h-[700px] border-[1px] border-slate-400'/>
-              : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
-              ? <img className='rounded-xl object-cover w-[700px] h-[700px] border-[1px] border-slate-400' src={i.images} alt={i.name}/>
-              : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-              ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
-              }</a>
+
+          <div className="flex justify-center items-center w-full">
+          {!allauction.length ? <PreLoader/> : null}
+        {allauction.map(nft => (
+          
+        /***  DETAILS ***/
+        <div className="flex justify-between gap-x-4">
+            {/*** MEDIA ***/}
+            <div className="flex-col justify-start w-[600px] rounded-xl flex self-start">
+            
+            {nft.fileType == 'video/mp4' || nft.fileType == 'video/mov'
+                ? <video src={nft.images} className="rounded-xl w-[600px]" autoPlay muted loop/>
+                : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp'   ? <img className='rounded-xl object-cover w-[600px]' src={nft.images} />
+                : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || nft.fileType == 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft.id} detailpage={true}/> : null
+            }
+            <div className='w-[600px] flex items-center'></div>
+            </div>
+    
+          <div className="flex-col justify-center items-center w-full">
+            <div className="px-3 flex w-full my-2 items-center">
+              <div>
+                <span className='w-96 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.name} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span>
+              </div>
+            </div>
+            <div className="px-3 flex w-60 items-center mt-4">
+              <div>
+                <strong className='w-96 flex truncate text-slate-400'>{nft.description}</strong>
+              </div>
+            </div>
+            <div className="rounded-md px-3 flex w-full items-center my-1">
+              <div className='flex items-center gap-x-1'>
+                <span className='text-sm font-thin'>Owned by</span><Link href={`/${nft.username}`} className='text-sm text-indigo-500'>{nft.owner.slice(0,5) + '...' + nft.owner.slice(38)} | {nft.username}</Link>
+              </div>
+            </div>
+          
+            <div className='border border-indigo-500 rounded-md w-[600px] p-5 my-5'>
+              <p className='text-xl antialiased font-light'>Set the offer time</p>
+              <form onSubmit={(e) => handleSubmit(e,nft.tokenId)} className="grid gap-y-2 my-3">
+              <div>
+                <input
+                className="w-full bg-indigo-950 hover:bg-indigo-900 py-2 px-3 rounded-lg border-2 border-indigo-500 hover:border-indigo-400 text-slate-50 placeholder:text-indigo-500"
+                type="number"
+                name="period"
+                min={1}
+                placeholder="Days E.g 7"
+                onChange={(e) => setPeriod(e.target.value)}
+                value={period}
+                required
+                />
+              </div>
+              <div>
+                <select
+                className="w-full bg-indigo-950 hover:bg-indigo-900 py-2 px-3 rounded-lg border-2 border-indigo-500 hover:border-indigo-400 text-indigo-500"
+                name="duration"
+                onChange={(e) => setTimeline(e.target.value)}
+                value={timeline}
+                required
+                >
+                <option value="" hidden>
+                  Select Duration
+                </option>
+                <option value="sec">Seconds</option>
+                <option value="min">Minutes</option>
+                <option value="hour">Hours</option>
+                <option value="day">Days</option>
+                </select>
+              </div>
+
+              <div>
+                <button className='bg-indigo-950 py-3 px-7 rounded-md hover:bg-indigo-600 w-full border-2 border-indigo-500' type="submit">Offer Item</button> 
+              </div>
+              </form>
             </div>
 
-          <div className='w-full h-[700px] justify-center items-center'>
-					<div className='flex-col text-slate-400 grid gap-y-1 pb-10'>
-							<div className='flex items-center'><span>Name :&nbsp;</span><h1 className='font-sans font-extrabold text-3xl'>{i.name}</h1></div>
-							<div className='flex items-center'><span>Description :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.description}</p></div>
-							{i.website ? <div className='flex items-center'><span>Website :</span><p className='font-sans font-semibold text-lg'>{i.website}</p> </div>: null}
-							<div className='flex items-center'><span>Username :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.username}</p></div>
-							<div className='flex items-center'><span>Owner :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.owner.slice(0,5) + '...' + i.owner.slice(38)}</p></div>
-							<div className='flex items-center'><span>Network :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.wichNet}</p></div>
-							<div className='flex items-center'><span>Price :&nbsp;</span><p className='font-sans font-semibold text-lg'>{i.price}&nbsp;CRI</p></div>
-
-					</div>
-          <form onSubmit={(e) => handleSubmit(e,i.tokenId)} className="grid gap-y-2">
-          <div>
-            <input
-            className="w-96 bg-slate-800 hover:bg-slate-900 py-2 px-3 rounded-lg border-2 border-slate-700 hover:border-blue-500 text-slate-400"
-            type="number"
-            name="period"
-            min={1}
-            placeholder="Days E.g 7"
-            onChange={(e) => setPeriod(e.target.value)}
-            value={period}
-            required
-            />
-          </div>
-          <div>
-            <select
-            className="w-96 bg-slate-800 hover:bg-slate-900 py-2 px-3 rounded-lg border-2 border-slate-700 hover:border-blue-500 text-slate-400"
-            name="duration"
-            onChange={(e) => setTimeline(e.target.value)}
-            value={timeline}
-            required
-            >
-            <option value="" hidden>
-              Select Duration
-            </option>
-            <option value="sec">Seconds</option>
-            <option value="min">Minutes</option>
-            <option value="hour">Hours</option>
-            <option value="day">Days</option>
-            </select>
-          </div>
-
-          <div>
-            <button className='bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 relative w-96 h-10 text-slate-400' type="submit">Offer Item</button> 
-          </div>
-          </form>
-          </div>
+            <div className='flex-col w-[600px] border border-indigo-500 rounded-md mt-5'>
+            <div className='w-full bg-indigo-950 rounded-t-md border-b border-indigo-500 py-2 px-3'>
+            <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased'><CgDetailsMore size={18}/>Details</h1>
             </div>
+            <div className='flex items-center w-full mt-3 p-3'>
+              <div className='flex items-center gap-x-2'>
+                By <Link href={`/${nft.username}`}><span className='w-96 flex truncate items-center gap-x-1 text-indigo-500 font-medium'>{nft.username} {nft.role == 'verified' ? <MdVerified size={18}/> : null}</span></Link>
+              </div>
             </div>
-            )}
+            <div className='flex items-center w-full mb-3'>
+              <div className='flex items-center px-3'>
+                <p className='text-slate-400 text-sm'>{nft.description}</p>
+              </div>
+            </div>
+            <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenAbout(!about)}>
+              <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><BiDetail size={18}/>About {nft.username} {about ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+            </div>
+            {about ? <div className='flex-col items-center w-full p-3'>
+              <div className='flex items-center w-full gap-x-4'>
+                <img src={users.filter(u => u.username == nft.username).map((user) => user.avatar)}
+                alt={users.filter(u => u.username == nft.username).map((user) => user.username)}
+                className='flex w-6 h-6 rounded-full self-start mt-3' />
+                <p>{users.filter(u => u.username == nft.username).map((user) => user.description)}</p>
+              </div>
+              <div className='flex items-center w-full gap-x-3 mt-3 self-end justify-end'>
+                <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.instagram)}`}><BsInstagram size={18}/></Link>
+                <Link href={`${users.filter(u => u.username == nft.username).map((user) => user.twitter)}`}><BsTwitter size={18}/></Link>
+              </div>
+            </div> : null}
+            <div className='w-full bg-indigo-950 border border-indigo-500 py-2 px-3' onClick={() => setOpenContract(!contract)}>
+              <h1 className='flex items-center gap-x-2 text-sm font-semibold antialiased relative'><LiaFileContractSolid size={18}/>Contract Details {contract ? <FiChevronUp size={18} className='flex items-center absolute right-0'/> : <FiChevronDown size={18} className='flex items-center absolute right-0'/>}</h1>
+            </div>
+            {contract ? <div className='flex-col items-center w-full p-3'>
+            <div className='flex-col grid items-center w-full gap-y-3'>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Contract Address</span>
+                <Link href={`https://etherscan.io/address/${nftcustom}`}><span className='flex justify-end self-end items-center font-semibold text-indigo-400'>{nftcustom.slice(0,5) + '...' + nftcustom.slice(38)}</span></Link>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Token ID</span>
+                <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>{nft.tokenId}</span>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Token Standard</span>
+                <span className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>ERC-721</span>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Last Updated</span>
+                <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'><TimeAgo timestamp={nft.createdAt}/></div>
+              </div>
+              <div className='flex items-center w-full'>
+                <span className='flex justify-start self-start items-center w-full'>Creator Earnings</span>
+                <div className='flex justify-end self-end items-center font-semibold text-indigo-400 w-full'>10%</div>
+              </div>
+            </div>
+          </div> : null}
+          </div>
+
+          </div>
+    
+        </div>
+    
+        ))}
+  
+  
+          </div>
           </Fragment>
         }
       </Fragment>
@@ -413,6 +668,7 @@ const AuctionNFTPage = ({param}) => {
     </div>
     );
 };
+
 
 export default AuctionNFTPage;
 export const getServerSideProps = async (context) => {

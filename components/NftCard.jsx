@@ -10,7 +10,7 @@ const NftCard = ({nft}) => {
     {nft.fileType == 'video/mp4' || nft.fileType == 'video/mov'
         ? <Link href={`/details/${nft.id}`}><video src={nft.images} className="rounded-t-xl w-full h-[296px]" autoPlay muted loop/></Link>
         : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg' || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp' ? <Link href={`/details/${nft.id}`}><img className='rounded-t-xl object-cover w-full h-[296px]' src={nft.images} /></Link>
-        : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || nft.fileType == 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftname={nft.name} nftid={nft.id}/> : null
+        : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || nft.fileType == 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft.id}/> : null
         }
         <div className='flex-col px-5'>
               <div className='flex justify-between items-center w-full my-3'>

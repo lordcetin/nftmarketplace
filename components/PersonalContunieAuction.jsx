@@ -41,6 +41,10 @@ import Media from 'react-media';
 import Link from 'next/link';
 import Web3Modal from "web3modal";
 import Countdown from '../components/Countdown';
+import TimeAgo from './TimeAgo';
+import { BiCommentDetail  } from 'react-icons/bi';
+import { AiOutlineHeart } from 'react-icons/ai'
+
 
 const PersonalContunieAuction = ({param}) => {
 
@@ -156,54 +160,81 @@ const handleBuy = async (tokenId) => {
     <Fragment>
       {matches.small &&
         <Fragment>
-        <div className='grid grid-cols-1 gap-y-2'>
+        <div className='grid grid-cols-1 gap-y-6'>
         
-        {myauction.filter(u => u.duration + "000" < Date.now() && u.biddable == true && u.username == param).map((i,k) =>
-          <div key={k} className="w-[300px] text-slate-400">
-            <div className='cursor-pointer h-[550px] pb-3 border-slate-800 border-r-slate-700 rounded-xl bg-gradient-to-tr to-slate-600 from-slate-900 overflow-hidden border-2'>
-            <div className="flex justify-center items-center">{i.fileType == "video/mp4"
-            ? <video src={i.images} autoPlay loop muted className="h-[300px] flex justify-center items-center object-cover overflow-hidden"/>
-            : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
-            ? <img className='rounded-t-xl w-[300px] h-[300px] flex justify-center items-center object-cover overflow-hidden' src={i.images} alt={i.name}/>
-            : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-            ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
-            }</div>
-                
-              <div className='flex-col px-5'>
-              <div className='flex justify-between items-center w-full my-3'>
-                <div className="flex justify-start items-center w-full">
-                  <h3 className="text-md font-medium text-purple-500">{i.createdWallet == user ? 'Created by You' : `${i.username}`}</h3>
+        {myauction.reverse().filter(u => u.duration + "000" > Date.now() && u.biddable == true && u.username == param).map((nft) =>
+        <div key={nft.id} className="w-[300px] sm:w-[262px] border-slate-800 relative hover:bottom-2 border-2 bg-gradient-to-tr to-slate-600 from-slate-900 border-r-slate-700 rounded-lg overflow-hidden ">
+        <div className='flex items-center w-full absolute top-0'>
+          <div className='items-center w-full'>
+            <img src={nft.wichNet == 'Ethereum' ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ethereum-icon-purple.svg/480px-Ethereum-icon-purple.svg.png' : nft.wichNet == 'Polygon' ? 'https://cryptologos.cc/logos/polygon-matic-logo.png' : nft.wichNet == 'Binance' ? 'https://seeklogo.com/images/B/binance-coin-bnb-logo-97F9D55608-seeklogo.com.png' : null} className="z-30 object-cover w-5 absolute top-2 left-2"/>
+          </div>
+          <div>
+          </div>
+          </div>
+          {nft.fileType == 'video/mp4'
+          ? <><Link href={`/details/${nft._id}`}><video src={nft.images} className="w-full h-[296px] sm:h-[170px] object-cover rounded-t-lg" autoPlay muted loop/></Link></>
+          : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp' ? <><Link href={`/details/${nft._id}`}><img src={nft.images} className="w-full h-[296px] sm:h-[170px] rounded-t-lg object-cover" /></Link></>
+          : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft._id}/> : null
+          }
+          <div className='flex-col px-5'>
+            <div className='flex justify-between items-center w-full my-3'>
+            <div className="flex justify-between items-center w-full">
+            <div className='justify-start items-center'>
+              <Link href={`/${nft.username}`}>
+                <div className="text-md font-medium cursor-pointer text-purple-500 flex items-center gap-x-1">{nft.avatar ? 
+                  <img src={nft.avatar} className="rounded-full w-3 mr-1"/>:null}
+                  {!nft.username == "" ? nft.username : user.slice(0,11) + '...'} 
+                  {nft.role == 'verified' ? <MdVerified size={18}/>: null}
                 </div>
-                <div className='justify-end items-center w-full'>
-                <h3 className='font-medium text-sm text-center bg-slate-800 text-slate-500 py-1 px-3 rounded-md'>Token ID : {i.tokenId}</h3>
-                </div>
-                </div>
-                <h5 className='flex gap-x-2 text-lg font-bold my-3'>{i.name}</h5>
-                <h5 className='flex gap-x-2 text-sm my-3'>{i.description.slice(0,38)}</h5>
-                <h5 className='flex gap-x-2 text-sm my-3'><strong>Price : </strong><span>{i.price}</span></h5>
-                <h5 className='flex gap-x-2 text-sm my-3'><strong>Owner : </strong><span>{i.owner.slice(0,5) + '...' + i.owner.slice(38)}</span></h5>
-                <div className="my-3">
-                  <Countdown timestamp={i.duration + '000'} />
-                </div>
+              </Link>
+            </div>
+            </div>
+
+              <div className='justify-end items-center w-16 animate-pulse'>
+              <h3 className={nft.live == true || parseInt(nft.duration + "000") > Date.now() ? 'font-bold text-sm text-center bg-red-600 text-slate-50 py-1 px-3 rounded-md' : 'font-bold text-sm text-center bg-slate-700 text-slate-50 py-1 px-3 rounded-md'}>{parseInt(nft.duration + "000") > Date.now() ? "LIVE" : "Auction Expired"}</h3>
+              </div>
+            
+            </div>
+            
+            <div className="flex justify-between items-center w-full">
+            <h1 className='font-medium text-lg text-slate-400'>{nft.name}</h1>
+            </div>
+
+          <div className="my-3">
+          <p className="text-slate-400 text-sm truncate">{nft.description}</p>
+
+          {nft.bids == 0 ?
+            <div className="flex items-center gap-x-1.5 my-3 text-slate-400"><strong title="No have bid yet">Price : &nbsp;{nft.price}</strong><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-5' title='Crypto International (CRI)' /></div>
+            :<div className="flex items-center gap-x-1.5 my-3 text-orange-400 animate-pulse"><strong>Last Bid : &nbsp;{nft.bidprice}</strong><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-5' title='Crypto International (CRI)' /></div>
+          }
+          
+          {nft.winner != "0x0000000000000000000000000000000000000000" ? <div className="text-sm flex gap-x-2 text-slate-400 my-3"><strong>Winner : </strong><span>{nft?.winner?.slice(0,5) + '...' + nft?.winner?.slice(38)}</span></div> : <span className="text-slate-400">Not have a winner</span>}
+          <div className="text-xs mt-3">
+            <Countdown timestamp={nft.duration + "000"}/>
+          </div>
+          </div>
+
+            <div className='flex justify-between items-center w-full mb-3'>
+            <div className='flex justify-start items-center gap-x-4'>
+              <div className='flex items-center gap-x-2 text-sm'>
+              <AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500' />
+              <strong>{nft.likes.length}</strong>
+              </div>
+              <div className='flex items-center gap-x-2 text-sm'>
+              <div>
+              <Link href={`/details/${nft._id}`}><BiCommentDetail size={20} className='cursor-pointer'/></Link>
+              </div>
+              <div className='text-sm flex items-center gap-x-2'>
+              <strong>{nft.comments.length}</strong>
               </div>
             </div>
-            <div className='flex justify-center items-center'>
-            <div className='w-full'>
-            {i.biddable == true ? (
-                <div>
-                {i.winner == user && Date.now > i.duration ? <button className='relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full h-10 text-slate-400' onClick={() => setBidModal(true)}>Claim</button> : null}
-                {i.sold == false 
-                  ? <button className='relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-b-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full h-10 text-slate-400' onClick={() => setBidModal(true)}>Place Bid</button> 
-                  : <button className='relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-b-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full h-10 text-slate-400' onClick={handleBuy(i.tokenId)}>Buy</button>
-                }
-
-                </div>
-                )
-            : <Link href={`/auctiondetails/${i.id}`} className='flex justify-center items-center relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-b-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full text-center h-10 text-slate-400'>Start Offer</Link>
-            }
             </div>
+            <div className='flex justify-end items-center'>
+            <TimeAgo timestamp={nft.createdAt} />
             </div>
-          </div>  
+          </div>
+          </div>
+        </div> 
         )}
 
         </div>
@@ -211,54 +242,81 @@ const handleBuy = async (tokenId) => {
       }
       {matches.medium &&
         <Fragment>
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid grid-cols-3 gap-y-6'>
         
-        {myauction.filter(u => u.duration + "000" < Date.now() && u.biddable == true && u.username == param).map((i,k) =>
-          <div key={k} className="w-[300px] text-slate-400">
-            <div className='cursor-pointer h-[550px] pb-3 border-slate-800 border-r-slate-700 rounded-xl bg-gradient-to-tr to-slate-600 from-slate-900 overflow-hidden border-2'>
-            <div className="flex justify-center items-center">{i.fileType == "video/mp4"
-            ? <video src={i.images} autoPlay loop muted className="h-[300px] flex justify-center items-center object-cover overflow-hidden"/>
-            : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
-            ? <img className='rounded-t-xl w-[300px] h-[300px] flex justify-center items-center object-cover overflow-hidden' src={i.images} alt={i.name}/>
-            : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-            ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
-            }</div>
-                
-              <div className='flex-col px-5'>
-              <div className='flex justify-between items-center w-full my-3'>
-                <div className="flex justify-start items-center w-full">
-                  <h3 className="text-md font-medium text-purple-500">{i.createdWallet == user ? 'Created by You' : `${i.username}`}</h3>
+        {myauction.reverse().filter(u => u.duration + "000" > Date.now() && u.biddable == true && u.username == param).map((nft) =>
+        <div key={nft.id} className="w-[300px] sm:w-[262px] border-slate-800 relative hover:bottom-2 border-2 bg-gradient-to-tr to-slate-600 from-slate-900 border-r-slate-700 rounded-lg overflow-hidden ">
+        <div className='flex items-center w-full absolute top-0'>
+          <div className='items-center w-full'>
+            <img src={nft.wichNet == 'Ethereum' ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ethereum-icon-purple.svg/480px-Ethereum-icon-purple.svg.png' : nft.wichNet == 'Polygon' ? 'https://cryptologos.cc/logos/polygon-matic-logo.png' : nft.wichNet == 'Binance' ? 'https://seeklogo.com/images/B/binance-coin-bnb-logo-97F9D55608-seeklogo.com.png' : null} className="z-30 object-cover w-5 absolute top-2 left-2"/>
+          </div>
+          <div>
+          </div>
+          </div>
+          {nft.fileType == 'video/mp4'
+          ? <><Link href={`/details/${nft._id}`}><video src={nft.images} className="w-full h-[296px] sm:h-[170px] object-cover rounded-t-lg" autoPlay muted loop/></Link></>
+          : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp' ? <><Link href={`/details/${nft._id}`}><img src={nft.images} className="w-full h-[296px] sm:h-[170px] rounded-t-lg object-cover" /></Link></>
+          : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft._id}/> : null
+          }
+          <div className='flex-col px-5'>
+            <div className='flex justify-between items-center w-full my-3'>
+            <div className="flex justify-between items-center w-full">
+            <div className='justify-start items-center'>
+              <Link href={`/${nft.username}`}>
+                <div className="text-md font-medium cursor-pointer text-purple-500 flex items-center gap-x-1">{nft.avatar ? 
+                  <img src={nft.avatar} className="rounded-full w-3 mr-1"/>:null}
+                  {!nft.username == "" ? nft.username : user.slice(0,11) + '...'} 
+                  {nft.role == 'verified' ? <MdVerified size={18}/>: null}
                 </div>
-                <div className='justify-end items-center w-full'>
-                <h3 className='font-medium text-sm text-center bg-slate-800 text-slate-500 py-1 px-3 rounded-md'>Token ID : {i.tokenId}</h3>
-                </div>
-                </div>
-                <h5 className='flex gap-x-2 text-lg font-bold my-3'>{i.name}</h5>
-                <h5 className='flex gap-x-2 text-sm my-3'>{i.description.slice(0,38)}</h5>
-                <h5 className='flex gap-x-2 text-sm my-3'><strong>Price : </strong><span>{i.price}</span></h5>
-                <h5 className='flex gap-x-2 text-sm my-3'><strong>Owner : </strong><span>{i.owner.slice(0,5) + '...' + i.owner.slice(38)}</span></h5>
-                <div className="my-3">
-                  <Countdown timestamp={i.duration + '000'} />
-                </div>
+              </Link>
+            </div>
+            </div>
+
+              <div className='justify-end items-center w-16 animate-pulse'>
+              <h3 className={nft.live == true || parseInt(nft.duration + "000") > Date.now() ? 'font-bold text-sm text-center bg-red-600 text-slate-50 py-1 px-3 rounded-md' : 'font-bold text-sm text-center bg-slate-700 text-slate-50 py-1 px-3 rounded-md'}>{parseInt(nft.duration + "000") > Date.now() ? "LIVE" : "Auction Expired"}</h3>
+              </div>
+            
+            </div>
+            
+            <div className="flex justify-between items-center w-full">
+            <h1 className='font-medium text-lg text-slate-400'>{nft.name}</h1>
+            </div>
+
+          <div className="my-3">
+          <p className="text-slate-400 text-sm truncate">{nft.description}</p>
+
+          {nft.bids == 0 ?
+            <div className="flex items-center gap-x-1.5 my-3 text-slate-400"><strong title="No have bid yet">Price : &nbsp;{nft.price}</strong><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-5' title='Crypto International (CRI)' /></div>
+            :<div className="flex items-center gap-x-1.5 my-3 text-orange-400 animate-pulse"><strong>Last Bid : &nbsp;{nft.bidprice}</strong><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-5' title='Crypto International (CRI)' /></div>
+          }
+          
+          {nft.winner != "0x0000000000000000000000000000000000000000" ? <div className="text-sm flex gap-x-2 text-slate-400 my-3"><strong>Winner : </strong><span>{nft?.winner?.slice(0,5) + '...' + nft?.winner?.slice(38)}</span></div> : <span className="text-slate-400">Not have a winner</span>}
+          <div className="text-xs mt-3">
+            <Countdown timestamp={nft.duration + "000"}/>
+          </div>
+          </div>
+
+            <div className='flex justify-between items-center w-full mb-3'>
+            <div className='flex justify-start items-center gap-x-4'>
+              <div className='flex items-center gap-x-2 text-sm'>
+              <AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500' />
+              <strong>{nft.likes.length}</strong>
+              </div>
+              <div className='flex items-center gap-x-2 text-sm'>
+              <div>
+              <Link href={`/details/${nft._id}`}><BiCommentDetail size={20} className='cursor-pointer'/></Link>
+              </div>
+              <div className='text-sm flex items-center gap-x-2'>
+              <strong>{nft.comments.length}</strong>
               </div>
             </div>
-            <div className='flex justify-center items-center'>
-            <div className='w-full'>
-            {i.biddable == true ? (
-                <div>
-                {i.winner == user && Date.now > i.duration ? <button className='relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full h-10 text-slate-400' onClick={() => setBidModal(true)}>Claim</button> : null}
-                {i.sold == false 
-                  ? <button className='relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-b-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full h-10 text-slate-400' onClick={() => setBidModal(true)}>Place Bid</button> 
-                  : <button className='relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-b-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full h-10 text-slate-400' onClick={handleBuy(i.tokenId)}>Buy</button>
-                }
-
-                </div>
-                )
-            : <Link href={`/auctiondetails/${i.id}`} className='flex justify-center items-center relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-b-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full text-center h-10 text-slate-400'>Start Offer</Link>
-            }
             </div>
+            <div className='flex justify-end items-center'>
+            <TimeAgo timestamp={nft.createdAt} />
             </div>
-          </div>  
+          </div>
+          </div>
+        </div> 
         )}
 
         </div>
@@ -266,54 +324,81 @@ const handleBuy = async (tokenId) => {
       }
       {matches.large &&
         <Fragment>
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid grid-cols-4 gap-4'>
         
-        {myauction.filter(u => u.duration + "000" < Date.now() && u.biddable == true && u.username == param).map((i,k) =>
-          <div key={k} className="w-[300px] text-slate-400">
-            <div className='cursor-pointer h-[550px] pb-3 border-slate-800 border-r-slate-700 rounded-xl bg-gradient-to-tr to-slate-600 from-slate-900 overflow-hidden border-2'>
-            <div className="flex justify-center items-center">{i.fileType == "video/mp4"
-            ? <video src={i.images} autoPlay loop muted className="h-[300px] flex justify-center items-center object-cover overflow-hidden"/>
-            : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
-            ? <img className='rounded-t-xl w-[300px] h-[300px] flex justify-center items-center object-cover overflow-hidden' src={i.images} alt={i.name}/>
-            : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-            ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
-            }</div>
-                
-              <div className='flex-col px-5'>
-              <div className='flex justify-between items-center w-full my-3'>
-                <div className="flex justify-start items-center w-full">
-                  <h3 className="text-md font-medium text-purple-500">{i.createdWallet == user ? 'Created by You' : `${i.username}`}</h3>
+        {myauction.reverse().filter(u => u.duration + "000" > Date.now() && u.biddable == true && u.username == param).map((nft) =>
+        <div key={nft.id} className="w-[300px] sm:w-[262px] border-slate-800 relative hover:bottom-2 border-2 bg-gradient-to-tr to-slate-600 from-slate-900 border-r-slate-700 rounded-lg overflow-hidden ">
+        <div className='flex items-center w-full absolute top-0'>
+          <div className='items-center w-full'>
+            <img src={nft.wichNet == 'Ethereum' ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ethereum-icon-purple.svg/480px-Ethereum-icon-purple.svg.png' : nft.wichNet == 'Polygon' ? 'https://cryptologos.cc/logos/polygon-matic-logo.png' : nft.wichNet == 'Binance' ? 'https://seeklogo.com/images/B/binance-coin-bnb-logo-97F9D55608-seeklogo.com.png' : null} className="z-30 object-cover w-5 absolute top-2 left-2"/>
+          </div>
+          <div>
+          </div>
+          </div>
+          {nft.fileType == 'video/mp4'
+          ? <><Link href={`/details/${nft._id}`}><video src={nft.images} className="w-full h-[296px] sm:h-[170px] object-cover rounded-t-lg" autoPlay muted loop/></Link></>
+          : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp' ? <><Link href={`/details/${nft._id}`}><img src={nft.images} className="w-full h-[296px] sm:h-[170px] rounded-t-lg object-cover" /></Link></>
+          : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft._id}/> : null
+          }
+          <div className='flex-col px-5'>
+            <div className='flex justify-between items-center w-full my-3'>
+            <div className="flex justify-between items-center w-full">
+            <div className='justify-start items-center'>
+              <Link href={`/${nft.username}`}>
+                <div className="text-md font-medium cursor-pointer text-purple-500 flex items-center gap-x-1">{nft.avatar ? 
+                  <img src={nft.avatar} className="rounded-full w-3 mr-1"/>:null}
+                  {!nft.username == "" ? nft.username : user.slice(0,11) + '...'} 
+                  {nft.role == 'verified' ? <MdVerified size={18}/>: null}
                 </div>
-                <div className='justify-end items-center w-full'>
-                <h3 className='font-medium text-sm text-center bg-slate-800 text-slate-500 py-1 px-3 rounded-md'>Token ID : {i.tokenId}</h3>
-                </div>
-                </div>
-                <h5 className='flex gap-x-2 text-lg font-bold my-3'>{i.name}</h5>
-                <h5 className='flex gap-x-2 text-sm my-3'>{i.description.slice(0,38)}</h5>
-                <h5 className='flex gap-x-2 text-sm my-3'><strong>Price : </strong><span>{i.price}</span></h5>
-                <h5 className='flex gap-x-2 text-sm my-3'><strong>Owner : </strong><span>{i.owner.slice(0,5) + '...' + i.owner.slice(38)}</span></h5>
-                <div className="my-3">
-                  <Countdown timestamp={i.duration + '000'} />
-                </div>
+              </Link>
+            </div>
+            </div>
+
+              <div className='justify-end items-center w-16 animate-pulse'>
+              <h3 className={nft.live == true || parseInt(nft.duration + "000") > Date.now() ? 'font-bold text-sm text-center bg-red-600 text-slate-50 py-1 px-3 rounded-md' : 'font-bold text-sm text-center bg-slate-700 text-slate-50 py-1 px-3 rounded-md'}>{parseInt(nft.duration + "000") > Date.now() ? "LIVE" : "Auction Expired"}</h3>
+              </div>
+            
+            </div>
+            
+            <div className="flex justify-between items-center w-full">
+            <h1 className='font-medium text-lg text-slate-400'>{nft.name}</h1>
+            </div>
+
+          <div className="my-3">
+          <p className="text-slate-400 text-sm truncate">{nft.description}</p>
+
+          {nft.bids == 0 ?
+            <div className="flex items-center gap-x-1.5 my-3 text-slate-400"><strong title="No have bid yet">Price : &nbsp;{nft.price}</strong><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-5' title='Crypto International (CRI)' /></div>
+            :<div className="flex items-center gap-x-1.5 my-3 text-orange-400 animate-pulse"><strong>Last Bid : &nbsp;{nft.bidprice}</strong><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-5' title='Crypto International (CRI)' /></div>
+          }
+          
+          {nft.winner != "0x0000000000000000000000000000000000000000" ? <div className="text-sm flex gap-x-2 text-slate-400 my-3"><strong>Winner : </strong><span>{nft?.winner?.slice(0,5) + '...' + nft?.winner?.slice(38)}</span></div> : <span className="text-slate-400">Not have a winner</span>}
+          <div className="text-xs mt-3">
+            <Countdown timestamp={nft.duration + "000"}/>
+          </div>
+          </div>
+
+            <div className='flex justify-between items-center w-full mb-3'>
+            <div className='flex justify-start items-center gap-x-4'>
+              <div className='flex items-center gap-x-2 text-sm'>
+              <AiOutlineHeart size={20} className=' cursor-pointer hover:text-red-500' />
+              <strong>{nft.likes.length}</strong>
+              </div>
+              <div className='flex items-center gap-x-2 text-sm'>
+              <div>
+              <Link href={`/details/${nft._id}`}><BiCommentDetail size={20} className='cursor-pointer'/></Link>
+              </div>
+              <div className='text-sm flex items-center gap-x-2'>
+              <strong>{nft.comments.length}</strong>
               </div>
             </div>
-            <div className='flex justify-center items-center'>
-            <div className='w-full'>
-            {i.biddable == true ? (
-                <div>
-                {i.winner == user && Date.now > i.duration ? <button className='relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full h-10 text-slate-400' onClick={() => setBidModal(true)}>Claim</button> : null}
-                {i.sold == false 
-                  ? <button className='relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-b-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full h-10 text-slate-400' onClick={() => setBidModal(true)}>Place Bid</button> 
-                  : <button className='relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-b-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full h-10 text-slate-400' onClick={handleBuy(i.tokenId)}>Buy</button>
-                }
-
-                </div>
-                )
-            : <Link href={`/auctiondetails/${i.id}`} className='flex justify-center items-center relative bottom-3 bg-gradient-to-tr to-slate-900 z-30 border-[1px] border-slate-700 rounded-b-lg from-slate-900 hover:to-purple-600 hover:from-blue-700 w-full text-center h-10 text-slate-400'>Start Offer</Link>
-            }
             </div>
+            <div className='flex justify-end items-center'>
+            <TimeAgo timestamp={nft.createdAt} />
             </div>
-          </div>  
+          </div>
+          </div>
+        </div> 
         )}
 
         </div>

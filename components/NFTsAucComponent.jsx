@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AiFillHeart,AiOutlineHeart } from 'react-icons/ai';
 import {BiCommentDetail} from 'react-icons/bi';
 import Countdown from "./Countdown";
+import {MdVerified} from 'react-icons/md';
 import { useState,useEffect,useContext } from "react";
 import { DataContext } from "@/store/GlobalState";
 import TimeAgo from "./TimeAgo";
@@ -22,7 +23,7 @@ const NFTsAucComponent = ({auth,nft,buyNewMum,duration}) => {
   const [users,setUsers] = useState([])
   const [content,setContent] = useState([])
   const [isclick,isButtonClickable] = useState(true)
-  const {auction,nftcustom} = useStateContext();
+  const {auction,nftcustom,user} = useStateContext();
   const [addr,setAddr] = useState("")
 
   // const handleLikesSSE = () => {
@@ -40,6 +41,8 @@ const NFTsAucComponent = ({auth,nft,buyNewMum,duration}) => {
     getUsers();
     setAddr(window?.ethereum?.selectedAddress)
   },[])
+
+
 
   const getUsers = async () => {
     await fetch('https://testnet.cos-in.com/api/users').then(res => {
@@ -147,7 +150,7 @@ const NFTsAucComponent = ({auth,nft,buyNewMum,duration}) => {
   }
 
   return (
-    <div key={nft.id} className="w-[300px] border-slate-800 relative hover:bottom-2 border-2 bg-gradient-to-tr to-slate-600 from-slate-900 border-r-slate-700 rounded-lg overflow-hidden ">
+    <div key={nft.id} className="w-[300px] sm:w-[262px] border-slate-800 relative hover:bottom-2 border-2 bg-gradient-to-tr to-slate-600 from-slate-900 border-r-slate-700 rounded-lg overflow-hidden ">
     <div className='flex items-center w-full absolute top-0'>
       <div className='items-center w-full'>
         <img src={nft.wichNet == 'Ethereum' ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ethereum-icon-purple.svg/480px-Ethereum-icon-purple.svg.png' : nft.wichNet == 'Polygon' ? 'https://cryptologos.cc/logos/polygon-matic-logo.png' : nft.wichNet == 'Binance' ? 'https://seeklogo.com/images/B/binance-coin-bnb-logo-97F9D55608-seeklogo.com.png' : null} className="z-30 object-cover w-5 absolute top-2 left-2"/>
@@ -156,9 +159,9 @@ const NFTsAucComponent = ({auth,nft,buyNewMum,duration}) => {
       </div>
       </div>
       {nft.fileType == 'video/mp4'
-      ? <><Link href={`/details/${nft._id}`}><video src={nft.images} className="w-full h-[296px] object-cover rounded-t-lg" autoPlay muted loop/></Link></>
-      : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp' ? <><Link href={`/details/${nft._id}`}><img src={nft.images} className="w-full h-[296px] rounded-t-lg object-cover" /></Link></>
-      : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftname={nft.name} nftid={nft._id}/> : null
+      ? <><Link href={`/details/${nft._id}`}><video src={nft.images} className="w-full h-[296px] sm:h-[170px] object-cover rounded-t-lg" autoPlay muted loop/></Link></>
+      : nft.fileType == 'image/png' || nft.fileType == 'image/jpeg'  || nft.fileType == 'image/jpg' || nft.fileType == 'image/webp' ? <><Link href={`/details/${nft._id}`}><img src={nft.images} className="w-full h-[296px] sm:h-[170px] rounded-t-lg object-cover" /></Link></>
+      : nft.fileType == 'audio/mp3' || nft.fileType == 'audio/wav' || nft.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={nft.images} nftcover={nft.cover} nftname={nft.name} nftid={nft._id}/> : null
       }
       <div className='flex-col px-5'>
               <div className='flex justify-between items-center w-full my-3'>
@@ -179,14 +182,16 @@ const NFTsAucComponent = ({auth,nft,buyNewMum,duration}) => {
               <TimeAgo timestamp={nft.createdAt} />
               </div>
             <div className="my-3">
-            <p className="text-slate-400 text-sm">{nft.description}</p>
+            <p className="text-slate-400 text-sm truncate">{nft.description}</p>
             {nft.bids == 0 ?
               <div className="flex items-center gap-x-1.5 my-3 text-slate-400"><strong title="No have bid yet">Price : &nbsp;{nft.price}</strong><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-5' title='Crypto International (CRI)' /></div>
               :<div className="flex items-center gap-x-1.5 my-3 text-orange-400 animate-pulse"><strong>Last Bid : &nbsp;{nft.bidprice}</strong><img src='https://etherscan.io/token/images/cosmeta_32.png' className='object-cover w-5' title='Crypto International (CRI)' /></div>
             }
             
-            {nft.winner != "0x0000000000000000000000000000000000000000" ? <div className="text-sm flex gap-x-2 text-slate-400 my-3"><strong>Winner : </strong><span>{nft.winner.slice(0,5) + '...' + nft.winner.slice(38)}</span></div> : <span className="text-slate-400">Not have a winner</span>}
-            <Countdown timestamp={duration + "000"}/>
+            {nft.winner != "0x0000000000000000000000000000000000000000" ? <div className="text-sm flex gap-x-2 text-slate-400 my-3"><strong>Winner : </strong><span>{nft?.winner?.slice(0,5) + '...' + nft?.winner?.slice(38)}</span></div> : <span className="text-slate-400">Not have a winner</span>}
+            <div className="text-xs">
+              <Countdown timestamp={duration + "000"}/>
+            </div>
             </div>
 
               <div className='flex justify-between items-center w-full mb-3'>

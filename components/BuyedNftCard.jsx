@@ -120,7 +120,7 @@ const BuyedNftCard = ({param,datas,addrs}) => {
 
   return (
     <div>
-    <div className='grid grid-cols-1 sm:grid-cols-4 md:grid-cols-3 gap-5'>
+    <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
     {datas.filter(u => u.sold == true && u.resell == false && u.username == param && u.owner == user.toLowerCase()).map((i,k) =>
       <div key={k} className="w-[300px] text-slate-400  border-slate-800 border-r-slate-700 rounded-xl bg-gradient-to-tr to-slate-600 from-slate-900 overflow-hidden border-2 ">
       <div>
@@ -128,7 +128,7 @@ const BuyedNftCard = ({param,datas,addrs}) => {
         {i.fileType == 'video/mp4'
         ? <><Link href={`/details/${i._id}`}><video src={i.images} className="w-full h-[296px] object-cover rounded-t-lg" autoPlay muted loop/></Link></>
         : i.fileType == 'image/png' || i.fileType == 'image/jpeg'  || i.fileType == 'image/jpg' || i.fileType == 'image/webp' ? <><Link href={`/details/${i._id}`}><img src={i.images} className="w-full h-[296px] rounded-t-lg object-cover" /></Link></>
-        : i.fileType == 'audio/mp3' || i.fileType == 'audio/wav' || i.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={i.images} nftname={i.name} nftid={i._id}/> : null
+        : i.fileType == 'audio/mp3' || i.fileType == 'audio/wav' || i.fileType == 'audio/ogg' || 'audio/mpeg' ? <AudioPlayer nft={i.images} nftcover={i.cover} nftname={i.name} nftid={i._id}/> : null
         }
       
           <div className='flex-col px-5'>

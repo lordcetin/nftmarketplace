@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-//import { MongoClient,ObjectId } from "mongodb";
+import { MongoClient,ObjectId } from "mongodb";
 
 import connectMongo from "../../connectMongo/connectMongo";
 import Users from "../../models/userModel";
@@ -10,7 +10,7 @@ import Users from "../../models/userModel";
  */
 
 module.exports = async  (req,res) => {
-
+    await connectMongo()
     switch(req.method){
         case "PUT":
             await update(req,res)
@@ -19,23 +19,21 @@ module.exports = async  (req,res) => {
 }
 const update = async (req,res) => {
     try {
-    const {bannerurl,avatarurl,desc,username} = JSON.parse(req.body);
-    await connectMongo()
-    // console.log(req.body);
-    const user = await Users.findOne({username})
-    let id = user._id
-    const filter = { _id : id }
-    const update = {banner:bannerurl,avatar:avatarurl,description:desc}
+    const {bannerurl,avatarurl,desc,instagram,twitter,id} = JSON.parse(req.body);
+    console.log(req.body);
+    const filter = { _id : ObjectId(id) }
+    const update = {banner:bannerurl,avatar:avatarurl,description:desc,instagram:instagram,twitter:twitter}
 
     let doc = await Users.findOneAndUpdate(filter,update,{ new: true, upsert: true});
 
     await doc.save();
 
-    res.status(200).json({
+    res.status(201).json({
         data: await Users.findOne({ _id: id }),
         message: "Updated"
     });
     }catch(err){
+        console.log(err)
         return res.status(500).json({err:err.message})
     }
     

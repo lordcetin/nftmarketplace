@@ -3,14 +3,16 @@ import styles from '../styles/AudioPlayer.module.css'
 import Image from "next/image";
 import Link from "next/link";
 import Media from "react-media";
+import {SiOpensea} from 'react-icons/si';
+import { useStateContext } from "../context/StateContext";
 //ICONS
 import {AiFillPlayCircle,AiFillBackward,AiFillForward,AiFillPauseCircle} from 'react-icons/ai'
 
 //EXTERNAL
 import logo from '../public/logo.png';
 
-const AudioPlayer = ({nft,nftname,nftid}) => {
-
+const AudioPlayer = ({nft,nftcover,nftname,nftid,slidermode,detailpage}) => {
+    const {nftcustom,user} = useStateContext();
     const [isPlaying,setPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
     const [currentTime,setCurrentTime] = useState(0);
@@ -83,117 +85,72 @@ const AudioPlayer = ({nft,nftname,nftid}) => {
     <Fragment>
 
         {matches.small &&
-    <Fragment>
-    <div className="flex justify-center items-center w-full z-10">
-    <div className="flex-col justify-center items-center text-center">
-    <div className="flex w-full pt-8">
-    <Link href={`/details/${nftid}`}><div className="relative left-2 w-60 h-48 welcomebg rounded-lg shadow-2xl shadow-black z-50">
-    <div className="flex-col justify-center items-center text-center overflow-hidden">
-    <h1 className="flex justify-center items-center text-xl font-bold my-20">{nftname}</h1>
-    <div className="relative bottom-3 left-3 flex w-24">
-    <Image src={logo} alt="" width={800} className="absolute bottom-5 z-30" />
-    </div>
-    </div>
-    </div>
-    </Link>
-    <img src="https://bafkreifdqokmzap5e5hjb7oz32mfg32lctsq4kizbzqzzv4xlpzyiuujsm.ipfs.nftstorage.link/" alt="" className={isPlaying ? `relative w-48 h-48 right-24 animate-spin`: `relative w-48 h-48 right-24`} />
-    </div>
-    </div>
-    </div>
-    <div className="flex justify-center items-center pt-6 pb-[14px] w-full">
-    <div className="flex-col justify-center items-center text-center">
-    <audio ref={audioPlayer} src={nft} preload="metadata"/>
-    <div className="flex justify-between items-center w-full">
-    <div className="flex items-center gap-x-1 w-full" >
-    <button><AiFillBackward size={22} className=" hover:text-blue-500" onClick={backthirty}/></button>
-    <button onClick={togglePlayPause}>{isPlaying ? <AiFillPauseCircle size={28} className="hover:text-blue-500"/> : <AiFillPlayCircle size={28} className="hover:text-blue-500"/>}</button>
-    <button><AiFillForward size={22} className=" hover:text-blue-500" onClick={forwardthirty}/></button>
-    </div>
-    <div className="flex justify-center text-sm items-center gap-x-2">
-    <div><span className="text-[10px]">{calculateTime(currentTime)}</span></div>
-    <div><input type="range" name="progressbar" id="progressbar" className={styles.progressBar} defaultValue="0" ref={progressBar} onChange={changeRange}/></div>
-    <div><span className="text-[10px]">{(duration && !isNaN(duration)) && calculateTime(duration)}</span></div>
-    </div>
-    </div>
-    
-    </div>
-    </div>
-    </Fragment>
+            <Fragment>
+            <div className="flex relative justify-center items-center w-full">
+            <Link href={`/details/${nftid}`}>
+            <img src={nftcover} alt="NFT Music Cover" 
+            className={slidermode ? "w-screen h-[393px] object-cover z-10" 
+            : detailpage ? "w-[300px] h-full object-cover rounded-xl" 
+            : "w-full h-[296px] sm:h-[170px] object-cover"}/>
+            </Link>
+            <div className={slidermode ? "absolute top-2 left-2" : "absolute bottom-2 left-2"}>
+            <audio ref={audioPlayer} src={nft} preload="metadata"/>
+            <button className="hidden"><AiFillBackward size={22} className=" hover:text-blue-500" onClick={backthirty}/></button>
+                <button onClick={togglePlayPause}>{isPlaying ? <div className="backdrop-blur-sm w-[50px] h-[50px] rounded-full"><AiFillPlayCircle size={50} className="hover:text-opacity-100 text-white text-opacity-50 animate-spin"/></div> : <div className="backdrop-blur-sm rounded-full w-[50px] h-[50px]"><AiFillPlayCircle size={50} className="hover:text-opacity-100 text-white text-opacity-50"/></div>}</button>
+            <button className="hidden"><AiFillForward size={22} className=" hover:text-blue-500" onClick={forwardthirty}/></button>
+            <div className=" justify-center text-sm items-center gap-x-2 hidden">
+            <div><span className="text-[10px]">{calculateTime(currentTime)}</span></div>
+            <div><input type="range" name="progressbar" id="progressbar" className={styles.progressBar} defaultValue="0" ref={progressBar} onChange={changeRange}/></div>
+            <div><span className="text-[10px]">{(duration && !isNaN(duration)) && calculateTime(duration)}</span></div>
+            </div>
+            </div>
+            </div>
+            </Fragment>
         }
 
         {matches.medium &&
-    <Fragment>
-    <div className="flex justify-center items-center w-full">
-    <div className="flex-col justify-center items-center text-center">
-    <div className="flex w-full pt-8">
-    <Link href={`/details/${nftid}`}><div className="relative left-2 w-60 h-48 welcomebg rounded-lg shadow-2xl shadow-black z-50">
-    <div className="flex-col justify-center items-center text-center overflow-hidden">
-    <h1 className="flex justify-center items-center text-xl font-bold my-20">{nftname}</h1>
-    <div className="relative bottom-3 left-3 flex w-24">
-    <Image src={logo} alt="" width={800} className="absolute bottom-5 z-30" />
-    </div>
-    </div>
-    </div>
-    </Link>
-    <img src="https://bafkreifdqokmzap5e5hjb7oz32mfg32lctsq4kizbzqzzv4xlpzyiuujsm.ipfs.nftstorage.link/" alt="" className={isPlaying ? `relative w-48 h-48 right-24 z-30 animate-spin`: `relative w-48 h-48 right-24 z-30`} />
-    </div>
-    </div>
-    </div>
-    <div className="flex justify-center items-center pt-6 pb-[14px] w-full">
-    <div className="flex-col justify-center items-center text-center">
-    <audio ref={audioPlayer} src={nft} preload="metadata"/>
-    <div className="flex justify-between items-center w-full">
-    <div className="flex items-center gap-x-1 w-full" >
-    <button><AiFillBackward size={22} className=" hover:text-blue-500" onClick={backthirty}/></button>
-    <button onClick={togglePlayPause}>{isPlaying ? <AiFillPauseCircle size={28} className="hover:text-blue-500"/> : <AiFillPlayCircle size={28} className="hover:text-blue-500"/>}</button>
-    <button><AiFillForward size={22} className=" hover:text-blue-500" onClick={forwardthirty}/></button>
-    </div>
-    <div className="flex justify-center text-sm items-center gap-x-2">
-    <div><span className="text-[10px]">{calculateTime(currentTime)}</span></div>
-    <div><input type="range" name="progressbar" id="progressbar" className={styles.progressBar} defaultValue="0" ref={progressBar} onChange={changeRange}/></div>
-    <div><span className="text-[10px]">{(duration && !isNaN(duration)) && calculateTime(duration)}</span></div>
-    </div>
-    </div>
-    
-    </div>
-    </div>
-    </Fragment>
+            <Fragment>
+            <div className="flex relative justify-center items-center w-full">
+            <Link href={`/details/${nftid}`}>
+            <img src={nftcover} alt="NFT Music Cover"
+            className={slidermode ? "w-screen h-[393px] object-cover z-10" 
+            : detailpage ? "w-[300px] h-full object-cover rounded-xl" 
+            : "w-full h-[296px] sm:h-[170px] object-cover"}/>
+            </Link>
+            <div className={slidermode ? "absolute top-2 left-2" : "absolute bottom-2 left-2"}>
+            <audio ref={audioPlayer} src={nft} preload="metadata"/>
+            <button className="hidden"><AiFillBackward size={22} className=" hover:text-blue-500" onClick={backthirty}/></button>
+                <button onClick={togglePlayPause}>{isPlaying ? <div className="backdrop-blur-sm w-[50px] h-[50px] rounded-full"><AiFillPlayCircle size={50} className="hover:text-opacity-100 text-white text-opacity-50 animate-spin"/></div> : <div className="backdrop-blur-sm rounded-full w-[50px] h-[50px]"><AiFillPlayCircle size={50} className="hover:text-opacity-100 text-white text-opacity-50"/></div>}</button>
+            <button className="hidden"><AiFillForward size={22} className=" hover:text-blue-500" onClick={forwardthirty}/></button>
+            <div className=" justify-center text-sm items-center gap-x-2 hidden">
+            <div><span className="text-[10px]">{calculateTime(currentTime)}</span></div>
+            <div><input type="range" name="progressbar" id="progressbar" className={styles.progressBar} defaultValue="0" ref={progressBar} onChange={changeRange}/></div>
+            <div><span className="text-[10px]">{(duration && !isNaN(duration)) && calculateTime(duration)}</span></div>
+            </div>
+            </div>
+            </div>
+            </Fragment>
         }
 
         {matches.large &&
     <Fragment>
-    <div className="flex justify-center items-center w-full">
-    <div className="flex-col justify-center items-center text-center">
-    <div className="flex w-full pt-8">
-    <Link href={`/details/${nftid}`}><div className="relative left-2 w-60 h-48 welcomebg rounded-lg shadow-2xl shadow-black z-50">
-    <div className="flex-col justify-center items-center text-center overflow-hidden">
-    <h1 className="flex justify-center items-center text-xl font-bold my-20">{nftname}</h1>
-    <div className="relative bottom-3 left-3 flex w-24">
-    <Image src={logo} alt="" width={800} className="absolute bottom-5 z-30" />
-    </div>
-    </div>
-    </div>
+    <div className="flex relative justify-center items-center w-full">
+    <Link href={`/details/${nftid}`}>
+    <img src={nftcover} alt="NFT Music Cover"
+    className={slidermode ? "w-screen h-[393px] object-cover z-10" 
+    : detailpage ? "w-[600px] h-full object-cover rounded-xl" 
+    : "w-full h-[296px] sm:h-[170px] object-cover"}/>
     </Link>
-    <img src="https://bafkreifdqokmzap5e5hjb7oz32mfg32lctsq4kizbzqzzv4xlpzyiuujsm.ipfs.nftstorage.link/" alt="" className={isPlaying ? `relative w-48 h-48 right-24 z-30 animate-spin`: `relative w-48 h-48 right-24 z-30`} />
-    </div>
-    </div>
-    </div>
-    <div className="flex justify-center items-center pt-6 pb-[14px] w-full">
-    <div className="flex-col justify-center items-center text-center">
+    <div className={slidermode ? "absolute top-2 left-2" : "absolute bottom-2 left-2"}>
     <audio ref={audioPlayer} src={nft} preload="metadata"/>
-    <div className="flex justify-between items-center w-full">
-    <div className="flex items-center gap-x-1 w-full" >
-    <button><AiFillBackward size={22} className=" hover:text-blue-500" onClick={backthirty}/></button>
-    <button onClick={togglePlayPause}>{isPlaying ? <AiFillPauseCircle size={28} className="hover:text-blue-500"/> : <AiFillPlayCircle size={28} className="hover:text-blue-500"/>}</button>
-    <button><AiFillForward size={22} className=" hover:text-blue-500" onClick={forwardthirty}/></button>
-    </div>
-    <div className="flex justify-center text-sm items-center gap-x-2">
+    <button className="hidden"><AiFillBackward size={22} className=" hover:text-blue-500" onClick={backthirty}/></button>
+        <button onClick={togglePlayPause}>{isPlaying ? <div className="backdrop-blur-sm w-[50px] h-[50px] rounded-full"><AiFillPlayCircle size={50} className="hover:text-opacity-100 text-white text-opacity-50 animate-spin"/></div> : <div className="backdrop-blur-sm rounded-full w-[50px] h-[50px]"><AiFillPlayCircle size={50} className="hover:text-opacity-100 text-white text-opacity-50"/></div>}</button>
+    <button className="hidden"><AiFillForward size={22} className=" hover:text-blue-500" onClick={forwardthirty}/></button>
+    <div className=" justify-center text-sm items-center gap-x-2 hidden">
     <div><span className="text-[10px]">{calculateTime(currentTime)}</span></div>
     <div><input type="range" name="progressbar" id="progressbar" className={styles.progressBar} defaultValue="0" ref={progressBar} onChange={changeRange}/></div>
     <div><span className="text-[10px]">{(duration && !isNaN(duration)) && calculateTime(duration)}</span></div>
     </div>
-    </div>
-    
     </div>
     </div>
     </Fragment>

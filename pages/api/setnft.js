@@ -3,7 +3,6 @@ import NFT from '../../models/nftSchema';
 import Users from "@/models/userModel";
 import connectMongo from "@/connectMongo/connectMongo";
 import Notification from "@/models/notiSchema";
-
 /**
  * @param {import('next').NextApiRequest} req
  * @param {import('next').NextApiResponse} res
@@ -33,7 +32,7 @@ module.exports = async (req, res) => {
 }
 const setnft = async (req,res) => {
     try {
-        const { id,name,description,price,bidprice,images,createdWallet,itemId,transactionHash,tokenId,fileType,traits,tokenURI,website,username,avatar,wichNet,role,seller,owner,winner,sold,live,biddable,bids,duration } = req.body;
+        const { id,name,description,price,bidprice,images,cover,createdWallet,itemId,transactionHash,tokenId,fileType,traits,tokenURI,website,username,avatar,wichNet,role,seller,owner,winner,sold,live,biddable,bids,duration } = req.body;
         const nftDatas = new NFT({
             id,
             itemId,
@@ -43,6 +42,7 @@ const setnft = async (req,res) => {
             price,
             bidprice,
             images,
+            cover,
             avatar,
             role,
             username,
@@ -88,11 +88,11 @@ const getNfts = async (req,res) => {
 
 const updateNfts = async (req,res) => {
     try {
-        const {bidprice,id,live,biddable,bids,duration,winner,owner,createdWallet,sold,price,resell} = req.body;
+        const {bidprice,id,live,biddable,bids,duration,winner,owner,cover,createdWallet,sold,price,resell} = req.body;
         await connectMongo()
         console.log("req",req.body)
         const filter = { _id : ObjectId(id) }
-        const update = {bidprice:bidprice,biddable:biddable,resell:resell,live:live,bids:bids,sold:sold,price:price,duration:duration,winner:winner,owner:owner,createdWallet:createdWallet}
+        const update = {bidprice:bidprice,biddable:biddable,cover:cover,resell:resell,live:live,bids:bids,sold:sold,price:price,duration:duration,winner:winner,owner:owner,createdWallet:createdWallet}
     
         let doc = await NFT.updateOne(filter,update,{upsert: true})
         // let doc = await NFT.findOneAndUpdate(filter,update,{ new: true, upsert: true});

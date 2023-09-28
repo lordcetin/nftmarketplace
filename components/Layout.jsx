@@ -43,11 +43,11 @@ const Layout = ({children}) => {
     }
   },[])
 
-  useEffect(() => {
-    if(user.lenght){
-      router.reload()
-    }
-  },[conn])
+  // useEffect(() => {
+  //   if(user.length){
+  //     router.reload()
+  //   }
+  // },[conn])
 
   return (
     <div className={
@@ -67,7 +67,7 @@ const Layout = ({children}) => {
     <Fragment>
     {mathes.small &&
     <Fragment>
-    {nowallet ?
+    {/*nowallet ?
       <div className="flex fixed justify-center items-center w-screen h-screen z-[9999] backdrop-blur-lg">
       {!user.length ? null : <AiOutlineClose onClick={() => setNoWallet(false)} size={22} className="z-[999] text-white font-bold border border-white rounded-full absolute top-5 right-5 w-12 h-12 p-1 hover:animate-spin hover:cursor-pointer"/>}
       <div className="flex-col transition-all duration-300 ease-out grid gap-y-5 justify-center items-center w-[530px] rounded-xl bg-white text-slate-950 p-10 z-50 shadow-xl shadow-slate-950 text-justify">
@@ -98,7 +98,7 @@ const Layout = ({children}) => {
       </div>
       </div>
       </div>
-      : null }
+    : null */}
     <div className=" scrollbar-thumb-slate-900 scrollbar-thin scrollbar-thumb-rounded-full scroll-smooth">
     {router.pathname == '/login' ? null
     : router.pathname == '/register' ? null
@@ -113,9 +113,9 @@ const Layout = ({children}) => {
     : router.pathname == '/inbox/chat/[conversationId]' ? 'w-full px-3'
     : router.pathname == '/[profile]' ? 'w-full'
     : router.pathname == '/notification' ? 'w-full px-3'
+    : router.pathname == '/settings' ? 'w-full px-3'
     : router.pathname == '/' ? 'w-full'
     : router.pathname == '/login' ? 'w-full'
-    : router.pathname == '/academy' ? 'flex justify-center items-center w-full'
     : 'flex justify-center items-center w-full container mx-auto my-28'}>
     {children}
     </main>
@@ -173,8 +173,9 @@ const Layout = ({children}) => {
     : router.pathname == '/create' ? 'w-full px-3 my-28'
     : router.pathname == '/inbox/chat' ? 'w-full'
     : router.pathname == '/inbox/chat/[conversationId]' ? 'w-full px-3'
-    : router.pathname == '/[profile]' ? 'w-full'
+    : router.pathname == '/[profile]' ? 'flex justify-center items-center w-full container mx-auto my-20'
     : router.pathname == '/notification' ? 'w-full px-3'
+    : router.pathname == '/settings' ? 'w-full px-3'
     : router.pathname == '/' ? 'w-full'
     : 'flex justify-center items-center w-full container mx-auto my-28'}>
     {children}
@@ -230,15 +231,16 @@ const Layout = ({children}) => {
     : <Navbar/> 
     }
     <Notify/>
-    <main className={router.pathname == '/' ? 'w-full'
+    <main className={
+      router.pathname == '/' ? 'w-full'
     : router.pathname == '/inbox' ? 'w-full px-7'
     : router.pathname == '/connectwallet' ? 'w-full'
     : router.pathname == '/inbox/chat' ? 'w-full'
     : router.pathname == '/inbox/chat/[conversationId]' ? 'w-full px-7'
-    : router.pathname == '/[profile]' ? 'w-full'
+    : router.pathname == '/[profile]' ? 'flex justify-center items-center w-full container mx-auto my-20'
     : router.pathname == '/register' ? 'w-full'
+    : router.pathname == '/settings' ? 'w-full'
     : router.pathname == '/login' ? 'w-full'
-    : router.pathname == '/academy' ? 'flex justify-center items-center w-full'
     : 'flex justify-center items-center w-full container mx-auto my-28'}>
     {children}
     </main>

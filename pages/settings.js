@@ -1,50 +1,17 @@
 import React from 'react';
-import next from 'next';
-import { ethers } from 'ethers';
 import {useState,useEffect, Fragment} from 'react';
 import { useRouter } from 'next/router';
-import Resell from '../engine/Resell.json';
-import NFTCollection from '../engine/NFTCollection.json';
-import NFT from '../engine/NFT.json';
-import Token from '../engine/Token.json';
-import Market from '../engine/Market.json';
-import { Card, Button, Input, Dropdown, useSSR} from '@nextui-org/react';
-import ConnectChain from '../engine/connectchain';
-import axios from 'axios';
-import detectEthereumProvider from '@metamask/detect-provider';
-import { hhnft, hhresell, hhrpc,hhmarket,hhtoken, cipherHH ,nftContract,displayAmount,key, cipherMM, sepauction} from '../engine/configuration';
-import { sepnft,sepresell,seprpc,septoken,sepmarket } from '../engine/configuration';
-//import { goenft,goeresell,goenftcol,goerpc,goetoken,goemarket } from '../engine/configuration';
-//import { bsctnft,bsctnftcol,bsctresell,bsctrpc,bsctmarket,bsctoken } from '../engine/configuration';
 import { useStateContext } from '../context/StateContext';
-import { cipherEth, simpleCrypto } from '../engine/configuration';
-import uniqid from 'uniqid';
-import {CreatedNfCard, PreLoader} from '../components';
-import {AuctionNftCard} from '../components';
-import {BuyedNfCard} from '../components';
-import {BiRefresh,BiImageAdd} from 'react-icons/bi'
+import {BiImageAdd} from 'react-icons/bi'
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 import jwt from 'jsonwebtoken';
-import { motion } from 'framer-motion'
 import { DataContext } from '../store/GlobalState';
 import { useContext } from 'react';
-import {MdVerified} from 'react-icons/md';
-import {TbMessageCircle2} from 'react-icons/tb';
 import {BsInstagram,BsTwitter} from 'react-icons/bs'
-import AudioPlayer from '../components/AudioPlayer'
-import InfiniteScroll from 'react-infinite-scroll-component';
-import Loading from '../components/Loading';
 import {create as ipfsHttpClient} from 'ipfs-http-client';
 const { Buffer } = require("buffer");
-import Auction from '../engine/Auction.json';
 import Media from 'react-media';
-import Web3Modal from "web3modal";
-import {GetAuctionNftCard} from '../components';
-import {AllAuctionNftCard} from '../components';
-import {LiveAuctionNftCard} from '../components';
-import PersonalAuctions from '../components/PersonalAuctions';
-import PersonalLiveAuction from '../components/PersonalLiveAuction';
-import PersonalContunieAuction from '../components/PersonalContunieAuction';
-import { getUserInfo} from '@/utils/firebase';
 import { useSelector } from 'react-redux';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth'
@@ -52,77 +19,20 @@ import { getFirestore, doc, updateDoc, arrayRemove, arrayUnion,getDoc,onSnapshot
 import { firebaseConfig } from '@/utils/firebase';
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import Head from 'next/head';
-const Settings = ({profiledetail,param,setOpenSettings}) => {
+import Image from 'next/image';
 
-  const {user,getUser,connectUser,
-    nfts,
-    setNfts,
-    setContAddr,
-    contAdr,
-    bscChain,
-    polyChain,
-    ethChain,
-    hardChain,
-    bscTest,
-    ethTest,
-    polyTest,
-    getChain,
-    getOwners,
-    setNftResell,
-    setNftCustom,
-    setTokenCol,
-    setNftCol,
-    setRpc,
-    chain,
-    getChainName,
-    cipher,
-    rpc,
-    auction,
-    getRpc,
-    marketcol,
-    getMarket,
-    setMarket,
-    nftcol, getNftCol,
-    cri,setTokenCri,
-    nftcustom, getNftCustom,
-    nftresell, getNftResell, } = useStateContext();
-  const [uids,setUid] = useState(null);
-  const [created, getCreated] = useState([]);
-  const [resalePrice, updateresalePrice] = useState({ price: ''});
-  const [loadingState, setLoadingState] = useState('not-loaded');
-  const [tokId,setTokenId] = useState([]);
-  const [show,setShow] = useState(false);
-  const [showWallet,setWalletShow] = useState(false);
-  const [showCont,setContShow] = useState(false);
-  const [walletNft,setWalletNfts] = useState(false);
-  const [personal,setPersonalNfts] = useState(true);
-  const [auctionnfts,setAuctionNfts] = useState(false);
-  const [personalactive,setPersonalActive] = useState(false);
-  const [walletactive,setWalletActive] = useState(false);
-  const [detoken,setToken] = useState(null);
+const Settings = ({profiledetail,param,setOpenSettings,userData}) => {
+
+  const {user,getUser,connectUser} = useStateContext();
+
   const [changeImage,setChangeImage] = useState(false)
-  const [changePP,setChangePP] = useState(false)
   const [bannerfileUrl,setBannerFile] = useState(false);
   const [profilefileUrl,setProfileFile] = useState(false);
-  const [refresh,setRefresh] = useState(false)
-  const [mumauction,MumsetAuction] = useState([]);
-  const [liveauction,setLiveAuction] = useState([]);
-  const [getmumauction,MumGetAuction] = useState([]);
-  const [count,setCount] = useState(15)
-  const [type,setFileType] = useState(null);
-  const [continueAuction,setContinueAuction] = useState(false);
-  const [liveAuction,setLivedAuction] = useState(false);
-  const [offerAuction,setOfferAuction] = useState(true);
-  const [createdNFTs,setCreatedNFTs] = useState(true);
-  const [buyedNFTs,setBuyedNFTs] = useState(false);
-  const [loading,setLoading] = useState(true);
-  const [users,setUser] = useState(null);
-  const [isFollow,setFollow] = useState(false);
-  const [openModal,setOpenModal] = useState(false)
-  const [snapshots,setSnapshot] = useState(null)
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [isroot,setRoot] = useState(false);
-  const [datas,setNftData] = useState([]);
+  const [profile,setToken] = useState(false);
+  const [instalink,setInstagramLink] = useState("");
+  const [twitterlink,setTwitterLink] = useState("");
+  const [descript,setDescription] = useState("");
+
 
   
   const [totalP,setTotalPrice] = useState(0);
@@ -149,11 +59,7 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
   const authorization = getAuth(application);
   const db = getFirestore(application);
 
-  useEffect(() => {
-    if(!account){
-      router.push('/login');
-    }
-  }, []);
+
 
   const projectId = "2FraJroGw9rXeeUTFgGRO7P7sFy";
   const projectSecretKey = "0a5ffc989190cb176f8729872bfbf76d";
@@ -168,6 +74,7 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
         authorization: autho,
       },
     });
+
   const updateBannerContent = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -182,9 +89,10 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
         )
         const bannerurl = `${subdomain}/ipfs/${added.path}`;
        setBannerFile(bannerurl)
-       const contentData = {bannerurl,username}
+       let id = profile._id
+       const contentData = {bannerurl,id}
        await fetch('https://testnet.cos-in.com/api/update',{
-       method:'POST',
+       method:'PUT',
        body:JSON.stringify(contentData),
        headers:{ "Content-Type":"aplication/json" }
      }).then(res => {
@@ -194,18 +102,19 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
        return res;
      }).then((res) => res.json()).then((data) => {
       //  console.log("Update",data)
+      router.reload(window.location.pathname)
      })
     } catch (error) {
         //console.log('Error uploading file: ', error)
     }
     setLoading(false);
 }
-   const updateContent = async (e) => {
-    e.preventDefault();
-    let desc = e.target.value
-    const contentData = {desc,username}
+   const updateContent = async () => {
+    let desc = descript
+    let id = profile._id
+    const contentData = {desc,id}
     await fetch('https://testnet.cos-in.com/api/update',{
-    method:'POST',
+    method:'PUT',
     body:JSON.stringify(contentData),
     headers:{ "Content-Type":"aplication/json" }
   }).then(res => {
@@ -215,6 +124,45 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
     return res;
   }).then((res) => res.json()).then((data) => {
     // console.log("Update",data)
+    router.reload(window.location.pathname)
+  })
+
+}
+   const updateInstagram = async () => {
+    let instagram = instalink
+    let id = profile._id
+    const contentData = {instagram,id}
+    await fetch('https://testnet.cos-in.com/api/update',{
+    method:'PUT',
+    body:JSON.stringify(contentData),
+    headers:{ "Content-Type":"aplication/json" }
+  }).then(res => {
+    if(!res.ok){
+      throw new Error("HTTP ERROR",res.status)
+    }
+    return res;
+  }).then((res) => res.json()).then((data) => {
+    // console.log("Update",data)
+    router.reload(window.location.pathname)
+  })
+
+}
+   const updateTwitter = async () => {
+    let twitter = twitterlink
+    let id = profile._id
+    const contentData = {twitter,id}
+    await fetch('https://testnet.cos-in.com/api/update',{
+    method:'PUT',
+    body:JSON.stringify(contentData),
+    headers:{ "Content-Type":"aplication/json" }
+  }).then(res => {
+    if(!res.ok){
+      throw new Error("HTTP ERROR",res.status)
+    }
+    return res;
+  }).then((res) => res.json()).then((data) => {
+    // console.log("Update",data)
+    router.reload(window.location.pathname)
   })
 
 }
@@ -232,9 +180,10 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
         )
         const avatarurl = `${subdomain}/ipfs/${added.path}`;
        setProfileFile(avatarurl)
-       const contentData = {avatarurl,username}
+       let id = profile._id
+       const contentData = {avatarurl,id}
        await fetch('https://testnet.cos-in.com/api/update',{
-       method:'POST',
+       method:'PUT',
        body:JSON.stringify(contentData),
        headers:{ "Content-Type":"aplication/json" }
      }).then(res => {
@@ -244,6 +193,7 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
        return res;
      }).then((res) => res.json()).then((data) => {
       //  console.log("Update",data)
+      router.reload(window.location.pathname)
      })
     } catch (error) {
         //console.log('Error uploading file: ', error)
@@ -251,6 +201,20 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
     setLoading(false);
 }
 
+
+useEffect(() => {
+  const token = Cookies.get('refreshtoken');
+  const decodedToken = jwt.decode(token);
+  const expr = decodedToken?.exp * 1000 > Date.now();
+  if (!token && !expr ) {
+    router.push('/login');
+  }else{
+    const datas = userData.filter(u => u.username == decodedToken?.username)
+    setToken(datas[0])
+  }
+},[])
+
+console.log("profile",profile)
   return (
     <div>
     <Media queries={{
@@ -268,78 +232,247 @@ const Settings = ({profiledetail,param,setOpenSettings}) => {
             <Head>
             <title>Settings • Cosmeta NFT Marketplace</title>
             </Head>
-            <div className="flex-col justify-center items-center w-full h-screen fixed top-0 left-0 bg-slate-900 z-[999] px-4 py-10">
-            <div className='flex justify-center items-center w-full mb-5'>
-              <div className='flex justify-start items-center w-full'><AiOutlineCloseCircle size={28} onClick={() => setOpenSettings(false)}/></div>
-              <div className='flex justify-center items-center w-full text-2xl font-bold'>Settings</div>
-              <div className='flex justify-end items-center w-full'></div>
-            </div>
-              <div className="flex justify-between items-center w-full relative">
-                <form onSubmit={updatePPContent} className='flex gap-x-6'>
-                <div className="">
-                <img src={profilefileUrl ? profilefileUrl : profiledetail.avatar} alt="Profile" className='object-cover rounded-full z-40 w-28 h-28 cursor-pointer'/>
-                </div>
-                <div className='grid gap-y-2 relative'>
-                  <h1 className='text-xl font-semibold'>Change Avatar</h1>
-                  <input
-                  className='absolute top-12'
-                  type="file"
-                  name="Asset"
-                  onChange={updatePPContent}
-                />
-                  </div>
+            <div className='h-full py-20 flex flex-col items-center w-full px-4'>
+              <h1 className='text-2xl font-medium antialiased leading-6 my-2'>Settings</h1>
+              {/* PROFILE */}
+              <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                  <h1 className='text-xl font-semibold'>Profile Picture</h1>
+                  <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
+                  <img src={profile?.avatar} alt='Profile Picture' width={50} height={50} className='rounded-full'/>
+                  <form onSubmit={updatePPContent}>
+                    <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                    <input
+                      className='hidden absolute h-52 -left-96'
+                      type="file"
+                      name="Asset"
+                      onChange={updatePPContent}
+                    />
+                  </label>
                   </form>
+                  </div>
               </div>
-              <div className="flex justify-between items-center w-full mt-10 relative">
-              <form onSubmit={updateBannerContent} className='flex gap-x-2'>
-                <div className="w-52 h-32">
-                <img src={bannerfileUrl ? bannerfileUrl : profiledetail.banner} className={changeImage ? "w-52 flex justify-center items-center h-32 object-cover cursor-pointer opacity-50 rounded-md" : "w-52 h-32 rounded-md object-cover cursor-pointer"}  alt="Banner"/>
-                </div>
-                <div className='grid gap-y-2 relative'>
-                  <h1 className='text-xl font-semibold'>Change Banner</h1>
-                  <input
-                  className='absolute top-12'
-                  type="file"
-                  name="Asset"
-                  onChange={updateBannerContent}
-                />
-                </div>
-                </form>
+              {/* BANNER */}
+              <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                  <h1 className='text-xl font-semibold'>Banner Picture</h1>
+                  <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
+                  <img src={profile?.banner} alt='Banner Picture' width={100} height={100} className='rounded-xl'/>
+                  <form onSubmit={updateBannerContent}>
+                    <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                    <input
+                      className='hidden absolute h-52 -left-96'
+                      type="file"
+                      name="Asset"
+                      onChange={updateBannerContent}
+                    />
+                  </label>
+                  </form>
+                  </div>
               </div>
-              <div className="flex justify-between items-center w-full mt-10">
-              <form onSubmit={updateContent} className='flex justify-center items-center gap-x-2'>
-                <div className="w-56">
-                <textarea className='text-lg block antialiased w-56 h-[100px] bg-transparent hover:border-[1px] hover:border-purple-600 focus:border-2 focus:border-purple-600 px-3 py-2 rounded-lg' onChange={updateContent} placeholder={profiledetail.description}/>
-                </div>
-                <div className='grid gap-y-2'>
-                  <button className='px-3 py-1 bg-slate-800 rounded-md'>Change</button>
-                </div>
-                </form>
+              {/* DESCRIPTION */}
+              <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                  <h1 className='text-xl font-semibold'>Description</h1>
+                  <div className='white-glassmorphism my-3 p-3 flex items-center w-full gap-x-3'>
+                    <textarea
+                    className='p-3 white-glassmorphism w-full'
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder={profile?.description}/>
+                    <button type='button' onClick={updateContent} className='flex justify-center items-center py-4 px-4 bg-indigo-600 rounded-xl'>Change</button>
+                  </div>
+              </div>
+              {/* INSTAGRAM */}
+              <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                  <h1 className='text-xl font-semibold'>Instagram</h1>
+                  <div className='white-glassmorphism my-3 p-3 flex items-center w-full gap-x-3'>
+                    <input
+                    className='px-3 white-glassmorphism w-full py-2'
+                    onChange={(e) => setInstagramLink(e.target.value)}
+                    placeholder={profile?.instagram}/>
+                    <button type='button' onClick={updateInstagram} className='flex justify-center items-center py-4 px-4 bg-indigo-600 rounded-xl'>Change</button>
+                  </div>
+              </div>
+              {/* TWITTER */}
+              <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                  <h1 className='text-xl font-semibold'>Twitter</h1>
+                  <div className='white-glassmorphism my-3 p-3 flex items-center w-full gap-x-3'>
+                    <input
+                    className='px-3 white-glassmorphism w-full py-2'
+                    onChange={(e) => setTwitterLink(e.target.value)}
+                    placeholder={profile?.twitter}/>
+                    <button type='button' onClick={updateTwitter} className='flex justify-center items-center py-4 px-4 bg-indigo-600 rounded-xl'>Change</button>
+                  </div>
               </div>
             </div>
             </Fragment>
             }
 
             {matches.medium && 
-            <Fragment>
-            <Head>
-            <title>Settings • Cosmeta NFT Marketplace</title>
-            </Head>
-            <div className="flex justify-center items-center w-full h-screen">
-            <h1 className="flex justify-center items-center text-center text-xl">COMING SOON</h1>
-            </div>
-            </Fragment>
+              <Fragment>
+              <Head>
+              <title>Settings • Cosmeta NFT Marketplace</title>
+              </Head>
+              <div className='h-full py-20 flex flex-col items-center w-full px-4'>
+                <h1 className='text-2xl font-medium antialiased leading-6 my-2'>Settings</h1>
+                {/* PROFILE */}
+                <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                    <h1 className='text-xl font-semibold'>Profile Picture</h1>
+                    <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
+                    <img src={profile?.avatar} alt='Profile Picture' width={50} height={50} className='rounded-full'/>
+                    <form onSubmit={updatePPContent}>
+                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                      <input
+                        className='hidden absolute h-52 -left-96'
+                        type="file"
+                        name="Asset"
+                        onChange={updatePPContent}
+                      />
+                    </label>
+                    </form>
+                    </div>
+                </div>
+                {/* BANNER */}
+                <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                    <h1 className='text-xl font-semibold'>Banner Picture</h1>
+                    <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
+                    <img src={profile?.banner} alt='Banner Picture' width={100} height={100} className='rounded-xl'/>
+                    <form onSubmit={updateBannerContent}>
+                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                      <input
+                        className='hidden absolute h-52 -left-96'
+                        type="file"
+                        name="Asset"
+                        onChange={updateBannerContent}
+                      />
+                    </label>
+                    </form>
+                    </div>
+                </div>
+                {/* DESCRIPTION */}
+                <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                    <h1 className='text-xl font-semibold'>Description</h1>
+                    <div className='white-glassmorphism my-3 p-3 flex items-center w-full gap-x-3'>
+                      <textarea
+                      className='p-3 white-glassmorphism w-full'
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder={profile?.description}/>
+                      <button type='button' onClick={updateContent} className='flex justify-center items-center py-4 px-4 bg-indigo-600 rounded-xl'>Change</button>
+                    </div>
+                </div>
+                {/* INSTAGRAM */}
+                <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                    <h1 className='text-xl font-semibold'>Instagram</h1>
+                    <div className='white-glassmorphism my-3 p-3 flex items-center w-full gap-x-3'>
+                      <input
+                      className='px-3 white-glassmorphism w-full py-2'
+                      onChange={(e) => setInstagramLink(e.target.value)}
+                      placeholder={profile?.instagram}/>
+                      <button type='button' onClick={updateInstagram} className='flex justify-center items-center py-4 px-4 bg-indigo-600 rounded-xl'>Change</button>
+                    </div>
+                </div>
+                {/* TWITTER */}
+                <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                    <h1 className='text-xl font-semibold'>Twitter</h1>
+                    <div className='white-glassmorphism my-3 p-3 flex items-center w-full gap-x-3'>
+                      <input
+                      className='px-3 white-glassmorphism w-full py-2'
+                      onChange={(e) => setTwitterLink(e.target.value)}
+                      placeholder={profile?.twitter}/>
+                      <button type='button' onClick={updateTwitter} className='flex justify-center items-center py-4 px-4 bg-indigo-600 rounded-xl'>Change</button>
+                    </div>
+                </div>
+              </div>
+              </Fragment>
             }
 
             {matches.large && 
-            <Fragment>
-            <Head>
-            <title>Settings • Cosmeta NFT Marketplace</title>
-            </Head>
-            <div className="flex justify-center items-center w-full h-screen">
-            <h1 className="flex justify-center items-center text-center text-3xl">COMING SOON</h1>
-            </div>
-            </Fragment>
+              <Fragment>
+              <Head>
+              <title>Settings • Cosmeta NFT Marketplace</title>
+              </Head>
+              <div className='flex justify-between items-center w-full'>
+
+              <div className='flex flex-col w-2/6 justify-start items-center p-10'>
+                <div className='flex flex-col items-center w-full h-[500px] white-glassmorphism p-5'>
+                  <img src={profile?.banner} className='object-cover w-full h-36 rounded-xl'/>
+                  <img src={profile?.avatar} className='object-cover w-20 h-20 rounded-full relative -top-10'/>
+                  <h1 className='text-2xl font-semibold antialiased leading-3'>{profile.username}</h1>
+                  <h1 className='white-glassmorphism w-full h-20 rounded-lg py-1 px-3 mt-5 truncate'>{profile.description}</h1>
+                  <div className='flex items-center gap-x-2 text-sm text-slate-400 my-2 self-start'><BsInstagram/><span>{profile.instagram}</span></div>
+                  <div className='flex items-center gap-x-2 text-sm text-slate-400 my-2 self-start'><BsTwitter/><span>{profile.twitter}</span></div>
+                </div>
+              </div>
+
+              <div className='justify-end h-full py-20 flex flex-col items-center w-full px-4'>
+                <h1 className='text-2xl font-medium antialiased leading-6 my-2'>Settings</h1>
+                {/* PROFILE */}
+                <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                    <h1 className='text-xl font-semibold'>Profile Picture</h1>
+                    <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
+                    <img src={profile?.avatar} alt='Profile Picture' width={50} height={50} className='rounded-full'/>
+                    <form onSubmit={updatePPContent}>
+                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                      <input
+                        className='hidden absolute h-52 -left-96'
+                        type="file"
+                        name="Asset"
+                        onChange={updatePPContent}
+                      />
+                    </label>
+                    </form>
+                    </div>
+                </div>
+                {/* BANNER */}
+                <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                    <h1 className='text-xl font-semibold'>Banner Picture</h1>
+                    <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
+                    <img src={profile?.banner} alt='Banner Picture' width={100} height={100} className='rounded-xl'/>
+                    <form onSubmit={updateBannerContent}>
+                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                      <input
+                        className='hidden absolute h-52 -left-96'
+                        type="file"
+                        name="Asset"
+                        onChange={updateBannerContent}
+                      />
+                    </label>
+                    </form>
+                    </div>
+                </div>
+                {/* DESCRIPTION */}
+                <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                    <h1 className='text-xl font-semibold'>Description</h1>
+                    <div className='white-glassmorphism my-3 p-3 flex items-center w-full gap-x-3'>
+                      <textarea
+                      className='p-3 white-glassmorphism w-full'
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder={profile?.description}/>
+                      <button type='button' onClick={updateContent} className='flex justify-center items-center py-4 px-4 bg-indigo-600 rounded-xl'>Change</button>
+                    </div>
+                </div>
+                {/* INSTAGRAM */}
+                <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                    <h1 className='text-xl font-semibold'>Instagram</h1>
+                    <div className='white-glassmorphism my-3 p-3 flex items-center w-full gap-x-3'>
+                      <input
+                      className='px-3 white-glassmorphism w-full py-2'
+                      onChange={(e) => setInstagramLink(e.target.value)}
+                      placeholder={profile?.instagram}/>
+                      <button type='button' onClick={updateInstagram} className='flex justify-center items-center py-4 px-4 bg-indigo-600 rounded-xl'>Change</button>
+                    </div>
+                </div>
+                {/* TWITTER */}
+                <div className='white-glassmorphism w-full p-3 my-3 flex flex-col'>
+                    <h1 className='text-xl font-semibold'>Twitter</h1>
+                    <div className='white-glassmorphism my-3 p-3 flex items-center w-full gap-x-3'>
+                      <input
+                      className='px-3 white-glassmorphism w-full py-2'
+                      onChange={(e) => setTwitterLink(e.target.value)}
+                      placeholder={profile?.twitter}/>
+                      <button type='button' onClick={updateTwitter} className='flex justify-center items-center py-4 px-4 bg-indigo-600 rounded-xl'>Change</button>
+                    </div>
+                </div>
+              </div>
+              </div>
+              </Fragment>
             }
 
         </Fragment>

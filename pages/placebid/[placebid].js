@@ -226,7 +226,7 @@ const handleClaim = async (x) => {
               : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
               ? <img className='rounded-xl object-cover w-[300px] h-[300px] border-[1px] border-slate-400' src={i.images} alt={i.name}/>
               : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-              ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
+              ? <AudioPlayer nft={i.images} nftcover={i.cover} nftname={i.name}/> : null
               }</a>
             </div>
 
@@ -293,7 +293,7 @@ const handleClaim = async (x) => {
               : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
               ? <img className='rounded-xl object-cover w-[700px] h-[700px] border-[1px] border-slate-400' src={i.images} alt={i.name}/>
               : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-              ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
+              ? <AudioPlayer nft={i.images} nftcover={i.cover} nftname={i.name}/> : null
               }</a>
             </div>
 
@@ -360,7 +360,7 @@ const handleClaim = async (x) => {
               : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
               ? <img className='rounded-xl object-cover w-[700px] h-[700px] border-[1px] border-slate-400' src={i.images} alt={i.name}/>
               : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-              ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
+              ? <AudioPlayer nft={i.images} nftcover={i.cover} nftname={i.name}/> : null
               }</a>
             </div>
 

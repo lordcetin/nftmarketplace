@@ -15,7 +15,7 @@ import {MdClose} from 'react-icons/md';
 import AllBidders from "./AllBidders";
 import { useRouter } from "next/router";
 import Media from "react-media";
-const AuctionNftCard = ({id,username,dbWallet,img,name,tokenId,desc,type,blockchain,price,createdWallet,ownerW,duration,live,biddablity,bidcount,sold}) => {
+const AuctionNftCard = ({id,username,dbWallet,img,covername,tokenId,desc,type,blockchain,price,createdWallet,ownerW,duration,live,biddablity,bidcount,sold}) => {
 
   const {user,getUser,connectUser,auction,cri,rpc,cipher} = useStateContext();
   const [openModal,setOpenModal] = useState(false)
@@ -127,7 +127,7 @@ const handleBuy = async () => {
         : type == "image/png" || type == "image/jpeg" || type == "image/jpg" || type == "image/svg" || type == "image/webp"
         ? <img className='rounded-t-xl object-cover' src={img} alt={name}/>
         : type == "audio/mp3" ||  type == "audio/ogg" || type == "audio/wav" || type == "audio/mpeg"
-        ? <AudioPlayer nft={img} nftname={name}/> : null
+        ? <AudioPlayer nft={img} nftcover={cover} nftname={name}/> : null
         }</a>
       </div>
 
@@ -198,7 +198,7 @@ const handleBuy = async () => {
         : type == "image/png" || type == "image/jpeg" || type == "image/jpg" || type == "image/svg" || type == "image/webp"
         ? <img className='rounded-t-xl object-cover' src={img} alt={name}/>
         : type == "audio/mp3" ||  type == "audio/ogg" || type == "audio/wav" || type == "audio/mpeg"
-        ? <AudioPlayer nft={img} nftname={name}/> : null
+        ? <AudioPlayer nft={img} nftcover={cover} nftname={name}/> : null
         }</a>
       </div>
 
@@ -249,7 +249,7 @@ const handleBuy = async () => {
           : type == "image/png" || type == "image/jpeg" || type == "image/jpg" || type == "image/svg" || type == "image/webp"
           ? <img className='rounded-t-xl object-cover' src={img} alt={name}/>
           : type == "audio/mp3" ||  type == "audio/ogg" || type == "audio/wav" || type == "audio/mpeg"
-          ? <AudioPlayer nft={img} nftname={name}/> : null
+          ? <AudioPlayer nft={img} nftcover={cover} nftname={name}/> : null
           }</Link>
               
             <div className='flex-col px-5'>
@@ -300,7 +300,7 @@ const handleBuy = async () => {
           : type == "image/png" || type == "image/jpeg" || type == "image/jpg" || type == "image/svg" || type == "image/webp"
           ? <img className='rounded-t-xl object-cover' src={img} alt={name}/>
           : type == "audio/mp3" ||  type == "audio/ogg" || type == "audio/wav" || type == "audio/mpeg"
-          ? <AudioPlayer nft={img} nftname={name}/> : null
+          ? <AudioPlayer nft={img} nftcover={cover} nftname={name}/> : null
           }</Link>
               
             <div className='flex-col px-5'>
@@ -350,7 +350,7 @@ const handleBuy = async () => {
           : type == "image/png" || type == "image/jpeg" || type == "image/jpg" || type == "image/svg" || type == "image/webp"
           ? <img className='rounded-t-xl w-[300px] h-[300px] flex justify-center items-center object-cover overflow-hidden' src={img} alt={name}/>
           : type == "audio/mp3" ||  type == "audio/ogg" || type == "audio/wav" || type == "audio/mpeg"
-          ? <AudioPlayer nft={img} nftname={name}/> : null
+          ? <AudioPlayer nft={img} nftcover={cover} nftname={name}/> : null
           }</div>
               
             <div className='flex-col px-5'>

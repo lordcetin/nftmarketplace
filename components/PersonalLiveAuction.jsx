@@ -203,7 +203,7 @@ const handleBidSubmit = async (e) => {
               : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
               ? <img className='rounded-t-xl object-cover w-[300px] h-[300px]' src={i.images} alt={i.name}/>
               : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-              ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
+              ? <AudioPlayer nft={i.images} nftcover={i.cover} nftname={i.name}/> : null
               }</Link>
                 <div className='flex-col px-5 '>
                 <div className='flex justify-between items-center w-full my-3'>
@@ -248,7 +248,7 @@ const handleBidSubmit = async (e) => {
               : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
               ? <img className='rounded-t-xl object-cover w-[300px] h-[300px]' src={i.images} alt={i.name}/>
               : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-              ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
+              ? <AudioPlayer nft={i.images} nftcover={i.cover} nftname={i.name}/> : null
               }</Link>
                 <div className='flex-col px-5 '>
                 <div className='flex justify-between items-center w-full my-3'>
@@ -293,7 +293,7 @@ const handleBidSubmit = async (e) => {
               : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
               ? <img className='rounded-t-xl object-cover w-[300px] h-[300px]' src={i.images} alt={i.name}/>
               : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-              ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
+              ? <AudioPlayer nft={i.images} nftcover={i.cover} nftname={i.name}/> : null
               }</Link>
                 <div className='flex-col px-5 '>
                 <div className='flex justify-between items-center w-full my-3'>

@@ -12,7 +12,7 @@ import Countdown from "./Countdown";
 import {MdClose} from 'react-icons/md';
 import { cipherMM} from '../engine/configuration';
 
-const GetAuctionNftCard = ({id,username,dbWallet,img,name,tokenId,desc,type,blockchain,price,createdWallet,ownerW,duration,live,biddablity,bids,sold}) => {
+const GetAuctionNftCard = ({id,username,dbWallet,img,name,cover,tokenId,desc,type,blockchain,price,createdWallet,ownerW,duration,live,biddablity,bids,sold}) => {
   const {user,getUser,connectUser,auction,cri,rpc} = useStateContext();
 
   return (
@@ -26,7 +26,7 @@ const GetAuctionNftCard = ({id,username,dbWallet,img,name,tokenId,desc,type,bloc
       : type == "image/png" || type == "image/jpeg" || type == "image/jpg" || type == "image/svg" || type == "image/webp"
       ? <img className='rounded-t-xl object-cover' src={img} alt={name}/>
       : type == "audio/mp3" ||  type == "audio/ogg" || type == "audio/wav" || type == "audio/mpeg"
-      ? <AudioPlayer nft={img} nftname={name}/> : null
+      ? <AudioPlayer nft={img} nftcover={cover} nftname={name}/> : null
       }</a></Link>
           
         <div className='flex-col px-5'>

@@ -22,6 +22,10 @@ const nftSchema = new mongoose.Schema({
     images:{
         type:String,
     },
+    cover:{
+        type:String,
+        default:'https://bafybeifpkfey26mx4dngzbc4evahx7qbjavmbf5tx7e6d2pyi3h57y5dc4.ipfs.nftstorage.link/',
+    },
     sold:{
         type:Boolean,
     },

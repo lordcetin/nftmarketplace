@@ -10,6 +10,8 @@ const userSchema = new Schema({
     role: {type:String,default:'user'},
     root: {type:Boolean,default:false},
     description:{type:String},
+    instagram:{type:String,default:'https://instagram.com'},
+    twitter:{type:String,default:'https://twitter.com'},
     walletAddress: {type:String,lowercase: false},
     liked:[{
         type:mongoose.Schema.Types.ObjectId,

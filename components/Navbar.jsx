@@ -30,6 +30,8 @@ import jwt from "jsonwebtoken";
 import { initializeApp } from "firebase/app";
 import { getFirestore,collection,getDocs } from "firebase/firestore";
 import { getUserInfo } from "@/utils/firebase";
+import {Kbd} from "@nextui-org/react";
+import { RiSettings5Fill } from 'react-icons/ri'
 const Navbar = () => {
   const firebaseConfig = {
     apiKey: "AIzaSyBxizDXLmmI-0Ihf98w2_aPj6dp6cvUrw0",
@@ -348,33 +350,6 @@ const Navbar = () => {
     e.preventDefault();
     let val = e.target.value;
     setVal(val)
-    const web3Modal = new Web3Modal()
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
-    const tokenContract = new ethers.Contract(nftcustom, NFT, signer)
-    const marketContract = new ethers.Contract(marketcol, Market, signer)
-    let auctioncontract = new ethers.Contract(auction, Auction, signer)
-    const nfts = await marketContract.getAvailableNft()
-    const auctionnfts = await auctioncontract.getAllAuctions()
-    const nftitems = await Promise.all(nfts.map(async i => {
-      const tokenUri = await tokenContract.tokenURI(i.tokenId)
-      const meta = await axios.get(tokenUri)
-      let nftitem = {
-        image: meta.data.image,
-        name: meta.data.name,
-      }
-      return nftitem
-    }))
-    const auctionitems = await Promise.all(auctionnfts.map(async i => {
-      const tokenUri = await tokenContract.tokenURI(i.tokenId)
-      const meta = await axios.get(tokenUri)
-      let auctionitem = {
-        image: i.images,
-        name: i.name,
-      }
-      return auctionitem
-    }))
     setSearch(content)
   }
   const handleSearchSubmit = async (e) => {
@@ -496,7 +471,7 @@ const Navbar = () => {
       </div>
       <div className="w-full px-2">
         <div className={nav ? 'flex justify-center items-center w-full' : 'flex justify-center items-center w-full'}>
-          <input type="search" onChange={handleSearch} onClick={() => setSearchModal(true)} onMouseLeave={() => setSearchModal(false)} name="search" id="search" placeholder="Search" className={nav ? " bg-slate-900 placeholder:text-slate-400 outline-none py-[6px] px-3 w-36 rounded-l-lg text-slate-400" : " bg-slate-500 opacity-40 placeholder:text-sm placeholder:text-slate-900 outline-none py-[6px] px-3 w-36 h-7 rounded-l-lg text-slate-900"} /><button type="submit" onClick={handleSearchSubmit} className={nav ? "outline-none py-[9px] px-2 rounded-r-lg bg-slate-900" : "opacity-40 outline-none h-7 px-2 rounded-r-lg bg-slate-500"}><BiSearch size={18} className={nav ? "text-slate-400" : "text-slate-900"}/></button></div>
+          <input type="search" autoComplete="off" onChange={handleSearch} onClick={() => setSearchModal(true)} onMouseLeave={() => setSearchModal(false)} name="search" id="search" placeholder="Search" className={nav ? " bg-slate-900 placeholder:text-slate-400 outline-none py-[6px] px-3 w-36 rounded-l-lg text-slate-400" : " bg-slate-500 opacity-40 placeholder:text-sm placeholder:text-slate-900 outline-none py-[6px] px-3 w-36 h-7 rounded-l-lg text-slate-900"} /><button type="submit" onClick={handleSearchSubmit} className={nav ? "outline-none py-[9px] px-2 rounded-r-lg bg-slate-900" : "opacity-40 outline-none h-7 px-2 rounded-r-lg bg-slate-500"}><BiSearch size={18} className={nav ? "text-slate-400" : "text-slate-900"}/></button></div>
       </div>
       <div className="w-30 justify-end items-center text-right px-3">
       <BiMenu size={30} className="inline-block cursor-pointer hover:opacity-50" onClick={() => setOpenMenu(!openMenu)}/>
@@ -504,21 +479,20 @@ const Navbar = () => {
 
       </div>
       {openMenu &&
-        <div className="fixed top-0 left-0 bg-slate-900 w-screen h-screen z-50">
-        <div className="w-full text-slate-400 z-50">
-        <MdClose size={30} className="text-slate-400 z-50 cursor-pointer m-7 hover:opacity-50" onClick={() => setOpenMenu(false)}/>
+        <div className="fixed top-0 left-0 backdrop-blur-xl w-screen h-screen z-50">
+        <div className="w-full text-white z-50">
+        <MdClose size={30} className="text-white z-50 cursor-pointer m-7 hover:opacity-50" onClick={() => setOpenMenu(false)}/>
         <div className="flex-col justify-center items-center text-center z-50 w-full">
         <div className="my-3"><Link href='/' className="text-3xl hover:opacity-50 z-50" onClick={() => setOpenMenu(false)}>Home</Link></div>
         {/*<div className="my-3"><Link href='/explore' className="text-3xl hover:opacity-50 z-50" onClick={() => setOpenMenu(false)}>Explore</Link></div>*/}
 
         {/*<Link href='/profile'><BiUserCircle size={22}/></Link>*/}
         {account && users && users !== undefined
-           ? <div className="my-3">
+           ? <div className="my-3 flex flex-col justify-center items-center w-full text-white">
            <div className="my-3"><Link href='/create' className="text-3xl hover:opacity-50 z-50" onClick={() => setOpenMenu(false)}>Create</Link></div>
-           <div className="flex justify-center items-center my-3 py-2 bg-slate-800 w-full"><span className="text-slate-400 text-xl flex items-center gap-x-2" >CRI Balance : {CRIBalance}</span></div>
-           {/*<div className="flex justify-center items-center my-3 py-2 bg-slate-800 w-full gap-x-2">{!user.length ? "Connect Wallet" : `Wallet : ${user.slice(0,5) + '...' + user.slice(38)}`}</span>{user.length && <CopyToClipboard text={user} onCopy={() => setCopied(true)}><button><MdContentCopy/></button></CopyToClipboard>}</div>*/}
            <div className="my-3"><Link href='/inbox' className=" z-50 text-3xl hover:opacity-50" onClick={() => setOpenMenu(false)}>Messages</Link></div>
-           <div className="my-3"><Link href='/notifications' className=" z-50 text-3xl hover:opacity-50" onClick={() => setOpenMenu(false)}>Notifications</Link></div>
+           <div className="my-3"><Link href='/notifications' className="z-50 text-3xl hover:opacity-50" onClick={() => setOpenMenu(false)}>Notifications</Link></div>
+           <div className="my-3"><Link href='/settings' className="z-50 text-3xl hover:opacity-50 flex items-center gap-x-2" onClick={() => setOpenMenu(false)}>Settings</Link></div>
            <div className="my-3"><Link href='/earn' className=" z-50 text-3xl hover:opacity-50" onClick={() => setOpenMenu(false)}>Earn</Link></div>
            <div className="my-3"><Link href='https://help.cos-in.com' className="text-3xl hover:opacity-50 z-50" onClick={() => setOpenMenu(false)}>Help & Feedback</Link></div>
            <div className="mt-6" onClick={handleLogout}><span className="text-3xl hover:opacity-50 bg-red-300 rounded-md border-2 border-red-900 px-5 py-2 text-red-900" onClick={() => setOpenMenu(false)}>Log Out</span></div>
@@ -584,7 +558,69 @@ const Navbar = () => {
 
           <div className="flex justify-start items-center w-full px-3">
             <a href="/"><Image src={logo} alt="Cosmeta INC" width={150} height={15} className={nav ? "scale-75 object-cover": "scale-100 object-cover"}/></a>
-            <div className={nav ? 'ml-12 flex justify-center items-center' : 'ml-12 flex justify-center items-center'}><input type="search" onChange={handleSearch} onClick={() => setSearchModal(true)} onBlur={() => setSearchModal(false)} name="search" id="search" placeholder="Search" className={nav ? "bg-slate-900 placeholder:text-slate-400 outline-none py-[6px] px-3 w-52 rounded-l-lg text-slate-400" : "bg-slate-500 opacity-40 placeholder:text-slate-900 outline-none py-[6px] px-3 w-52 rounded-l-lg text-slate-900"} /><button type="submit" onClick={handleSearchSubmit} className={nav ? "outline-none py-[8px] px-2 rounded-r-lg bg-slate-900" : "opacity-40 outline-none py-[8px] px-2 rounded-r-lg bg-slate-500"}><BiSearch size={20} className={nav ? "text-slate-400" : "text-slate-900"}/></button></div>
+            <div className={nav ? 'ml-12 flex justify-center items-center relative'
+                                : 'ml-12 flex justify-center items-center relative'}>
+              <input 
+              type="search" 
+              onChange={handleSearch} 
+              onClick={() => setSearchModal(true)} 
+              onMouseLeave={() => setSearchModal(false)} 
+              name="search"
+              autoComplete="off"
+              id="search" 
+              placeholder="Search" 
+              className={nav ? "bg-slate-900 placeholder:text-slate-400 outline-none py-[6px] px-3 w-52 rounded-l-lg text-slate-400" 
+                            : "bg-slate-500 opacity-40 placeholder:text-slate-900 outline-none py-[6px] px-3 w-52 rounded-l-lg text-slate-900"} />
+              <button 
+              type="submit" 
+              onClick={handleSearchSubmit} 
+              className={nav ? "outline-none py-[8px] px-2 rounded-r-lg bg-slate-900" 
+                              : "opacity-40 outline-none py-[8px] px-2 rounded-r-lg bg-slate-500"}>
+              <BiSearch 
+              size={20} 
+              className={nav ? "text-slate-400"
+              : "text-slate-900"}/>
+              </button>
+              {searchmodal ? (
+                <div className="fixed z-50 top-16 bg-slate-900 w-96 rounded-xl py-3 px-5 gap-y-2">
+                {!val
+                ? 
+                <div className="grid gap-y-2">
+                <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Explore</div>
+                  <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top NFT's</div>
+                  <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top Artists</div>
+                  <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top Collections</div>
+                </div>
+        
+                :<div>
+                <div className="text-slate-400 h-60 overflow-hidden">
+        
+                <ul>
+                {
+                  content.filter(u => u.name.toLowerCase().includes(val)).map((i,k) =>
+                  <Link  href={`/details/${i._id}`} className="z-[9999]">
+                    <li key={k}  className="border-[0.5px] border-slate-800 py-2 px-3 my-2 rounded cursor-pointer hover:bg-slate-800">
+                      <div className="flex items-center gap-x-2">
+                      <div className="w-12 h-12 object-cover">
+                      {i.fileType == 'video/mp4'
+                      ? <video src={i.images} className="w-12 h-12 rounded-lg object-cover" autoPlay muted loop/>
+                      : i.fileType == 'image/png' || i.fileType == 'image/jpeg' || i.fileType == 'image/jpg' || i.fileType == 'image/webp' ? <img src={i.images} className="w-12 h-12 rounded-lg object-cover" />
+                      : i.fileType == 'audio/mp3' || i.fileType == 'audio/wav' || i.fileType == 'audio/ogg' || 'audio/mpeg' ? <img src="https://bafkreifdqokmzap5e5hjb7oz32mfg32lctsq4kizbzqzzv4xlpzyiuujsm.ipfs.nftstorage.link/" className="w-12 h-12 rounded-lg object-cover"/> : null
+                      }</div>
+                        <span className="truncate">{i.name}</span>
+                      </div>
+                    </li>
+                  </Link>
+                  )
+                }
+                  
+                </ul>
+                </div>
+                </div>
+                }
+                </div>
+                ) : null}
+            </div>
           </div>
 
           <div className={nav ? "flex justify-end items-center text-xs text-slate-100 gap-x-4 px-5":"flex justify-end items-center text-slate-100 gap-x-4 px-5"}>
@@ -613,45 +649,7 @@ const Navbar = () => {
 
         </div>
       </div>
-      {searchmodal ? (
-        <div className="fixed z-50 top-16 left-32 bg-slate-900 w-96 rounded-xl py-3 px-5 gap-y-2">
-        {!val
-        ? 
-        <div className="grid gap-y-2">
-        <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Explore</div>
-          <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top NFT's</div>
-          <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top Artists</div>
-          <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top Collections</div>
-        </div>
 
-        :<div>
-        <div className="text-slate-400 h-60 overflow-hidden">
-
-        <ul>
-        {
-          content.filter(u => u.name.toLowerCase().includes(val)).map((i,k) =>
-          <Link  href={`/details/${i._id}`} className="z-[9999]">
-            <li key={k}  className="border-[0.5px] border-slate-800 py-2 px-3 my-2 rounded cursor-pointer hover:bg-slate-800">
-              <div className="flex items-center gap-x-2">
-              <div className="w-12 h-12 object-cover">
-              {i.fileType == 'video/mp4'
-              ? <video src={i.images} className="w-12 h-12 rounded-lg object-cover" autoPlay muted loop/>
-              : i.fileType == 'image/png' || i.fileType == 'image/jpeg' || i.fileType == 'image/jpg' || i.fileType == 'image/webp' ? <img src={i.images} className="w-12 h-12 rounded-lg object-cover" />
-              : i.fileType == 'audio/mp3' || i.fileType == 'audio/wav' || i.fileType == 'audio/ogg' || 'audio/mpeg' ? <img src="https://bafkreifdqokmzap5e5hjb7oz32mfg32lctsq4kizbzqzzv4xlpzyiuujsm.ipfs.nftstorage.link/" className="w-12 h-12 rounded-lg object-cover"/> : null
-              }</div>
-                <span>{i.name}</span>
-              </div>
-            </li>
-          </Link>
-          )
-        }
-          
-        </ul>
-        </div>
-        </div>
-        }
-        </div>
-        ) : null}
     </Fragment>
 //******************* END MEDIUM ******************************
       }
@@ -665,7 +663,68 @@ const Navbar = () => {
 
           <div className="flex gap-x-2 justify-start items-center w-full px-10">
             <a href="/"><Image src={logo} alt="Cosmeta INC" width={250} height={25} className={nav ? "scale-75 object-cover": "scale-100 object-cover"}/></a>{chain == 'Sepolia' && <span className="text-xs rounded-lg px-3 py-1.5 border border-slate-600 text-slate-600">Testnet</span>}
-            <div className={nav ? 'ml-12 flex justify-center items-center' : 'ml-12 flex justify-center items-center'}><input type="search" onChange={handleSearch} onClick={() => setSearchModal(true)} onBlur={() => setSearchModal(false)} name="search" id="search" placeholder="Search" className={nav ? "bg-slate-900 placeholder:text-slate-400 outline-none py-[6px] px-3 w-72 rounded-l-lg text-slate-400" : "bg-slate-500 opacity-40 placeholder:text-slate-900 outline-none py-[6px] px-3 w-72 rounded-l-lg text-slate-900"} /><button type="submit" onClick={handleSearchSubmit} className={nav ? "outline-none py-[8px] px-2 rounded-r-lg bg-slate-900" : "opacity-40 outline-none py-[8px] px-2 rounded-r-lg bg-slate-500"}><BiSearch size={20} className={nav ? "text-slate-400" : "text-slate-900"}/></button></div>
+            <div
+              className={nav ? 'ml-12 flex justify-center items-center relative'
+                          : 'ml-12 flex justify-center items-center relative'}>
+              <input
+              type="search" 
+              onChange={handleSearch} 
+              onClick={() => setSearchModal(true)} 
+              onMouseLeave={() => setSearchModal(false)} 
+              name="search" 
+              id="search" 
+              placeholder="Search"
+              autoComplete="off"
+              className={nav ? "bg-slate-900 placeholder:text-slate-400 outline-none py-[6px] px-3 w-72 rounded-l-lg text-slate-400" 
+                            : "bg-slate-500 opacity-40 placeholder:text-slate-900 outline-none py-[6px] px-3 w-72 rounded-l-lg text-slate-900"} />
+              <button 
+              type="submit" 
+              onClick={handleSearchSubmit} 
+              className={nav ? "outline-none py-[8px] px-2 rounded-r-lg bg-slate-900" 
+                            : "opacity-40 outline-none py-[8px] px-2 rounded-r-lg bg-slate-500"}>
+              <BiSearch size={20} className={nav ? "text-slate-400"
+                                                 : "text-slate-900"}/>
+              </button>
+              {searchmodal ? (
+                <div className="fixed z-50 top-16 bg-slate-900 w-96 rounded-xl py-3 px-5 gap-y-2">
+                {!val
+                ? 
+                <div className="grid gap-y-2">
+                <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Explore</div>
+                  <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top NFT's</div>
+                  <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top Artists</div>
+                  <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top Collections</div>
+                </div>
+        
+                :<div>
+                <div className="text-slate-400 h-60 overflow-hidden">
+                <ul>
+                {
+                  content.filter(u => u.name.toLowerCase().includes(val)).map((i,k) =>
+                  <Link  href={`/details/${i._id}`} className="z-[9999]">
+                    <li key={k}  className="border-[0.5px] border-slate-800 py-2 px-3 my-2 rounded cursor-pointer hover:bg-slate-800">
+                      <div className="flex items-center gap-x-2">
+                      <div className="w-12 h-12 object-cover">
+                      {i.fileType == 'video/mp4'
+                      ? <video src={i.images} className="w-12 h-12 rounded-lg object-cover" autoPlay muted loop/>
+                      : i.fileType == 'image/png' || i.fileType == 'image/jpeg' || i.fileType == 'image/jpg' || i.fileType == 'image/webp' || i.fileType == 'image/avif' || i.fileType == 'image/svg' ? <img src={i.images} className="w-12 h-12 rounded-lg object-cover" />
+                      : i.fileType == 'audio/mp3' || i.fileType == 'audio/wav' || i.fileType == 'audio/ogg' || 'audio/mpeg' ? <img src="https://bafkreifdqokmzap5e5hjb7oz32mfg32lctsq4kizbzqzzv4xlpzyiuujsm.ipfs.nftstorage.link/" className="w-12 h-12 rounded-lg object-cover"/> : null
+                      }</div>
+                        <span className="truncate">{i.name}</span>
+                      </div>
+                    </li>
+                  </Link>
+                  )
+                    
+                }
+                  
+                </ul>
+                </div>
+                </div>
+                }
+                </div>
+                ) : null}
+              </div>
           </div>
 
           <div className={nav ? "flex justify-end items-center w-full text-sm text-slate-100 gap-x-10 px-10":"flex justify-end items-center w-full text-slate-100 gap-x-10 px-10"}>
@@ -691,45 +750,7 @@ const Navbar = () => {
 
         </div>
       </div>
-      {searchmodal ? (
-        <div className="fixed z-50 top-16 left-80 bg-slate-900 w-96 rounded-xl py-3 px-5 gap-y-2">
-        {!val
-        ? 
-        <div className="grid gap-y-2">
-        <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Explore</div>
-          <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top NFT's</div>
-          <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top Artists</div>
-          <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top Collections</div>
-        </div>
 
-        :<div>
-        <div className="text-slate-400 h-60 overflow-hidden">
-        <ul>
-        {
-          content.filter(u => u.name.toLowerCase().includes(val)).map((i,k) =>
-          <Link  href={`/details/${i._id}`} className="z-[9999]">
-            <li key={k}  className="border-[0.5px] border-slate-800 py-2 px-3 my-2 rounded cursor-pointer hover:bg-slate-800">
-              <div className="flex items-center gap-x-2">
-              <div className="w-12 h-12 object-cover">
-              {i.fileType == 'video/mp4'
-              ? <video src={i.images} className="w-12 h-12 rounded-lg object-cover" autoPlay muted loop/>
-              : i.fileType == 'image/png' || i.fileType == 'image/jpeg' || i.fileType == 'image/jpg' || i.fileType == 'image/webp' || i.fileType == 'image/avif' || i.fileType == 'image/svg' ? <img src={i.images} className="w-12 h-12 rounded-lg object-cover" />
-              : i.fileType == 'audio/mp3' || i.fileType == 'audio/wav' || i.fileType == 'audio/ogg' || 'audio/mpeg' ? <img src="https://bafkreifdqokmzap5e5hjb7oz32mfg32lctsq4kizbzqzzv4xlpzyiuujsm.ipfs.nftstorage.link/" className="w-12 h-12 rounded-lg object-cover"/> : null
-              }</div>
-                <span>{i.name}</span>
-              </div>
-            </li>
-          </Link>
-          )
-            
-        }
-          
-        </ul>
-        </div>
-        </div>
-        }
-        </div>
-        ) : null}
     </Fragment>
 //******************* END LARGE ******************************
       }

@@ -23,7 +23,7 @@ import jwt from 'jsonwebtoken';
 import { DataContext } from '../store/GlobalState';
 import uniqid from 'uniqid';
 import logo from '../public/logo.png';
-import {AiFillPlayCircle,AiFillBackward,AiFillForward,AiFillPauseCircle,AiOutlineLoading3Quarters} from 'react-icons/ai'
+import {AiFillPlayCircle,AiFillBackward,AiFillForward,AiFillPauseCircle,AiOutlineLoading3Quarters, AiFillCloseCircle} from 'react-icons/ai'
 import { BiTrash } from 'react-icons/bi'
 import styles from '../styles/AudioPlayer.module.css'
 import { AudioPlayer } from '../components';
@@ -76,10 +76,13 @@ import Head from 'next/head';
       owners,setOwners
     } = useStateContext();
     const [fileUrl, setFileUrl] = useState(null)
+    const [fileAlbumUrl, setFileAlbumUrl] = useState(null)
+    const [album, setAlbumImage] = useState(null)
     //const [nftcontract, getNft] = useState([])
     //const [cri,setTokenCri] = useState([])
     //const [market, getMarket] = useState([])
     const [fileType,setFileType] = useState(null);
+    const [fileAlbumType,setFileAlbumType] = useState(null);
     const [formInput, updateFormInput] = useState({ price: '', name: '', description: '',website:'' })
     const [loading,setLoading] = useState(false);
     const [openNetwork,setOpenNetwork] = useState(false);
@@ -92,6 +95,7 @@ import Head from 'next/head';
     const [openPreview,setOpenPreview] = useState(false)
     const [openAuction,setOpenAuction] = useState(false)
     const [openNFT,setOpenNft] = useState(true)
+    const [opencover,setOpenCover] = useState(false)
     const [uid,setUid] = useState(null);
     const [datas,setDatas] = useState([]);
     const [selectedAddress,setAddress] = useState('')
@@ -146,6 +150,26 @@ import Head from 'next/head';
 
     const subdomain = "https://cosmeta.infura-ipfs.io";
 
+    async function onChangeAlbum(e) {
+        setLoading(true);
+        const file = e.target.files[0]
+        try {
+            const added = await client.add(
+                file,
+                {
+                    progress: (prog) => console.log("",/*received: ${prog}*/)
+                }
+            )
+            const albumurl = `${subdomain}/ipfs/${added.path}`;
+              setFileAlbumUrl(albumurl)
+              setOpenCover(false)
+              toast.success("Cover is uploaded!")
+        } catch (error) {
+            console.log('Error uploading file: ', error)
+        }
+        setLoading(false);
+    }
+
     async function onChange(e) {
         setLoading(true);
         setFileType(e.target.files[0].type);
@@ -158,7 +182,12 @@ import Head from 'next/head';
                 }
             )
             const url = `${subdomain}/ipfs/${added.path}`;
-            setFileUrl(url)
+            if(e.target.files[0].type == 'audio/mpeg' || e.target.files[0].type == 'audio/wav' || e.target.files[0].type == "audio/mp3" || e.target.files[0].type == "audio/ogg" ){
+              setFileUrl(url)
+              setOpenCover(true)
+            }else{
+              setFileUrl(url)
+            }
         } catch (error) {
             console.log('Error uploading file: ', error)
         }
@@ -305,7 +334,7 @@ import Head from 'next/head';
         let gasPrice = new ethers.utils.parseUnits('20', 'gwei')
 
         await cosmeta.increaseAllowance(marketcol, ethers.utils.parseEther(listingFee.toString()))//ethers.utils.parseEther(listingFee.toString())
-        let transaction = await marketcontract.createVaultItem(nftcustom, tokenId, price, {gasPrice:gasPrice,value: listingFee })
+        let transaction = await marketcontract.createVaultItem(nftcustom, tokenId, price, {value: listingFee })
         let tx = await transaction.wait()
         let event = tx.events[4]
         let itemIds = event.args.itemId.toNumber()
@@ -322,6 +351,7 @@ import Head from 'next/head';
           description:formInput.description,
           price:formInput.price,
           images:fileUrl,
+          cover:fileAlbumUrl,
           owner:selectedAddress,
           avatar:auth?.user?.avatar,
           role:auth?.user?.role,
@@ -398,7 +428,7 @@ import Head from 'next/head';
         await approve.wait()
 
         await cosmeta.increaseAllowance(auction, ethers.utils.parseEther(listingFee.toString()))//ethers.utils.parseEther(listingFee.toString())
-        let transaction = await nftauction.createAuction(nftcustom,tokenIds,name,description,fileUrl,price, {gasPrice:gasPrice,value:listingFee})
+        let transaction = await nftauction.createAuction(nftcustom,tokenIds,name,description,fileUrl,price, {value:listingFee})
         let tx2 = await transaction.wait()
         let events2 = tx2.events[3]
         let transactionHash = tx2.transactionHash;
@@ -424,6 +454,7 @@ import Head from 'next/head';
           description:formInput.description,
           price:formInput.price,
           images:fileUrl,
+          cover:fileAlbumUrl,
           avatar:auth?.user?.avatar,
           role:auth?.user?.role,
           username:auth?.user?.username,
@@ -486,6 +517,31 @@ import Head from 'next/head';
           <title>Create an NFTs • Cosmeta NFT Marketplace</title>
           </Head>
           {process && <Process/>}
+          {opencover ? (
+            <div className="flex justify-center items-center w-screen h-screen backdrop-blur-sm fixed top-0 left-0 z-[999]">
+              <div className="flex flex-col bg-slate-900 p-5 rounded-lg">
+                <div className="flex justify-between items-center w-full">
+                  <h1 className="flex justify-start items-center text-xl font-semibold antialiased">Upload to Music Cover</h1>
+                  <AiFillCloseCircle size={22} className="flex justify-end items-center cursor-pointer" onClick={() => setOpenCover(false)}/>
+                </div>
+                <div className="flex justify-center items-center w-full">
+                  <span className="text-xs text-slate-400 w-96 mt-5">You have successfully uploaded your audio file. Now it's time to upload an album cover to this audio file.</span>
+                </div>
+                <div className="flex justify-center items-center w-full my-8 gap-x-6">
+                  <div className="flex justify-center items-center">
+                  <label className='w-96 cursor-pointer flex h-52 justify-center items-center text-center border-2 rounded-lg border-dashed bg-slate-800 hover:bg-slate-900 border-slate-400 text-slate-400'>Upload
+                  <input
+                    className='hidden absolute h-52 -left-96'
+                    type="file"
+                    name="Asset"
+                    onChange={onChangeAlbum}
+                  />
+                </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ): null}
           <div className='flex-col justify-center items-center w-full white-glassmorphism px-3 pb-10'>
            <div className='flex-col justify-center items-center my-5 white-glassmorphism shadow-2xl shadow-slate-900 w-full'>
             <div className="flex justify-center items-center py-3">
@@ -511,7 +567,6 @@ import Head from 'next/head';
             <div className='w-full'>
             <h1 className='text-lg font-bold flex items-center'>Upload to Image, Video and Audio<span className='text-[20px] flex mt-2 px-2 items-center text-red-600'>*</span></h1>
             <p className='text-sm mb-3'>File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV</p>
-            
             <label className='w-full cursor-pointer flex h-52 justify-center items-center text-center border-2 rounded-lg border-dashed bg-slate-800 hover:bg-slate-900 border-slate-400 text-slate-400'>Upload
                 <input
                   className='hidden absolute h-52 -left-96'
@@ -760,7 +815,7 @@ import Head from 'next/head';
                   {fileType == 'video/mp4' || fileType == 'video/mov'
                       ? <video src={fileUrl} className="rounded-t-xl w-full h-[296px]" autoPlay muted loop/>
                       : fileType == 'image/png' || fileType == 'image/jpeg' || fileType == 'image/jpg' || fileType == 'image/webp' ? <img className='rounded-t-xl object-cover w-full h-[296px]' src={fileUrl} />
-                      : fileType == 'audio/mp3' || fileType == 'audio/wav' || fileType == 'audio/ogg' || fileType == 'audio/mpeg' ? <AudioPlayer nft={fileUrl} nftname={formInput.name}/> : null
+                      : fileType == 'audio/mp3' || fileType == 'audio/wav' || fileType == 'audio/ogg' || fileType == 'audio/mpeg' ? <AudioPlayer nft={fileUrl} nftcover={album} nftname={formInput.name}/> : null
                       }
                       <div className='flex-col px-5'>
                             <div className='flex justify-between items-center w-full my-3'>
@@ -815,6 +870,31 @@ import Head from 'next/head';
           <title>Create an NFTs • Cosmeta NFT Marketplace</title>
           </Head>
           {process && <Process/>}
+          {opencover ? (
+            <div className="flex justify-center items-center w-screen h-screen backdrop-blur-sm fixed top-0 left-0 z-[999]">
+              <div className="flex flex-col bg-slate-900 p-5 rounded-lg">
+                <div className="flex justify-between items-center w-full">
+                  <h1 className="flex justify-start items-center text-xl font-semibold antialiased">Upload to Music Cover</h1>
+                  <AiFillCloseCircle size={22} className="flex justify-end items-center cursor-pointer" onClick={() => setOpenCover(false)}/>
+                </div>
+                <div className="flex justify-center items-center w-full">
+                  <span className="text-xs text-slate-400 w-96 mt-5">You have successfully uploaded your audio file. Now it's time to upload an album cover to this audio file.</span>
+                </div>
+                <div className="flex justify-center items-center w-full my-8 gap-x-6">
+                  <div className="flex justify-center items-center">
+                  <label className='w-96 cursor-pointer flex h-52 justify-center items-center text-center border-2 rounded-lg border-dashed bg-slate-800 hover:bg-slate-900 border-slate-400 text-slate-400'>Upload
+                  <input
+                    className='hidden absolute h-52 -left-96'
+                    type="file"
+                    name="Asset"
+                    onChange={onChangeAlbum}
+                  />
+                </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ): null}
           <div className='flex-col justify-center items-center w-full white-glassmorphism p-7'>
            <div className='flex justify-between items-center gap-x-5 relative top-0 z-50 my-5 p-7 white-glassmorphism shadow-2xl shadow-slate-900'>
             <div className="flex justify-start items-center">
@@ -868,7 +948,7 @@ import Head from 'next/head';
                   {fileType == 'video/mp4' || fileType == 'video/mov'
                       ? <video src={fileUrl} className="rounded-t-xl w-full h-[296px]" autoPlay muted loop/>
                       : fileType == 'image/png' || fileType == 'image/jpeg' || fileType == 'image/jpg' || fileType == 'image/webp' ? <img className='rounded-t-xl object-cover w-full h-[296px]' src={fileUrl} />
-                      : fileType == 'audio/mp3' || fileType == 'audio/wav' || fileType == 'audio/ogg' || fileType == 'audio/mpeg' ? <AudioPlayer nft={fileUrl} nftname={formInput.name}/> : null
+                      : fileType == 'audio/mp3' || fileType == 'audio/wav' || fileType == 'audio/ogg' || fileType == 'audio/mpeg' ? <AudioPlayer nft={fileUrl} nftcover={album} nftname={formInput.name}/> : null
                       }
                       <div className='flex-col px-5'>
                             <div className='flex justify-between items-center w-full my-3'>
@@ -1157,6 +1237,31 @@ import Head from 'next/head';
           <title>Create an NFTs • Cosmeta NFT Marketplace</title>
           </Head>
           {process && <Process/>}
+          {opencover ? (
+            <div className="flex justify-center items-center w-screen h-screen backdrop-blur-sm fixed top-0 left-0 z-[999]">
+              <div className="flex flex-col bg-slate-900 p-5 rounded-lg">
+                <div className="flex justify-between items-center w-full">
+                  <h1 className="flex justify-start items-center text-xl font-semibold antialiased">Upload to Music Cover</h1>
+                  <AiFillCloseCircle size={22} className="flex justify-end items-center cursor-pointer" onClick={() => setOpenCover(false)}/>
+                </div>
+                <div className="flex justify-center items-center w-full">
+                  <span className="text-xs text-slate-400 w-96 mt-5">You have successfully uploaded your audio file. Now it's time to upload an album cover to this audio file.</span>
+                </div>
+                <div className="flex justify-center items-center w-full my-8 gap-x-6">
+                  <div className="flex justify-center items-center">
+                  <label className='w-96 cursor-pointer flex h-52 justify-center items-center text-center border-2 rounded-lg border-dashed bg-slate-800 hover:bg-slate-900 border-slate-400 text-slate-400'>Upload
+                  <input
+                    className='hidden absolute h-52 -left-96'
+                    type="file"
+                    name="Asset"
+                    onChange={onChangeAlbum}
+                  />
+                </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ): null}
           <div className='flex-col justify-center items-center w-full white-glassmorphism p-7'>
            <div className='flex justify-between items-center gap-x-5 relative top-0 z-50 my-5 p-7 white-glassmorphism shadow-2xl shadow-slate-900'>
             <div className="flex justify-start items-center">
@@ -1177,9 +1282,9 @@ import Head from 'next/head';
             
           <div className='flex-col justify-start items-start p-7 w-[450px]'>
           <div className='flex justify-center items-center w-full'>
-          {fileUrl && <div className={loading ? 'flex-col items-center w-[350px] h-full bg-slate-900 rounded-xl animate-pulse' : ' flex-col items-center w-[350px] pb-7 bg-slate-900 rounded-xl'}>
-          {fileUrl && <h1 className='relative bottom-10 ml-3 text-xl'>Preview</h1>}
-                {loading &&
+          {fileUrl ? <div className={loading ? 'flex-col items-center w-[350px] h-full bg-slate-900 rounded-xl animate-pulse' : ' flex-col items-center w-[350px] pb-7 bg-slate-900 rounded-xl'}>
+          {fileUrl ? <h1 className='relative bottom-10 ml-3 text-xl'>Preview</h1> : null}
+                {loading ?
                   <div className='mx-5'>
                   <div className='rounded-lg bg-slate-800 w-[312px] h-52 relative border-2 border-slate-700 animate-pulse'>&nbsp;</div>
                   <div className='my-3 bg-slate-800 py-2 px-3 border-2 border-slate-700 rounded flex justify-between items-center animate-pulse'><span className='justify-start'>&nbsp;</span></div>
@@ -1188,7 +1293,7 @@ import Head from 'next/head';
                   <div className='my-3 bg-slate-800 py-2 px-3 border-2 border-slate-700 rounded flex justify-between items-center animate-pulse'><span className='justify-start'>&nbsp;</span></div>
                   <div className='my-3 bg-slate-800 py-2 mb-5 px-3 border-2 border-slate-700 rounded flex justify-between items-center animate-pulse'><span className='justify-start'>&nbsp;</span></div>
                   </div>
-                }
+                : null}
                 {fileUrl ? 
                   (<div className='px-6'>
 
@@ -1198,7 +1303,7 @@ import Head from 'next/head';
                   {fileType == 'video/mp4' || fileType == 'video/mov'
                       ? <video src={fileUrl} className="rounded-t-xl w-full h-[296px]" autoPlay muted loop/>
                       : fileType == 'image/png' || fileType == 'image/jpeg' || fileType == 'image/jpg' || fileType == 'image/webp' ? <img className='rounded-t-xl object-cover w-full h-[296px]' src={fileUrl} />
-                      : fileType == 'audio/mp3' || fileType == 'audio/wav' || fileType == 'audio/ogg' || fileType == 'audio/mpeg' ? <AudioPlayer nft={fileUrl} nftname={formInput.name}/> : null
+                      : fileType == 'audio/mp3' || fileType == 'audio/wav' || fileType == 'audio/ogg' || fileType == 'audio/mpeg' ? <AudioPlayer nft={fileUrl} nftcover={album == null ? 'https://bafybeifpkfey26mx4dngzbc4evahx7qbjavmbf5tx7e6d2pyi3h57y5dc4.ipfs.nftstorage.link/' : album} nftname={formInput.name}/> : null
                       }
                       <div className='flex-col px-5'>
                             <div className='flex justify-between items-center w-full my-3'>
@@ -1237,7 +1342,7 @@ import Head from 'next/head';
                   </div>)
                   : null
                 }
-              </div>}
+              </div> : null}
             </div>
             <div className="w-[450px] h-[300px]">
             </div>

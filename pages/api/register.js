@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
           // console.log("bcrypt hash",hash)
 
           const newUser = new Users({
-            username,email,phone:'+'+phone,sms,password:hash,description,walletAddress,liked:[],commended:[],nfts:[],createdAt:Date.now()
+            username,email,phone:'+'+phone,sms,password:hash,description,instagram:'https://instagram.com',twitter,walletAddress,liked:[],commended:[],nfts:[],createdAt:Date.now()
           })
       
           await newUser.save();

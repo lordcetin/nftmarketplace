@@ -153,7 +153,7 @@ const handleBuy = async (tokenId) => {
             : i.type == "image/png" || i.type == "image/jpeg" || i.type == "image/jpg" || i.type == "image/svg" || i.type == "image/webp"
             ? <img className='rounded-t-xl w-[300px] h-[300px] flex justify-center items-center object-cover overflow-hidden' src={i.image} alt={i.name}/>
             : i.type == "audio/mp3" ||  i.type == "audio/ogg" || i.type == "audio/wav" || i.type == "audio/mpeg"
-            ? <AudioPlayer nft={i.image} nftname={i.name}/> : null
+            ? <AudioPlayer nft={i.image} nftcover={i.cover} nftname={i.name}/> : null
             }</div>
                 
               <div className='flex-col px-5'>
@@ -208,7 +208,7 @@ const handleBuy = async (tokenId) => {
             : i.type == "image/png" || i.type == "image/jpeg" || i.type == "image/jpg" || i.type == "image/svg" || i.type == "image/webp"
             ? <img className='rounded-t-xl w-[300px] h-[300px] flex justify-center items-center object-cover overflow-hidden' src={i.image} alt={i.name}/>
             : i.type == "audio/mp3" ||  i.type == "audio/ogg" || i.type == "audio/wav" || i.type == "audio/mpeg"
-            ? <AudioPlayer nft={i.image} nftname={i.name}/> : null
+            ? <AudioPlayer nft={i.image} nftcover={i.cover} nftname={i.name}/> : null
             }</div>
                 
               <div className='flex-col px-5'>
@@ -263,7 +263,7 @@ const handleBuy = async (tokenId) => {
             : i.type == "image/png" || i.type == "image/jpeg" || i.type == "image/jpg" || i.type == "image/svg" || i.type == "image/webp"
             ? <img className='rounded-t-xl w-[300px] h-[300px] flex justify-center items-center object-cover overflow-hidden' src={i.image} alt={i.name}/>
             : i.type == "audio/mp3" ||  i.type == "audio/ogg" || i.type == "audio/wav" || i.type == "audio/mpeg"
-            ? <AudioPlayer nft={i.image} nftname={i.name}/> : null
+            ? <AudioPlayer nft={i.image} nftcover={i.cover} nftname={i.name}/> : null
             }</div>
                 
               <div className='flex-col px-5'>

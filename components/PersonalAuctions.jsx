@@ -173,7 +173,7 @@ const handleBuy = async (tokenId) => {
   }
 }
 
-
+console.log(myauction.filter(u => u.biddable == false && u.username == param && u.owner == user))
   return (
     <div>
 <Media queries={{
@@ -185,7 +185,7 @@ const handleBuy = async (tokenId) => {
     <Fragment>
       {matches.small &&
         <Fragment>
-        <div className='grid grid-cols-1 gap-4'>
+        <div className='grid grid-cols-1 gap-y-4'>
         
         {myauction.filter(u => u.biddable == false && u.username == param && u.owner == user).map((i,k) =>
           <div key={k} className="w-[300px] text-slate-400">
@@ -195,7 +195,7 @@ const handleBuy = async (tokenId) => {
             : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
             ? <img className='rounded-t-xl w-[300px] h-[300px] flex justify-center items-center object-cover overflow-hidden' src={i.images} alt={i.name}/>
             : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-            ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
+            ? <AudioPlayer nft={i.images} nftcover={i.cover} nftname={i.name}/> : null
             }</div>
                 
               <div className='flex-col px-5'>
@@ -240,7 +240,7 @@ const handleBuy = async (tokenId) => {
       }
       {matches.medium &&
         <Fragment>
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid grid-cols-3 gap-3'>
         
         {myauction.filter(u => u.biddable == false && u.username == param && u.owner == user).map((i,k) =>
           <div key={k} className="w-[300px] text-slate-400">
@@ -250,7 +250,7 @@ const handleBuy = async (tokenId) => {
             : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
             ? <img className='rounded-t-xl w-[300px] h-[300px] flex justify-center items-center object-cover overflow-hidden' src={i.images} alt={i.name}/>
             : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-            ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
+            ? <AudioPlayer nft={i.images} nftcover={i.cover} nftname={i.name}/> : null
             }</div>
                 
               <div className='flex-col px-5'>
@@ -295,17 +295,18 @@ const handleBuy = async (tokenId) => {
       }
       {matches.large &&
         <Fragment>
-        <div className='grid grid-cols-5 gap-5'>
+        <div className='grid grid-cols-4 gap-4'>
     
         {myauction.filter(u => u.biddable == false && u.username == param && u.owner == user).map((i,k) =>
           <div key={k} className="w-[300px] text-slate-400">
             <div className='cursor-pointer h-[550px] pb-3 border-slate-800 border-r-slate-700 rounded-xl bg-gradient-to-tr to-slate-600 from-slate-900 overflow-hidden border-2'>
-            <div className="flex justify-center items-center">{i.fileType == "video/mp4"
-            ? <video src={i.images} autoPlay loop muted className="h-[300px] flex justify-center items-center object-cover overflow-hidden"/>
+            <div className="flex justify-center items-center">
+            {i.fileType == "video/mp4"
+            ? <video src={i.images} autoPlay loop muted className="w-full h-[296px] object-cover rounded-t-lg"/>
             : i.fileType == "image/png" || i.fileType == "image/jpeg" || i.fileType == "image/jpg" || i.fileType == "image/svg" || i.fileType == "image/webp"
-            ? <img className='rounded-t-xl w-[300px] h-[300px] flex justify-center items-center object-cover overflow-hidden' src={i.images} alt={i.name}/>
+            ? <img className='w-full h-[296px] rounded-t-lg object-cover' src={i.images} alt={i.name}/>
             : i.fileType == "audio/mp3" ||  i.fileType == "audio/ogg" || i.fileType == "audio/wav" || i.fileType == "audio/mpeg"
-            ? <AudioPlayer nft={i.images} nftname={i.name}/> : null
+            ? <AudioPlayer nft={i.images} nftcover={i.cover} nftname={i.name} nftid={i._id}/> : null
             }</div>
                 
               <div className='flex-col px-5'>
