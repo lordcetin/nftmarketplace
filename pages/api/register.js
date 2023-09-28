@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
     // const db = client.db();
     // const usersCollection = db.collection("users");
   
-    const { username, email,phone,sms,password,confPass,walletAddress,description } = JSON.parse(req.body);
+    const { username, email,phone,sms,password, confPass,walletAddress,description } = JSON.parse(req.body);
     // console.log("register type",typeof req.body)
     // console.log("req",req.body)
     
@@ -52,6 +52,7 @@ module.exports = async (req, res) => {
           await newUser.save();
 
           res.json({
+            newUser,
             msg:"Register Success!"
           })
 
@@ -60,7 +61,6 @@ module.exports = async (req, res) => {
 
 
   } catch (error) {
-      res.json(error)
-      return res.status(400).json({err:err.message})
+    return res.status(400).json({err:err.message})
   }
 }
