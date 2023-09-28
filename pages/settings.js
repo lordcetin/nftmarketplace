@@ -20,6 +20,7 @@ import { firebaseConfig } from '@/utils/firebase';
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import Head from 'next/head';
 import Image from 'next/image';
+import { Loading } from '@nextui-org/react';
 
 const Settings = ({profiledetail,param,setOpenSettings,userData}) => {
 
@@ -28,6 +29,8 @@ const Settings = ({profiledetail,param,setOpenSettings,userData}) => {
   const [changeImage,setChangeImage] = useState(false)
   const [bannerfileUrl,setBannerFile] = useState(false);
   const [profilefileUrl,setProfileFile] = useState(false);
+  const [bannerloading,setBannerLoading] = useState(false);
+  const [profileloading,setProfileLoading] = useState(false);
   const [profile,setToken] = useState(false);
   const [instalink,setInstagramLink] = useState("");
   const [twitterlink,setTwitterLink] = useState("");
@@ -77,7 +80,7 @@ const Settings = ({profiledetail,param,setOpenSettings,userData}) => {
 
   const updateBannerContent = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setBannerLoading(true);
     const file = e.target.files[0]
     const subdomain = "https://cosmeta.infura-ipfs.io";
     try {
@@ -107,7 +110,7 @@ const Settings = ({profiledetail,param,setOpenSettings,userData}) => {
     } catch (error) {
         //console.log('Error uploading file: ', error)
     }
-    setLoading(false);
+    setBannerLoading(false);
 }
    const updateContent = async () => {
     let desc = descript
@@ -168,7 +171,7 @@ const Settings = ({profiledetail,param,setOpenSettings,userData}) => {
 }
    const updatePPContent = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setProfileLoading(true);
     const file = e.target.files[0]
     const subdomain = "https://cosmeta.infura-ipfs.io";
     try {
@@ -198,7 +201,7 @@ const Settings = ({profiledetail,param,setOpenSettings,userData}) => {
     } catch (error) {
         //console.log('Error uploading file: ', error)
     }
-    setLoading(false);
+    setProfileLoading(false);
 }
 
 
@@ -214,7 +217,6 @@ useEffect(() => {
   }
 },[])
 
-console.log("profile",profile)
   return (
     <div>
     <Media queries={{
@@ -240,7 +242,7 @@ console.log("profile",profile)
                   <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
                   <img src={profile?.avatar} alt='Profile Picture' width={50} height={50} className='rounded-full'/>
                   <form onSubmit={updatePPContent}>
-                    <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                    <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>{profileloading ? <Loading/> : "Change"}
                     <input
                       className='hidden absolute h-52 -left-96'
                       type="file"
@@ -257,7 +259,7 @@ console.log("profile",profile)
                   <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
                   <img src={profile?.banner} alt='Banner Picture' width={100} height={100} className='rounded-xl'/>
                   <form onSubmit={updateBannerContent}>
-                    <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                    <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>{bannerloading ? <Loading/> : "Change"}
                     <input
                       className='hidden absolute h-52 -left-96'
                       type="file"
@@ -318,7 +320,7 @@ console.log("profile",profile)
                     <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
                     <img src={profile?.avatar} alt='Profile Picture' width={50} height={50} className='rounded-full'/>
                     <form onSubmit={updatePPContent}>
-                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>{profileloading ? <Loading/> : "Change"}
                       <input
                         className='hidden absolute h-52 -left-96'
                         type="file"
@@ -335,7 +337,7 @@ console.log("profile",profile)
                     <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
                     <img src={profile?.banner} alt='Banner Picture' width={100} height={100} className='rounded-xl'/>
                     <form onSubmit={updateBannerContent}>
-                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>{bannerloading ? <Loading/> : "Change"}
                       <input
                         className='hidden absolute h-52 -left-96'
                         type="file"
@@ -409,7 +411,7 @@ console.log("profile",profile)
                     <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
                     <img src={profile?.avatar} alt='Profile Picture' width={50} height={50} className='rounded-full'/>
                     <form onSubmit={updatePPContent}>
-                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>{profileloading ? <Loading/> : "Change"}
                       <input
                         className='hidden absolute h-52 -left-96'
                         type="file"
@@ -426,7 +428,7 @@ console.log("profile",profile)
                     <div className='white-glassmorphism my-3 p-3 flex justify-between items-center w-full'>
                     <img src={profile?.banner} alt='Banner Picture' width={100} height={100} className='rounded-xl'/>
                     <form onSubmit={updateBannerContent}>
-                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>Change
+                      <label className='inline-flex py-4 px-4 bg-indigo-600 rounded-xl'>{bannerloading ? <Loading/> : "Change"}
                       <input
                         className='hidden absolute h-52 -left-96'
                         type="file"

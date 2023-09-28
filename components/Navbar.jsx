@@ -390,9 +390,8 @@ const Navbar = () => {
             <button className="flex" onClick={!user.length ? connectUser : null} auto>{!user.length ? "Connect Wallet" : `Wallet : ${user.slice(0,5) + '...' + user.slice(38)}`}</button>
             </Dropdown.Item>
             <Dropdown.Item key="settings" withDivider>
-              Settings
+              <Link href='/settings'>Settings</Link>
             </Dropdown.Item>
-            <Dropdown.Item key="system">Earn</Dropdown.Item>
             <Dropdown.Item key="help_and_feedback" withDivider>
               <Link href="https://help.cos-in.com">Help & Feedback</Link>
             </Dropdown.Item>
@@ -427,9 +426,8 @@ const Navbar = () => {
               </Text></Link>
             </Dropdown.Item>
             <Dropdown.Item key="settings" withDivider>
-              Settings
+              <Link href='/settings'>Settings</Link>
             </Dropdown.Item>
-            <Dropdown.Item key="system">Earn</Dropdown.Item>
             <Dropdown.Item key="help_and_feedback" withDivider>
               <Link href="https://help.cos-in.com">Help & Feedback</Link>
             </Dropdown.Item>
@@ -471,7 +469,7 @@ const Navbar = () => {
       </div>
       <div className="w-full px-2">
         <div className={nav ? 'flex justify-center items-center w-full' : 'flex justify-center items-center w-full'}>
-          <input type="search" autoComplete="off" onChange={handleSearch} onClick={() => setSearchModal(true)} onMouseLeave={() => setSearchModal(false)} name="search" id="search" placeholder="Search" className={nav ? " bg-slate-900 placeholder:text-slate-400 outline-none py-[6px] px-3 w-36 rounded-l-lg text-slate-400" : " bg-slate-500 opacity-40 placeholder:text-sm placeholder:text-slate-900 outline-none py-[6px] px-3 w-36 h-7 rounded-l-lg text-slate-900"} /><button type="submit" onClick={handleSearchSubmit} className={nav ? "outline-none py-[9px] px-2 rounded-r-lg bg-slate-900" : "opacity-40 outline-none h-7 px-2 rounded-r-lg bg-slate-500"}><BiSearch size={18} className={nav ? "text-slate-400" : "text-slate-900"}/></button></div>
+          <input type="search" autoComplete="off" onChange={handleSearch} onClick={() => setSearchModal(true)} onBlur={() => setSearchModal(false)} name="search" id="search" placeholder="Search" className={nav ? " bg-slate-900 placeholder:text-slate-400 outline-none py-[6px] px-3 w-36 rounded-l-lg text-slate-400" : " bg-slate-500 opacity-40 placeholder:text-sm placeholder:text-slate-900 outline-none py-[6px] px-3 w-36 h-7 rounded-l-lg text-slate-900"} /><button type="submit" onClick={handleSearchSubmit} className={nav ? "outline-none py-[9px] px-2 rounded-r-lg bg-slate-900" : "opacity-40 outline-none h-7 px-2 rounded-r-lg bg-slate-500"}><BiSearch size={18} className={nav ? "text-slate-400" : "text-slate-900"}/></button></div>
       </div>
       <div className="w-30 justify-end items-center text-right px-3">
       <BiMenu size={30} className="inline-block cursor-pointer hover:opacity-50" onClick={() => setOpenMenu(!openMenu)}/>
@@ -513,10 +511,10 @@ const Navbar = () => {
       }
       {searchmodal ? (
 
-        <div className={nav ? "fixed z-50 top-12 mt-1 bg-slate-900 w-full h-18 rounded-xl py-3 px-5 gap-y-2" : "fixed z-50 top-16 bg-slate-900 w-full h-18 rounded-xl py-3 px-5 gap-y-2"}>
+        <div onBlur={() => setSearchModal(false)} className={nav ? "fixed z-50 top-12 mt-1 bg-slate-900 w-full h-18 rounded-xl py-3 px-5 gap-y-2" : "fixed z-50 top-16 bg-slate-900 w-full h-18 rounded-xl py-3 px-5 gap-y-2"}>
         {!val
         ? 
-          <span className="flex w-full justify-center items-center text-center my-5">Search NFTs</span>
+          <span onBlur={() => setSearchModal(false)} className="flex w-full justify-center items-center text-center my-5">Search NFTs</span>
         :<div>
         <div className="text-slate-400 h-60 overflow-hidden">
         <ul>
@@ -563,8 +561,7 @@ const Navbar = () => {
               <input 
               type="search" 
               onChange={handleSearch} 
-              onClick={() => setSearchModal(true)} 
-              onMouseLeave={() => setSearchModal(false)} 
+              onFocus={() => setSearchModal(true)} 
               name="search"
               autoComplete="off"
               id="search" 
@@ -582,10 +579,10 @@ const Navbar = () => {
               : "text-slate-900"}/>
               </button>
               {searchmodal ? (
-                <div className="fixed z-50 top-16 bg-slate-900 w-96 rounded-xl py-3 px-5 gap-y-2">
+                <div onBlur={() => setSearchModal(false)} className="fixed z-50 top-16 bg-slate-900 w-96 rounded-xl py-3 px-5 gap-y-2">
                 {!val
                 ? 
-                <div className="grid gap-y-2">
+                <div className="grid gap-y-2" onBlur={() => setSearchModal(false)}>
                 <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Explore</div>
                   <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top NFT's</div>
                   <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top Artists</div>
@@ -669,8 +666,7 @@ const Navbar = () => {
               <input
               type="search" 
               onChange={handleSearch} 
-              onClick={() => setSearchModal(true)} 
-              onMouseLeave={() => setSearchModal(false)} 
+              onFocus={() => setSearchModal(true)} 
               name="search" 
               id="search" 
               placeholder="Search"
@@ -686,10 +682,10 @@ const Navbar = () => {
                                                  : "text-slate-900"}/>
               </button>
               {searchmodal ? (
-                <div className="fixed z-50 top-16 bg-slate-900 w-96 rounded-xl py-3 px-5 gap-y-2">
+                <div onBlur={() => setSearchModal(false)} className="fixed z-50 top-16 bg-slate-900 w-96 rounded-xl py-3 px-5 gap-y-2">
                 {!val
                 ? 
-                <div className="grid gap-y-2">
+                <div className="grid gap-y-2" onBlur={() => setSearchModal(false)}>
                 <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Explore</div>
                   <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top NFT's</div>
                   <div className="border-[1px] border-slate-800 py-2 px-5 text-slate-400 hover:bg-slate-800 cursor-pointer hover:text-slate-50 rounded-full">Top Artists</div>

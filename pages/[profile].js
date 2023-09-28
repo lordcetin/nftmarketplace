@@ -1002,7 +1002,6 @@ return account && (
 
 {buyedNFTs ? 
 <div className='mt-10'>
-  {!addrs ? <Loading/> : null}
   <BuyedNfCard addrs={addrs} param={param} datas={nftData}/>
 </div>
 : null}
